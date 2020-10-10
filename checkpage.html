@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.20/css/dataTables.bootstrap4.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.2.3/css/responsive.bootstrap4.min.css">
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootbox.js/5.3.2/bootbox.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap4.min.js"></script>
+    <script src="https://cdn.datatables.net/responsive/2.2.3/js/dataTables.responsive.min.js"></script>
+    <script src="https://cdn.datatables.net/responsive/2.2.3/js/responsive.bootstrap4.min.js"></script>
+    <!-- <link rel="stylesheet" href="assets/vendor/bootstrap/css/bootstrap.min.css">
+    <link href="assets/vendor/fonts/circular-std/style.css" rel="stylesheet"> -->
+    <link rel="stylesheet" href="assets/libs/css/style.css">
+    <!-- <link rel="stylesheet" href="assets/vendor/fonts/fontawesome/css/fontawesome-all.css">
+    <link rel="stylesheet" href="assets/vendor/vector-map/jqvmap.css">
+    <link href="assets/vendor/jvectormap/jquery-jvectormap-2.0.2.css" rel="stylesheet">
+    <link rel="stylesheet" href="assets/vendor/charts/chartist-bundle/chartist.css">
+    <link rel="stylesheet" href="assets/vendor/charts/c3charts/c3.css">
+    <link rel="stylesheet" href="assets/vendor/charts/morris-bundle/morris.css">
+    <link rel="stylesheet" type="text/css" href="assets/vendor/daterangepicker/daterangepicker.css" /> -->
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <title>Document</title>
+
+    <script>
+        $(document).ready(function () {
+
+            $.ajax({
+                method: "GET",
+                url: "/profile/infouser"
+            }).done(function (data, state, xhr) {
+                if (data.email === undefined) {
+
+                    $(".alertText").html("กรุณาเข้าสู่ระบบ")
+                    $("#alertmodal").modal();
+                } else {
+                    $.ajax({
+                        method: "GET",
+                        url: "/manageUser/showAllUsers/" + data.email
+                    }).done(function (dataSet, state, xhr) {
+                        if (dataSet[0] === undefined) {
+                            $("#alertmodal").modal();
+                        } else {
+
+                            window.location.replace("/mainpage")
+                        }
+
+                    }).fail(function (xhr, state, error) {
+                        //get data failed
+                        alert(xhr.responseText);
+                    });
+                }
+            }).fail(function (xhr, state, error) {
+                //get data failed
+                alert(xhr.responseText);
+            });
+        })
+    </script>
+</head>
+
+<body>
+
+    <div class="modal bd-example-modal-sm fade" id="alertmodal" tabindex="-1" role="dialog"
+        aria-labelledby="mySmallModalLabel" data-backdrop="static" data-keyboard="false" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content" style="background-color : #3f3f3f">
+                <div class="modal-body">
+                    <h5 style="color: #ffffff; font-weight:bold;">ประกาศ</h5>
+                    <p class="alertText" style="color: white">กรุณาติดต่อเพื่อขอใช้บริการ</p>
+                    <input class="btn btn-sm" type="button" value="ตกลง"
+                        onclick=" window.location.replace('/')"
+                        style="float: right; background-color: #0a72c1; color:white">
+                </div>
+
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,777 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.20/css/dataTables.bootstrap4.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.2.3/css/responsive.bootstrap4.min.css">
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootbox.js/5.3.2/bootbox.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap4.min.js"></script>
+    <script src="https://cdn.datatables.net/responsive/2.2.3/js/dataTables.responsive.min.js"></script>
+    <script src="https://cdn.datatables.net/responsive/2.2.3/js/responsive.bootstrap4.min.js"></script>
+    <!-- <link rel="stylesheet" href="assets/vendor/bootstrap/css/bootstrap.min.css"> -->
+    <link href="assets/vendor/fonts/circular-std/style.css" rel="stylesheet">
+    <link rel="stylesheet" href="assets/libs/css/style.css">
+    <link rel="stylesheet" href="assets/vendor/fonts/fontawesome/css/fontawesome-all.css">
+    <!-- <link rel="stylesheet" href="assets/vendor/vector-map/jqvmap.css">
+    <link href="assets/vendor/jvectormap/jquery-jvectormap-2.0.2.css" rel="stylesheet">
+    <link rel="stylesheet" href="assets/vendor/charts/chartist-bundle/chartist.css">
+    <link rel="stylesheet" href="assets/vendor/charts/c3charts/c3.css">
+    <link rel="stylesheet" href="assets/vendor/charts/morris-bundle/morris.css">
+    <link rel="stylesheet" type="text/css" href="assets/vendor/daterangepicker/daterangepicker.css" /> -->
+    <!-- <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css"> -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.1/jquery.validate.min.js"></script>
+    <script
+        src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.1/localization/messages_th.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-sweetalert/1.0.1/sweetalert.min.js"></script>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-sweetalert/1.0.1/sweetalert.min.css">
+
+
+
+    <title>นับครุภัณฑ์</title>
+    <style>
+        .card-body span {
+            font-size: 45px;
+            font-weight: 200;
+            color: black;
+        }
+
+        .card-body span1 {
+            font-size: 20px;
+            font-weight: 200;
+            color: black;
+        }
+
+        #upload {
+            opacity: 0;
+        }
+
+        #upload-label {
+            position: absolute;
+            top: 50%;
+            left: 1rem;
+            transform: translateY(-50%);
+        }
+
+        .image-area {
+            border: 2px dashed rgba(255, 255, 255, 0.7);
+            padding: 1rem;
+            position: relative;
+        }
+
+        .image-area::before {
+            content: 'Uploaded image result';
+            color: #fff;
+            font-weight: bold;
+            text-transform: uppercase;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 0.8rem;
+            z-index: 1;
+        }
+
+        .image-area img {
+            z-index: 2;
+            position: relative;
+        }
+
+        .head-line {
+            border-bottom: 6.5px solid #5969ff !important;
+        }
+    </style>
+    <script>
+        var table
+        var fileName
+        var EmailOwner //เมลคนประกาศ
+        var number
+        var today = new Date();
+        var dd = String(today.getDate()).padStart(2, '0');
+        var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+        var yyyy = today.getFullYear() + 543;
+
+        today = yyyy + '-' + mm + '-' + dd;
+        $(document).ready(function () {
+            $(".atyear1").html(yyyy)
+            $("#all").click(function () {
+                window.location.replace("/dashboard");
+            });
+            getItem();
+
+            table = $('#myTable').DataTable({
+                "columnDefs": [
+                    { "width": "10%", "targets": 4 },
+                    { "width": "10%", "targets": 5 }
+                ],
+                deferRender: true,
+                columns: [
+
+                    { data: "No", title: "ลำดับ", visible: false },
+                    { data: "Number", visible: false },
+                    { data: 'Head', title: "หัวข้อ" },
+                    { data: "Detail", title: "รายละเอียด" },
+                    { data: "DateEndCreate", title: "วันที่เริ่มประกาศข่าว" },
+                    { data: "Status", title: "ลักษณะข่าว" },
+                    { data: "Email_announcer", title: "ผู้กำหนดประกาศ" },
+                    {
+                        data: "No",
+                        render: function (data, type, full, meta) {
+                            return data ? '<button class="btn btn-warning rounded edit" id="edit' + full.No + '">แก้ไข</button> <button class="btn btn-secondary rounded delete" id=delete"' + full.No + '">ลบ</button>' : '';
+                        }, title: "แก้ไขข่าวหรือลบ", orderable: false
+                    },
+                ],
+                responsive: true,
+            });
+
+            Loadannounce();
+
+            // /*  ==========================================
+            //     SHOW UPLOADED IMAGE NAME
+            // * ========================================== */
+
+        });
+
+        // Function crate table ===========================
+        //=================================================
+
+        function Loadannounce() {
+            $.ajax({
+                method: "GET",
+                url: "/Loadannounce",
+            }).done(function (dataSet, state, xhr) {
+                if (dataSet.length == 0) {
+                    swal({
+                        title: "ไม่พบข่าวประชาสัมพันธ์",
+                        type: "info",
+                        confirmButtonClass: "btn-primary rounded",
+                        confirmButtonText: "ตกลง",
+                        closeOnConfirm: true,
+                    },
+                        // function (isConfirm) {
+                        //     if (isConfirm) {
+                        //         window.location.reload();
+                        //     }
+                        // }
+                    )
+                    // alert('aaaaaaaa')
+                    // console.length(dataSet.length)
+                }
+                for (let i = 0; i < dataSet.length; i++) {
+                    dataSet[i].No = i + 1;
+
+                    if (dataSet[i].Status == 1) {
+                        dataSet[i].Status = "ประชุม"
+                    } else if (dataSet[i].Status == 2) {
+                        dataSet[i].Status = "ทั่วไป"
+                    }
+                }
+                //clear DataTable
+                table.clear();
+                //display modified JSON in DataTable
+                table.rows.add(dataSet).draw();
+
+                // add announce ===========================================
+                // ========================================================
+
+                $('#AddAnnounce').click(function (e) { //ปุ่มสร้างข่าว
+                    $("#Head").val('');
+                    $("#Detail").val('');
+                    $("#Date").val('');
+                    $("#upload-label").text('เลือกรูป')
+                    $("#exampleModalLabel").text('สร้างข่าวประชาสัมพันธ์')
+                    $("#ModalAnnounceAdd").modal('toggle');
+                    $("#btnAdd").show();
+                    $("#btnEdit").hide();
+
+                });
+
+                $('#btnAdd').click(function (e) {
+                    var head = $("#Head").val();
+                    var detail = $("#Detail").val();
+                    var Date1 = today;
+                    var status = $("input[name='AnnounceStatus']:checked").val();
+
+                    if (head == '' || detail == '' || Date1 == '') {
+
+                        swal({
+                            title: "กรุณากรอกข้อมูลให้ครบถ้วน",
+                            type: "info",
+                            showCancelButton: false,
+                            confirmButtonClass: "btn-primary rounded",
+                            confirmButtonText: "ตกลง",
+                            closeOnConfirm: true,
+                        })
+                    }
+                    else {
+                        $.ajax({
+                            method: "POST",
+                            url: "/AddAnnounce/" + EmailOwner,
+                            data: { Head: head, Detail: detail, DateEndCreate: Date1, Status: status },
+                        }).done(function (dataSet, state, xhr) {
+                            swal({
+                                title: "<small>บันทึกสำเร็จ</small>",
+                                type: "success",
+                                confirmButtonClass: "btn-success rounded",
+                                confirmButtonText: "ยืนยัน",
+                                closeOnConfirm: true,
+                                closeOnCancel: true,
+                                html: true
+                            },
+                                function (isConfirm) {
+                                    if (isConfirm) {
+                                        window.location.reload()
+                                        $("#ModalAnnounceAdd").modal('toggle')
+                                    }
+                                });
+                        }).fail(function (xhr, state, error) {
+                            alert("fail1")
+                        })
+                    }
+                });
+
+                // end add announde ===========================================
+                // ========================================================
+
+                // edit announce ===========================================
+                // ========================================================
+                $('#myTable tbody').on('click', '.edit', function () {
+                    const currentRow = $(this).parents('tr')
+                    selectedData = table.row(currentRow).data();
+                    number = selectedData.Number
+                    $("#btnAdd").hide();
+                    $("#btnEdit").show();
+                    $("#exampleModalLabel").text('แก้ไขข่าวประชาสัมพันธ์')
+                    $("#Head").val(selectedData.Head);
+                    $("#Detail").val(selectedData.Detail);
+                    $("#Date").val(selectedData.DateEndCreate);
+                    if (selectedData.Status == 'ประชุม') {
+                        $('input:radio[name=AnnounceStatus][value=1]').prop('checked', true)
+                    }
+                    else {
+                        $('input:radio[name=AnnounceStatus][value=2]').prop('checked', true)
+                    }
+
+                    $("#ModalAnnounceAdd").modal('toggle');
+
+                    $('#btnEdit').click(function (e) {
+
+                        var head = $("#Head").val();
+                        var detail = $("#Detail").val();
+                        var Date1 = today;
+                        var status = $("input[name='AnnounceStatus']:checked").val();
+
+                        if (head == '' || detail == '' || Date1 == '') {
+
+                            swal({
+                                title: "กรุณากรอกข้อมูลให้ครบถ้วน",
+                                type: "info",
+                                showCancelButton: false,
+                                confirmButtonClass: "btn-primary rounded",
+                                confirmButtonText: "ตกลง",
+                                closeOnConfirm: true,
+                            })
+                        }
+                        else {
+                            $.ajax({
+                                type: "PUT",
+                                url: "/EditAnnounce/" + EmailOwner + "/" + number,
+                                data: { Head: head, Detail: detail, DateEndCreate: Date1, Status: status },
+                            }).done(function (dataSet, state, xhr) {
+                                swal({
+                                    title: "<small>บันทึกสำเร็จ</small>",
+                                    type: "success",
+                                    showCancelButton: false,
+                                    confirmButtonClass: "btn-success rounded",
+                                    confirmButtonText: "ยืนยัน",
+                                    closeOnConfirm: true,
+                                    html: true
+                                },
+                                    function (isConfirm) {
+                                        if (isConfirm) {
+                                            $("#ModalAnnounceAdd").modal('toggle')
+                                            Loadannounce()
+                                            window.location.reload()
+                                        }
+                                    });
+                            }).fail(function (xhr, state, error) {
+
+                            })
+                        }
+
+                    });
+
+                });
+                // end edit announce ===========================================
+                // =============================================================
+
+                // update announce ===========================================
+                // ========================================================
+                $('#myTable tbody').on('click', '.delete', function () {
+                    const currentRow = $(this).parents('tr')
+                    selectedData = table.row(currentRow).data();
+                    number = selectedData.Number
+
+                    swal({
+                        title: "ยืนยันจะลบข้อมูลหรือไหม",
+                        type: "warning",
+                        showCancelButton: true,
+                        confirmButtonClass: "btn-danger rounded",
+                        cancelButtonClass: "btn-primary rounded",
+                        confirmButtonText: "ยืนยัน",
+                        cancelButtonText: "ยกเลิก",
+                        closeOnConfirm: false,
+                        closeOnCancel: true
+                    },
+                        function (isConfirm) {
+                            if (isConfirm) {
+                                swal({
+                                    title: "<small>บันทึกสำเร็จ</small>",
+                                    type: "success",
+                                    showCancelButton: false,
+                                    confirmButtonClass: "btn-success rounded",
+                                    confirmButtonText: "ยืนยัน",
+                                    closeOnConfirm: true,
+                                    html: true,
+                                    closeOnCancel: true
+                                },
+                                    function (isConfirm) {
+                                        if (isConfirm) {
+                                            $.ajax({
+                                                method: "delete",
+                                                url: "/DeleteAnnounce/" + number,
+                                            }).done(function (dataSet, state, xhr) {
+                                                window.location.reload()
+                                            }).fail(function (xhr, state, err) {
+
+                                            })
+                                        }
+                                    });
+                            }
+                        });
+                })
+
+                // end update announce ===========================================
+                // ========================================================
+
+            }).fail(function (xhr, state, error) {
+
+            })
+        }
+
+        // Function crate table End =======================
+        //=================================================
+
+        function getItem() {
+            $.ajax({
+                method: "GET",
+                url: "/profile/infouser"
+            }).done(function (data, state, xhr) {
+                $(".user").html(data.name);
+                EmailOwner = data.email;
+                document.getElementById('pic').src = data.photo;
+                if (data.email === undefined) {
+                    window.location.replace("/checkpage")
+                } else {
+                    $.ajax({
+                        method: "GET",
+                        url: "/manageUser/showAllUsers/" + data.email
+                    }).done(function (dataSet, state, xhr) {
+                        if (dataSet[0] === undefined || dataSet[0].data === 0) {
+                            window.location.replace("/checkpage")
+                        }
+                        if (dataSet[0].Role == 2) {
+                            $("#managUser").hide();
+                            $("#manageu").hide();
+                        }
+                        if (dataSet[0].Role == 1 || dataSet[0].Role == 3) {
+                            $("#userhistory").hide();
+
+                        }
+                        for (let i = 0; i < dataSet.length; i++) {
+                            if (dataSet[i].role == 2) {
+                                dataSet[i].role = "กรรมการ"
+                            } else if (dataSet[i].role == 1) {
+                                dataSet[i].role = "ผู้ดูแลระบบ"
+                            } else {
+                                dataSet[i].Role = "ผู้ดูแลถาวร"
+                            }
+                        }
+                        $("#rol2").html(dataSet[0].role)
+
+                    }).fail(function (xhr, state, error) {
+                        //get data failed
+                        $(".alertText").html(xhr.responseText)
+                        $("#alertmodal").modal();
+                    });
+                }
+
+                ///////////////////////////เพิ่มชื่อ ในดาต้าเบส ////////////////////////////
+                $.ajax({
+                    method: "PUT",
+                    url: "/manageUser/updatename/" + data.name + "/" + data.email
+                }).done(function (data, state, xhr) {
+
+
+                }).fail(function (xhr, state, error) {
+                    //get data failed
+                });
+            }).fail(function (xhr, state, error) {
+                //get data failed
+                $(".alertText").html(xhr.responseText)
+                $("#alertmodal").modal();
+            });
+        }
+    </script>
+</head>
+
+<body>
+    <div class="dashboard-main-wrapper">
+        <!-- navbar -->
+        <!-- ============================================================== -->
+        <div class="dashboard-header">
+            <nav class="navbar navbar-expand-lg bg-white fixed-top">
+                <!-- <div class="row">
+                    <div class="col-sm-2 ml-4">
+                        <img src="img/logoit.JPG" style="width: 280px;">
+                        <span class="border-left ml-3"></span>
+                    </div>
+                    <div class="col-md-8 ml-2 text-right ">
+                        <h6 class="font-weight-bold " style="color: rgb(2, 121, 251);">ประจำปี</h6>
+                    </div>
+                    <div class="col-md- text-right ">
+
+                        <h6 class="font-weight-bold atyear1" style="color: rgb(2, 121, 251);">ปี</h6>
+                    </div>
+                </div> -->
+                <img src="img/logoit.JPG" style="height: 50px;">
+                <h6 class="font-weight-bold ml-5" style="color: rgb(2, 121, 251);">ประจำปี</h6>
+                <h6 class="font-weight-bold atyear1 ml-2" style="color: rgb(2, 121, 251);">ปี</h6>
+
+                <ul class="navbar-nav ml-auto navbar-right-top">
+
+                    <li class="nav-item dropdown notification">
+
+                        <ul class="dropdown-menu dropdown-menu-right notification-dropdown">
+
+                            <li>
+                                <div class="list-footer"> <a href="#">การแจ้งเตือนทั้งหมด</a></div>
+                            </li>
+                        </ul>
+                    </li>
+
+                    <li class="nav-item dropdown nav-user">
+                        <a class="nav-link nav-user-img" href="#" id="navbarDropdownMenuLink2" data-toggle="dropdown"
+                            aria-haspopup="true" aria-expanded="false"><img id="pic" src="img/avatar-1.jpg"
+                                alt="" class="user-avatar-md rounded-circle"></a>
+                        <div class="dropdown-menu dropdown-menu-right nav-user-dropdown"
+                            aria-labelledby="navbarDropdownMenuLink2">
+                            <div class="nav-user-info">
+                                <h5 class="mb-0 text-white nav-user-name user" id="user">Ruttathorn </h5>
+                                <span class="status"></span><span class="ml-2" id="rol2">กรรมการ</span>
+                            </div>
+                            <a class="dropdown-item" href="/auth/logout"><i
+                                    class="fas fa-power-off mr-2"></i>ออกจากระบบ</a>
+                        </div>
+                    </li>
+                </ul>
+
+            </nav>
+        </div>
+        <!-- ============================================================== -->
+        <!-- จบ navbar -->
+        <!-- ============================================================== -->
+        <!-- ============================================================== -->
+        <!-- ============================================================== -->
+        <!-- navbar ด้านข้าง -->
+        <!-- ============================================================== -->
+    </div>
+
+    <div class="nav-left-sidebar sidebar-light">
+        <div class="menu-list">
+            <nav class="navbar navbar-expand-lg navbar-light">
+                <a class="d-xl-none d-lg-none" href="#">Dashboard</a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+                    aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav flex-column">
+
+                        <li class="nav-item">
+                            <a class="nav-link" href="/mainpage" aria-expanded="false"><i
+                                    class="fa fa-home"></i>หน้าหลัก
+                            </a>
+                            <div id="submenu-1" class="collapse submenu">
+                                <ul class="nav flex-column">
+
+                                </ul>
+                            </div>
+                        </li>
+                        <li class="nav-item ">
+                            <a class="nav-link" href="/adminhistory" aria-expanded="false"><i
+                                    class="fa fa-user"></i>ประวัติผู้ใช้งาน </a>
+                            <div id="submenu-1" class="collapse submenu">
+                                <ul class="nav flex-column">
+
+                                </ul>
+                            </div>
+                        </li>
+
+                        <li class="nav-item ">
+                            <a class="nav-link " href="/User_history" aria-expanded="false" id="userhistory"><i
+                                    class="fa fa-user"></i>โปรไฟล์ </a>
+                            <div id="submenu-1" class="collapse submenu">
+                                <ul class="nav flex-column">
+
+                                </ul>
+                            </div>
+                        </li>
+
+                        <li class="nav-item ">
+                            <a class="nav-link" href="/dashboard" aria-expanded="false"><i
+                                    class="fa fa-dashboard"></i>แดชบอร์ด </a>
+                            <div id="submenu-1" class="collapse submenu">
+                                <ul class="nav flex-column">
+
+                                </ul>
+                            </div>
+                        </li>
+
+                        <li class="nav-item ">
+                            <a class="nav-link" href="/asset" aria-expanded="false"><i
+                                    class="fa fa-archive"></i>ครุภัณฑ์ </a>
+                            <div id="submenu-1" class="collapse submenu">
+                                <ul class="nav flex-column">
+
+                                </ul>
+                            </div>
+                        </li>
+
+                        <li class="nav-item ">
+                            <a class="nav-link active" href="/announce" aria-expanded="false" id="News_announce"><i
+                                    class="fa fa-bullhorn"></i>ข่าวประชาสัมพันธ์ </a>
+                            <div id="submenu-1" class="collapse submenu">
+                                <ul class="nav flex-column">
+
+                                </ul>
+                            </div>
+                        </li>
+
+                        <li class="nav-item " id="manageu">
+                            <a class="nav-link " href="/manageUser" aria-expanded="false"><i
+                                    class="fa fa-edit"></i>จัดการผู้ใช้
+                            </a>
+                            <div id="submenu-1" class="collapse submenu">
+                                <ul class="nav flex-column">
+
+                                </ul>
+                            </div>
+                        </li>
+
+                        <li class="nav-item ">
+                            <a class="nav-link " href="/Date_manage" aria-expanded="false"><i
+                                    class="fa fa-clock"></i>จัดการเวลา
+                            </a>
+                            <div id="submenu-1" class="collapse submenu">
+                                <ul class="nav flex-column">
+                                </ul>
+
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+        </div>
+
+    </div>
+    <!-- ============================================================== -->
+    <!-- เสร็จ navbar -->
+    <!-- ============================================================== -->
+    <div class="dashboard-wrapper mt-1">
+        <div class="dashboard-finance">
+            <div class="container-fluid dashboard-content">
+                <!-- ============================================================== -->
+
+                <h2 class="ml-2 mb-5"> ข่าวประชาสัมพันธ์ </h2>
+                <div class="container-fluid" style="background-color: white;">
+                    <div class="row ">
+
+                        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 mt-3 mb-3 text-right">
+                            <div class="btn btn-success rounded text-light" id="AddAnnounce">
+                                สร้างข่าว
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="container-fluid">
+                            <table id="myTable" class="table table-striped table-bordered text-center"
+                                style="width:100%">
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- modal Add Announce  -->
+            <!-- ============================================================== -->
+
+            <div class="modal fade bd-example-modal-lg" id="ModalAnnounceAdd" tabindex="-1" Role="dialog"
+                aria-labelledby="mySmallModalLabel" aria-hidden="true">
+                <div class="modal-dialog" Role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">สร้างข่าวประชาสัมพันธ์</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close" id="CloseModal">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+
+                            <div class="form-group">
+                                <label for="" class="col-form-label">หัวข้อ : </label>
+                                <input type="text" class="form-control" id="Head" maxlength="35" required
+                                    oninvalid="this.setCustomValidity('กรุณาใส่ข้อมูล')"
+                                    oninput="this.setCustomValidity('')">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="" class="col-form-label">เนื้อหา : </label>
+                                <textarea class="form-control" id="Detail" maxlength="100" required
+                                    oninvalid="this.setCustomValidity('กรุณาใส่ข้อมูล')"
+                                    oninput="this.setCustomValidity('')"></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label for="recipient-name" class="col-form-label">ลักษณะข่าว :</label>
+                                <div class="row ">
+                                    <!-- Group of default radios - option 1 -->
+                                    <div class="custom-control custom-radio col-md4 ml-3">
+                                        <input type="radio" class="custom-control-input custom-control custom-radio"
+                                            id="meet" name="AnnounceStatus" value="1" checked>
+                                        <label class="custom-control-label" for="meet">ประชุม</label>
+                                    </div>
+
+                                    <!-- Group of default radios - option 2 -->
+                                    <div class="custom-control custom-radio col-md4 ml-3">
+                                        <input type="radio" class="custom-control-input" id="normal"
+                                            name="AnnounceStatus" value="2">
+                                        <label class="custom-control-label" for="normal">ทั่วไป</label>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary rounded" id="CancelModal"
+                                data-dismiss="modal">ยกเลิก</button>
+                            <button type="submit" class="btn btn-primary rounded" value="add"
+                                id="btnAdd">บันทึก</button>
+                            <button type="submit" class="btn btn-primary rounded" value="edit"
+                                id="btnEdit">บันทึก</button>
+                        </div>
+                        <!-- </form> -->
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- modal Add Announce End -->
+            <!-- ============================================================== -->
+
+            <!-- footer  -->
+            <!-- ============================================================== -->
+
+            <!-- <div class="" style="background-color:  rgb(50, 50, 51);  ">
+                <div class="row ml-5 mr-5" style="background-color: rgb(50, 50, 51);">
+                    <div class="col-xs-12 col-sm-12 col-md-4 mt-5">
+                        <h3>
+                            <blockquote>
+                                <img src="/img/itlogo.png">
+                                <h4 style="color:azure;font-size:30px;">สำนักวิชาเทคโนโลยีสารสนเทศ</h4>
+                                <div style="border: 0.5px solid red; width: 7cm;"></div>
+                                <code style="color: azure;font-size: 20px;">มหาวิทยาลัยแม่ฟ้าหลวง</code>
+                            </blockquote>
+                        </h3>
+                    </div>
+                    <div class="col-xs-12 col-sm-6 col-md-4 mt-5">
+                        <div class="copyright">
+                            <h4 class="header-footer" style="color: azure;">ติดต่อ <br>
+                                <div style="border: 1px solid red; width: 7cm;"></div>
+                            </h4>
+                            <p style="color: azure; font-size: 14px; font-weight: 200;">
+                                สำนักวิชาเทคโนโลยีสารสนเทศ
+                                <br>
+                                มหาวิทยาลัยแม่ฟ้าหลวง
+                                <br>
+                                333 หมู่ 1 ตำบลท่าสุด อำเภอเมือง จังหวัดเชียงราย 57100
+                                <br>
+                                โทรศัพท์ 0 5391 6741-2
+                                <br>
+                                โทรสาร 0 5391 6743
+                                <br>
+                                อีเมล: itschool@mfu.ac.th
+                            </p>
+                            <p></p>
+                            <ul class="mfu-social">
+
+                                <a href="https://www.facebook.com/itschool.mfu.page/" target="_blank"
+                                    class="facebook-icon mr-3">
+                                    <i class="fab fa-facebook">
+
+                                    </i>
+                                </a>
+
+                                <a href="https://www.youtube.com/channel/UCbvvlT0UyZHCYdPTXL7vHXQ/featured"
+                                    target="_blank" class="youtube-icon">
+                                    <i class="fab fa-youtube">
+
+                                    </i>
+                                </a>
+                            </ul>
+                            <p></p>
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-sm-6 col-md-4 mt-5"><iframe
+                            src="https://www.facebook.com/plugins/page.php?href=https%3A%2F%2Fwww.facebook.com%2Fitschool.mfu.page%2F&amp;tabs=timeline&amp;width=340&amp;height=250&amp;small_header=true&amp;adapt_container_width=true&amp;hide_cover=false&amp;show_facepile=true&amp;appId"
+                            width="100%" height="300" style="border:none;overflow:hidden" scrolling="no" frameborder="0"
+                            allowtransparency="true" allow="encrypted-media"></iframe>
+
+
+                    </div>
+
+                </div>
+                <a class="scroll-to-top" style="display: none;">
+                    <i class="fa fa-long-arrow-up" aria-hidden="true"></i>
+                </a>
+                <script>
+                    window.dataLayer = window.dataLayer || [];
+                    function gtag() { dataLayer.push(arguments); }
+                    gtag('js', new Date());
+
+                    gtag('config', 'UA-148131712-1');
+                </script>
+            </div> -->
+            <!-- ============================================================== -->
+            <!-- ======================== เสร็จ footer ========================= -->
+            <!-- ============================================================== -->
+        </div>
+    </div>
+</body>
+</html>

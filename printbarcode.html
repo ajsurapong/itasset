@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <title>พิมพ์ Barcode</title>
+</head>
+<style>
+
+    svg {
+        display: inline-block;
+    }
+
+    @media print {
+        .myDivToPrint {
+            background-color: white;
+            height: 100%;
+            width: 100%;
+            position: fixed;
+            top: 0;
+            left: 0;
+            margin: 0;
+            padding: 15px;
+            font-size: 14px;
+            line-height: 18px;
+        }
+        
+    }
+</style>
+
+<body>
+    <button class="btn btn-primary rounded" onclick="printDiv('printHere')"><i class="fa fa-print" aria-hidden="true"></i>
+            Print</i></button>
+    <br>
+
+    <div class="container-fluid" id="printHere">
+        <div id="qrcode" class=""></div>
+    </div>
+
+
+    <script src="/JS_Files/barcode.min.js"></script>
+    <script>
+        $(document).ready(function () {
+
+            var k = 0;
+            if (sessionStorage !== undefined) {
+                let array = sessionStorage.selectedItemBR;
+                let data = JSON.parse(array)
+                var k = 0;
+                for (var i = 0; i < Math.ceil(data.length / 4); i++) {
+                    $("#qrcode").append("<sapn class='row mb-5' id='aa" + [i] + "' ></span>")
+                    for (let j = 0; j < 4; j++) {
+                        if (k == data.length) {
+
+                        }
+                        else {
+                            $("#aa" + [i] + "").append("<svg class='col-md-3 col-sm-1 col-lg-3' id='bb" + [j] + "' ></svg> ")
+
+                            JsBarcode("#aa" + [i] + " #bb" + [j] + "", + data[k], {
+                                height: 50,
+                            });
+                            k++
+                        }
+
+                    }
+
+                }
+
+            }
+
+        });
+
+        function printDiv(divName) {
+            var printContents = document.getElementById(divName).innerHTML;
+            var originalContents = document.body.innerHTML;
+
+            document.body.innerHTML = printContents;
+
+            window.print();
+
+            document.body.innerHTML = originalContents;
+        }
+    </script>
+
+
+
+</body>
+
+</html>

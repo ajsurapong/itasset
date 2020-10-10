@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.20/css/dataTables.bootstrap4.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.2.3/css/responsive.bootstrap4.min.css">
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootbox.js/5.3.2/bootbox.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap4.min.js"></script>
+    <script src="https://cdn.datatables.net/responsive/2.2.3/js/dataTables.responsive.min.js"></script>
+    <script src="https://cdn.datatables.net/responsive/2.2.3/js/responsive.bootstrap4.min.js"></script>
+    <!-- <link rel="stylesheet" href="assets/vendor/bootstrap/css/bootstrap.min.css"> -->
+    <link href="assets/vendor/fonts/circular-std/style.css" rel="stylesheet">
+    <link rel="stylesheet" href="assets/libs/css/style.css">
+    <link rel="stylesheet" href="assets/vendor/fonts/fontawesome/css/fontawesome-all.css">
+    <!-- <link rel="stylesheet" href="assets/vendor/vector-map/jqvmap.css">
+    <link href="assets/vendor/jvectormap/jquery-jvectormap-2.0.2.css" rel="stylesheet">
+    <link rel="stylesheet" href="assets/vendor/charts/chartist-bundle/chartist.css">
+    <link rel="stylesheet" href="assets/vendor/charts/c3charts/c3.css">
+    <link rel="stylesheet" href="assets/vendor/charts/morris-bundle/morris.css">
+    <link rel="stylesheet" type="text/css" href="assets/vendor/daterangepicker/daterangepicker.css" /> -->
+    <!-- <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css"> -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <title>Asset Checking System @ ITschool</title>
+    <style>
+        .card-body span {
+            font-size: 45px;
+            font-weight: 200;
+            color: black;
+        }
+
+        .card-body span1 {
+            font-size: 20px;
+            font-weight: 200;
+            color: black;
+        }
+
+        .photo {
+            height: 450px;
+            width: 1080px;
+        }
+
+        .trickcenter {
+            position: fixed;
+            top: 50%;
+            /* 50% for perfect centering */
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .carousel-indicators li {
+            display: inline-block;
+            height: 5px;
+            background-color: #0000ff;
+        }
+
+        .carousel-indicators .active {
+            height: 5px;
+            background-color: #ff0000;
+        }
+    </style>
+    <script>
+        $(document).ready(function () {
+            $(".atyear1").html(new Date().getFullYear()+543)
+            $("#all").click(function () {
+                window.location.replace("/dashboard");
+            });
+            getItem();
+            Loadannounce();
+        });
+
+        function Loadannounce() {
+            $.ajax({
+                method: "GET",
+                url: "/Loadannounce"
+            }).done(function (dataSet, state, xhr) {
+                let count = dataSet.length
+                if (dataSet.length > 5) {
+                    count = 5
+                }
+                for (var i = 0; i < count; i++) {
+                    $("#numberofcar").append('<li data-target="#carouselExampleIndicators" data-slide-to="' + i + '" id="car' + i + '"></li>')
+
+                    $("#carphoto").append('<div class="carousel-item slide" id="carphoto' + i + '"><div class="card shadow p-3 mb-1 bg-white rounded" style="color: black;"><div class="row mb-3"><div class="col-sm-7"><div class="card-body"> <div><span>' +
+                        '<div> <h3 id="title' + i + '"> </h3> </div>' + dataSet[i].Head + '</span></div> <br><p>' + dataSet[i].Detail +
+                        '</p> ประกาศเมื่อ ' + dataSet[i].DateEndCreate + ' <br> <br> <br></div> </div><div class="col-sm-5 mt-5"> <img class="card-img-top mx-auto" id="Announcephoto' + i +
+                        '" src="" alt="Card image" style="width:80%" height="90%"> </div>   </div> </div></div>')
+                    if (dataSet[i].Status == 1) {
+
+                        $('#Announcephoto' + i + '').prop("src", "img/meeting.jpg");
+                        document.getElementById("title" + i + "").innerHTML = "ประชุม";
+
+                    } else if (dataSet[i].Status == 2) {
+                        document.getElementById("title" + i + "").innerHTML = "ประชาสัมพันธ์";
+                        $('#Announcephoto' + i + '').prop("src", "img/normal.jpg");
+                    }
+                }
+                $("#car0").addClass("active");
+                $("#carphoto0").addClass("active");
+            }).fail(function (xhr, state, error) {
+
+            })
+        }
+
+        function getItem() {
+            //get users from DB
+            $.ajax({
+                method: "GET",
+                url: "/profile/infouser"
+            }).done(function (data, state, xhr) {
+                $(".user").html(data.name);
+                document.getElementById('pic').src = data.photo;
+                if (data.email === undefined) {
+                    window.location.replace("/checkpage")
+                } else {
+                    $.ajax({
+                        method: "GET",
+                        url: "/manageUser/showAllUsers/" + data.email
+                    }).done(function (dataSet, state, xhr) {
+                        if (dataSet[0] === undefined||dataSet[0].data === 0) {
+                            
+                            window.location.replace("/checkpage")
+                        }
+                        if (dataSet[0].Role == 2) {
+                            $("#DateManage").hide();
+                            $("#manageu").hide();
+                            $("#admin_history").hide();
+                            $("#News_announce").hide();
+                        }
+                        if (dataSet[0].Role == 1 || dataSet[0].Role == 3) {
+                            $("#userhistory").hide();
+
+                        }
+                        for (let i = 0; i < dataSet.length; i++) {
+                            if (dataSet[i].Role == 2) {
+                                dataSet[i].Role = "กรรมการ"
+                            } else if (dataSet[i].Role == 1) {
+                                dataSet[i].Role = "ผู้ดูแลระบบ"
+                            } else {
+                                dataSet[i].Role = "ผู้ดูแลถาวร"
+                            }
+                        }
+                        $("#rol2").html(dataSet[0].Role)
+
+                    }).fail(function (xhr, state, error) {
+                        //get data failed
+                        $(".alertText").html(xhr.responseText)
+                        $("#alertmodal").modal();
+                    });
+                }
+
+                ///////////////////////////เพิ่มชื่อ ในดาต้าเบส ////////////////////////////
+                $.ajax({
+                    method: "PUT",
+                    url: "/manageUser/updatename/" + data.name + "/" + data.email
+                }).done(function (data, state, xhr) {
+
+
+                }).fail(function (xhr, state, error) {
+                    //get data failed
+
+                });
+            }).fail(function (xhr, state, error) {
+                //get data failed
+                $(".alertText").html(xhr.responseText)
+                $("#alertmodal").modal();
+            });
+        }
+    </script>
+</head>
+
+<body>
+    <div class="dashboard-main-wrapper">
+        <!-- navbar -->
+        <!-- ============================================================== -->
+        <div class="dashboard-header">
+            <nav class="navbar navbar-expand-lg bg-white fixed-top">
+                <!-- <div class="row">
+                    <div class="col-sm-2 ml-4">
+                        <img src="img/logoit.JPG" style="width: 280px;">
+                        <span class="border-left ml-3"></span>
+                    </div>
+                    <div class="col-md-8 ml-2 text-right ">
+                        <h6 class="font-weight-bold " style="color: rgb(2, 121, 251);">ประจำปี</h6>
+                    </div>
+                    <div class="col-md- text-right ">
+                        
+                        <h6 class="font-weight-bold atyear1" style="color: rgb(2, 121, 251);">ปี</h6>
+                    </div>
+                </div> -->
+
+                <img src="img/logoit.JPG" style="height: 50px;">
+                <h6 class="font-weight-bold ml-5" style="color: rgb(2, 121, 251);">ประจำปี</h6>
+                <h6 class="font-weight-bold atyear1 ml-2" style="color: rgb(2, 121, 251);">ปี</h6>
+
+                <ul class="navbar-nav ml-auto navbar-right-top">
+
+                    <li class="nav-item dropdown notification">
+
+                        <ul class="dropdown-menu dropdown-menu-right notification-dropdown">
+
+                            <li>
+                                <div class="list-footer"> <a href="#">การแจ้งเตือนทั้งหมด</a></div>
+                            </li>
+                        </ul>
+                    </li>
+
+                    <li class="nav-item dropdown nav-user">
+                        <a class="nav-link nav-user-img" href="#" id="navbarDropdownMenuLink2" data-toggle="dropdown"
+                            aria-haspopup="true" aria-expanded="false"><img id="pic" src="img/avatar-1.jpg"
+                                alt="" class="user-avatar-md rounded-circle"></a>
+                        <div class="dropdown-menu dropdown-menu-right nav-user-dropdown"
+                            aria-labelledby="navbarDropdownMenuLink2">
+                            <div class="nav-user-info">
+                                <h5 class="mb-0 text-white nav-user-name user" id="user">Ruttathorn </h5>
+                                <span class="status"></span><span class="ml-2" id="rol2"></span>
+                            </div>
+                            <a class="dropdown-item" href="/auth/logout"><i
+                                    class="fas fa-power-off mr-2"></i>ออกจากระบบ</a>
+                        </div>
+                    </li>
+                </ul>
+
+            </nav>
+        </div>
+        <!-- ============================================================== -->
+        <!-- จบ navbar -->
+        <!-- ============================================================== -->
+        <!-- ============================================================== -->
+        <!-- ============================================================== -->
+        <!-- navbar ด้านข้าง -->
+        <!-- ============================================================== -->
+        <div class="nav-left-sidebar sidebar-light">
+            <div class="menu-list">
+                <nav class="navbar navbar-expand-lg navbar-light">
+                    <a class="d-xl-none d-lg-none" href="#">Dashboard</a>
+                    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+                        aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="collapse navbar-collapse" id="navbarNav">
+                        <ul class="navbar-nav flex-column">
+
+                            <li class="nav-item">
+                                <a class="nav-link active" href="/mainpage" aria-expanded="false"><i
+                                        class="fa fa-home"></i>หน้าหลัก
+                                </a>
+                                <div id="submenu-1" class="collapse submenu">
+                                    <ul class="nav flex-column">
+
+                                    </ul>
+                                </div>
+                            </li>
+                            <li class="nav-item ">
+                                <a class="nav-link" href="/adminhistory" aria-expanded="false" id="admin_history"><i
+                                        class="fa fa-user"></i>ประวัติผู้ใช้งาน </a>
+                                <div id="submenu-1" class="collapse submenu">
+                                    <ul class="nav flex-column">
+
+                                    </ul>
+                                </div>
+                            </li>
+                            <li class="nav-item ">
+                                <a class="nav-link " href="/User_history" aria-expanded="false" id="userhistory"><i
+                                        class="fa fa-user"></i>โปรไฟล์ </a>
+                                <div id="submenu-1" class="collapse submenu">
+                                    <ul class="nav flex-column">
+
+                                    </ul>
+                                </div>
+                            </li>
+
+                            <li class="nav-item ">
+                                <a class="nav-link" href="/dashboard" aria-expanded="false"><i
+                                        class="fa fa-dashboard"></i>แดชบอร์ด </a>
+                                <div id="submenu-1" class="collapse submenu">
+                                    <ul class="nav flex-column">
+
+                                    </ul>
+                                </div>
+                            </li>
+
+                            <li class="nav-item ">
+                                <a class="nav-link" href="/asset" aria-expanded="false"><i
+                                        class="fa fa-archive"></i>ครุภัณฑ์ </a>
+                                <div id="submenu-1" class="collapse submenu">
+                                    <ul class="nav flex-column">
+
+                                    </ul>
+                                </div>
+                            </li>
+
+                            <li class="nav-item ">
+                                <a class="nav-link" href="/announce" aria-expanded="false" id="News_announce"><i
+                                        class="fa fa-bullhorn"></i>ข่าวประชาสัมพันธ์ </a>
+                                <div id="submenu-1" class="collapse submenu">
+                                    <ul class="nav flex-column">
+
+                                    </ul>
+                                </div>
+                            </li>
+
+                            <li class="nav-item " id="manageu">
+                                <a class="nav-link " href="/manageUser" aria-expanded="false"><i
+                                        class="fa fa-edit"></i>จัดการผู้ใช้
+                                </a>
+                                <div id="submenu-1" class="collapse submenu">
+                                    <ul class="nav flex-column">
+
+                                    </ul>
+                                </div>
+                            </li>
+
+                            <li class="nav-item" id="DateManage">
+                                <a class="nav-link " href="/Date_manage" aria-expanded="false"><i
+                                        class="fa fa-clock"></i>จัดการเวลา
+                                </a>
+                                <div id="submenu-1" class="collapse submenu">
+                                    <ul class="nav flex-column">
+                                    </ul>
+
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </nav>
+            </div>
+
+        </div>
+        <!-- ============================================================== -->
+        <!-- เสร็จ navbar -->
+        <!-- ============================================================== -->
+        <div class="dashboard-wrapper">
+            <div class="dashboard-finance">
+                <div class="container-fluid dashboard-content">
+                    <!-- ============================================================== -->
+                    <!-- หัวกระดาษ  -->
+                    <!-- ============================================================== -->
+                    <div class="row">
+                        <div class="col-xl-11 col-lg-11 col-md-11 col-sm-11 col-11">
+                            <div class="page-header">
+                                <h2 class="">สวัสดี ,<h2 class=" user"></h2>
+                                </h2>
+                                <h6> แผนกรับผิดชอบ : สำนักเทคโนโลยีสารสนเทศ</h6>
+
+                            </div>
+                        </div>
+
+                        <!-- ============================================================== -->
+                        <!-- เสร็จทางลัด  -->
+                        <!-- ============================================================== -->
+                        <!-- ============================================================== -->
+                        <!-- ประกาศ  -->
+                        <!-- ============================================================== -->
+
+                        <div class="container-fluid text-center photo">
+                            <div id="carouselExampleIndicators" class="carousel slide container" data-ride="carousel">
+                                <ol class="carousel-indicators" id="numberofcar">
+                                </ol>
+                                <div class="carousel-inner " id="carphoto">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- ============================================================== -->
+                    <!-- เสร็จประกาศ  -->
+                    <!-- ============================================================== -->
+                    <!-- เสร็จ modal2  -->
+                    <!-- ============================================================== -->
+                    <!-- ============================================================== -->
+                    <div class="modal bd-example-modal-sm fade" id="alertmodal" tabindex="-1" role="dialog"
+                        aria-labelledby="mySmallModalLabel" data-backdrop="static" data-keyboard="false"
+                        aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content" style="background-color : #3f3f3f">
+                                <div class="modal-body">
+                                    <h5 style="color: #ffffff; font-weight:bold;">ประกาศ</h5>
+                                    <p class="alertText" style="color: white">กรุณาติดต่อเพื่อขอใช้บริการ</p>
+                                    <div class="but"></div>
+                                    <input class="btn btn-sm" type="button" value="ตกลง" data-dismiss="modal"
+                                        style="float: right; background-color: #0a72c1; color:white">
+
+                                </div>
+
+
+                            </div>
+                        </div>
+                    </div>
+                    <!-- ============================================================== -->
+                    <!-- เสร็จ modal  -->
+                    <!-- ============================================================== -->
+                    <!-- </div> -->
+                </div>
+                <!-- footer  -->
+                <!-- ============================================================== -->
+
+                <!-- <div class="" style="background-color:  rgb(50, 50, 51);  ">
+                    <div class="row ml-5 mr-5" style="background-color: rgb(50, 50, 51);">
+                        <div class="col-xs-12 col-sm-12 col-md-4 mt-5">
+                            <h3>
+                                <blockquote>
+                                    <img src="/img/itlogo.png">
+                                    <h4 style="color:azure;font-size:30px;">สำนักวิชาเทคโนโลยีสารสนเทศ</h4>
+                                    <div style="border: 0.5px solid red; width: 7cm;"></div>
+                                    <code style="color: azure;font-size: 20px;">มหาวิทยาลัยแม่ฟ้าหลวง</code>
+                                </blockquote>
+                            </h3>
+                        </div>
+                        <div class="col-xs-12 col-sm-6 col-md-4 mt-5">
+                            <div class="copyright">
+                                <h4 class="header-footer" style="color: azure;">ติดต่อ <br>
+                                    <div style="border: 1px solid red; width: 7cm;"></div>
+                                </h4>
+                                <p style="color: azure; font-size: 14px; font-weight: 200;">
+                                    สำนักวิชาเทคโนโลยีสารสนเทศ
+                                    <br>
+                                    มหาวิทยาลัยแม่ฟ้าหลวง
+                                    <br>
+                                    333 หมู่ 1 ตำบลท่าสุด อำเภอเมือง จังหวัดเชียงราย 57100
+                                    <br>
+                                    โทรศัพท์ 0 5391 6741-2
+                                    <br>
+                                    โทรสาร 0 5391 6743
+                                    <br>
+                                    อีเมล: itschool@mfu.ac.th
+                                </p>
+                                <p></p>
+                                <ul class="mfu-social">
+
+                                    <a href="https://www.facebook.com/itschool.mfu.page/" target="_blank"
+                                        class="facebook-icon mr-3">
+                                        <i class="fab fa-facebook">
+
+                                        </i>
+                                    </a>
+
+                                    <a href="https://www.youtube.com/channel/UCbvvlT0UyZHCYdPTXL7vHXQ/featured"
+                                        target="_blank" class="youtube-icon">
+                                        <i class="fab fa-youtube">
+
+                                        </i>
+                                    </a>
+                                </ul>
+                                <p></p>
+                            </div>
+                        </div>
+                        <div class="col-xs-12 col-sm-6 col-md-4 mt-5"><iframe
+                                src="https://www.facebook.com/plugins/page.php?href=https%3A%2F%2Fwww.facebook.com%2Fitschool.mfu.page%2F&amp;tabs=timeline&amp;width=340&amp;height=250&amp;small_header=true&amp;adapt_container_width=true&amp;hide_cover=false&amp;show_facepile=true&amp;appId"
+                                width="100%" height="300" style="border:none;overflow:hidden" scrolling="no"
+                                frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>
+
+
+                        </div>
+
+                    </div>
+                    <a class="scroll-to-top" style="display: none;">
+                        <i class="fa fa-long-arrow-up" aria-hidden="true"></i>
+                    </a>
+                    <script>
+                        window.dataLayer = window.dataLayer || [];
+                        function gtag() { dataLayer.push(arguments); }
+                        gtag('js', new Date());
+
+                        gtag('config', 'UA-148131712-1');
+                    </script>
+                </div> -->
+                <!-- ============================================================== -->
+                <!-- ======================== เสร็จ footer ========================= -->
+                <!-- ============================================================== -->
+            </div>
+        </div>
+    </div>
+</body>
+</html>

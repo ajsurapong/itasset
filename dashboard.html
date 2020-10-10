@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.20/css/dataTables.bootstrap4.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.2.3/css/responsive.bootstrap4.min.css">
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootbox.js/5.3.2/bootbox.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap4.min.js"></script>
+    <script src="https://cdn.datatables.net/responsive/2.2.3/js/dataTables.responsive.min.js"></script>
+    <script src="https://cdn.datatables.net/responsive/2.2.3/js/responsive.bootstrap4.min.js"></script>
+
+    <!-- <link rel="stylesheet" href="assets/vendor/bootstrap/css/bootstrap.min.css"> -->
+    <link href="assets/vendor/fonts/circular-std/style.css" rel="stylesheet">
+    <link rel="stylesheet" href="assets/libs/css/style.css">
+    <link rel="stylesheet" href="assets/vendor/fonts/fontawesome/css/fontawesome-all.css">
+    <!-- <link rel="stylesheet" href="assets/vendor/vector-map/jqvmap.css">
+    <link href="assets/vendor/jvectormap/jquery-jvectormap-2.0.2.css" rel="stylesheet">
+    <link rel="stylesheet" href="assets/vendor/charts/morris-bundle/morris.css">
+    <link rel="stylesheet" type="text/css" href="assets/vendor/daterangepicker/daterangepicker.css" /> -->
+    <!-- <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css"> -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <!-- <link rel="stylesheet" href="https://www.cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.min.js"></script> -->
+
+    <!-- Hight Chart -->
+    <script src="https://code.highcharts.com/highcharts.js"></script>
+    <script src="https://code.highcharts.com/modules/exporting.js"></script>
+    <script src="https://code.highcharts.com/modules/export-data.js"></script>
+    <script src="https://code.highcharts.com/modules/accessibility.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-sweetalert/1.0.1/sweetalert.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-sweetalert/1.0.1/sweetalert.css">
+
+    <title>นับครุภัณฑ์</title>
+
+    <script>
+        var table
+        var user
+        $(document).ready(function () {
+            var today = new Date();
+            var dd = String(today.getDate()).padStart(2, '0');
+            var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+            var yyyy = today.getFullYear() + 543;
+
+            today = yyyy + '-' + mm + '-' + dd;
+
+            $(".atyear1").html(yyyy)
+
+            //====================================== drop down year ======================================
+            $.ajax({
+                method: "GET",
+                url: "/item/Year"
+            }).done(function (data, state, xhr) {
+
+                if (data.length == 0) {
+                    swal({
+                        title: "ไม่พบข้อมูลครุภัณฑ์",
+                        type: "info",
+                        confirmButtonClass: "btn-primary rounded",
+                        confirmButtonText: "ตกลง",
+                        closeOnConfirm: true,
+                    },
+                        // function (isConfirm) {
+                        //     if (isConfirm) {
+                        //         window.location.reload();
+                        //     }
+                        // }
+                    )
+                    // alert('aaaaaaaa')
+                    // console.length(dataSet.length)
+                }
+                else {
+                    $.ajax({
+                        method: "GET",
+                        url: "/item/dashboard/number1/" + data[0].Year
+                    }).done(function (dataSet, state, xhr) {
+                        $("#all").html(dataSet[0].Numbers_of_item);
+                    })
+                    $.ajax({
+                        method: "GET",
+                        url: "/item/dashboard/number2/0/" + data[0].Year
+                    }).done(function (dataSet, state, xhr) {
+                        $("#dis").html(dataSet[0].Numbers_of_item);
+                    })
+
+                    $.ajax({
+                        method: "GET",
+                        url: "/item/dashboard/number2/1/" + data[0].Year
+                    }).done(function (dataSet, state, xhr) {
+                        $("#normal").html(dataSet[0].Numbers_of_item);
+                    })
+                    $.ajax({
+                        method: "GET",
+                        url: "/item/dashboard/number2/2/" + data[0].Year
+                    }).done(function (dataSet, state, xhr) {
+                        $("#fix").html(dataSet[0].Numbers_of_item);
+                    })
+                    $.ajax({
+                        method: "GET",
+                        url: "/year/iteem"
+                    }).done(function (data, state, xhr) {
+                        let nor = parseInt($("#normal").html());
+                        let fix = parseInt($("#fix").html());
+                        let dis = parseInt($("#dis").html());
+
+                        $('#bar-chart').highcharts({
+                            chart: {
+                                type: 'column'
+                            },
+                            title: {
+                                text: 'Amount of stuff in inventory'
+                            },
+                            subtitle: {
+                                text: 'ข้อมูลคุรุภัณฑ์ของสำนักวิชาเทคโนโลยีสารสนเทศ'
+                            },
+                            xAxis: {
+                                categories: [
+                                    'item'
+                                ],
+                                crosshair: true
+                            },
+                            yAxis: {
+                                min: 0,
+                                title: {
+                                    text: 'amount of item (จำนวนคุรุภัณฑ์)'
+                                }
+                            },
+                            tooltip: {
+
+                            },
+                            plotOptions: {
+                                column: {
+                                    pointPadding: 0.2,
+                                    borderWidth: 0
+                                }
+                            },
+                            series: [{
+                                name: 'ปกติ',
+                                data: [nor],
+                                color: '#73e2a9'
+
+                            }, {
+                                name: 'เสื่อมสภาพ',
+                                data: [fix],
+                                color: '#fdc538'
+
+                            }, {
+                                name: 'สูญหาย',
+                                data: [dis],
+                                color: '#fa986d'
+
+                            },
+                            ]
+                        });
+
+                    })
+
+                    var values = [];
+                    let count = 0
+                    if (data.length > 5) {
+                        count = 5
+                    } else {
+                        count = data.length
+                    }
+                    for (let i = count - 1; i >= 0; i--) {
+                        values[i] = [data[i].Year]
+                    }
+
+                    $('.year').append($(document.createElement('select')).prop({
+
+                        class: 'year',
+                        name: 'year',
+                        style: 'border-color: white',
+                        class: 'ml-2 mt-1 year',
+                        id: 'Year',
+                        name: 'Year'
+                    })
+                    )
+
+                    //drop down status year
+                    for (let i = 0; i < values.length; i++) {
+                        $('#Year').append($(document.createElement('option')).prop({
+                            value: values[i],
+                            text: values[i],
+                            class: values[i]
+                        }))
+                    }
+
+                    $('select.year').change(function () {
+                        var selected = $(this).children("option:selected").val();
+
+                        $.ajax({
+                            method: "GET",
+                            url: "/item/dashboard/number1/" + selected
+                        }).done(function (dataSet, state, xhr) {
+                            $("#all").html(dataSet[0].Numbers_of_item);
+                        })
+                        $.ajax({
+                            method: "GET",
+                            url: "/item/dashboard/number2/0/" + selected
+                        }).done(function (dataSet, state, xhr) {
+                            $("#dis").html(dataSet[0].Numbers_of_item);
+                        })
+
+                        $.ajax({
+                            method: "GET",
+                            url: "/item/dashboard/number2/1/" + selected
+                        }).done(function (dataSet, state, xhr) {
+                            $("#normal").html(dataSet[0].Numbers_of_item);
+                        })
+                        $.ajax({
+                            method: "GET",
+                            url: "/item/dashboard/number2/2/" + selected
+                        }).done(function (dataSet, state, xhr) {
+                            $("#fix").html(dataSet[0].Numbers_of_item);
+                        })
+                        $.ajax({
+                            method: "GET",
+                            url: "/year/iteem"
+                        }).done(function (data, state, xhr) {
+                            let nor = parseInt($("#normal").html());
+                            let fix = parseInt($("#fix").html());
+                            let dis = parseInt($("#dis").html());
+                            chart = $('#bar-chart').highcharts();
+
+                            chart.series[0].update({
+                                data: [nor]
+                            }, false);
+
+                            chart.series[1].update({
+                                data: [fix]
+                            }, false);
+
+                            chart.series[2].update({
+                                data: [dis]
+                            }, false);
+
+                            chart.redraw();
+                        })
+
+                        $.ajax({
+                            method: "GET",
+                            url: "/item/dashboard/showAllInfo4/" + selected
+                        }).done(function (dataSet, state, xhr) {
+                            for (let i = 0; i < dataSet.length; i++) {
+                                if (dataSet[i].Status == 0) {
+                                    dataSet[i].Status = "สูญหาย"
+                                } else if (dataSet[i].Status == 1) {
+                                    dataSet[i].Status = "ปกติ"
+                                } else if (dataSet[i].Status == 2) {
+                                    dataSet[i].Status = "เสื่อมสภาพ"
+                                }
+                            }
+                        })
+                    })
+                }
+
+            })
+
+            $.ajax({
+                method: "GET",
+                url: "/profile/infouser"
+            }).done(function (data, state, xhr) {
+                user = data.email
+                $("#user").html(data.name);
+                document.getElementById('pic').src = data.photo;
+                if (data.email === undefined) {
+                    window.location.replace("/checkpage")
+                } else {
+                    $.ajax({
+                        method: "GET",
+                        url: "/manageUser/showAllUsers/" + data.email
+                    }).done(function (dataSet, state, xhr) {
+                        if (dataSet[0] === undefined || dataSet[0].data === 0) {
+                            window.location.replace("/checkpage")
+                        }
+                        if (dataSet[0].Role == 2) {
+                            $("#DateManage").hide();
+                            $("#manageu").hide();
+                            $("#admin_history").hide();
+                            $("#News_announce").hide();
+                        }
+                        if (dataSet[0].Role == 1 || dataSet[0].Role == 3) {
+                            $("#userhistory").hide();
+
+                        }
+                        for (let i = 0; i < dataSet.length; i++) {
+                            if (dataSet[i].Role == 2) {
+                                dataSet[i].Role = "กรรมการ"
+                            } else if (dataSet[i].Role == 1 || dataSet[i].Role == 3) {
+                                dataSet[i].Role = "ผู้ดูแลระบบ"
+                            }
+                        }
+                        $("#rol2").html(dataSet[0].Role)
+
+
+                    }).fail(function (xhr, state, error) {
+                        //get data failed
+                        $(".alertText").html(xhr.responseText)
+                        $("#alertmodal").modal();
+                    });
+                }
+            }).fail(function (xhr, state, error) {
+                //get data failed
+                $(".alertText").html(xhr.responseText)
+                $("#alertmodal").modal();
+            });
+        });
+
+    </script>
+    <style>
+        .morris-hover.morris-default-style {
+            border-radius: 10px;
+            padding: 6px;
+            color: #000000;
+            background: rgb(255, 255, 255);
+            border: solid 2px rgb(230, 230, 230);
+            font-family: sans-serif;
+            font-size: 12px;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body style="background-color:rgba(255, 255, 255, 0.768)">
+    <div class="dashboard-main-wrapper">
+        <!-- navbar -->
+        <!-- ============================================================== -->
+        <div class="dashboard-header">
+            <nav class="navbar navbar-expand-lg bg-white fixed-top">
+                <!-- <div class="row">
+                    <div class="col-sm-2 ml-4">
+                        <img src="img/logoit.JPG" style="width: 280px;">
+                        <span class="border-left ml-3"></span>
+                    </div>
+                    <div class="col-md-8 ml-2 text-right ">
+                        <h6 class="font-weight-bold " style="color: rgb(2, 121, 251);">ประจำปี</h6>
+                    </div>
+                    <div class="col-md- text-right ">
+
+                        <h6 class="font-weight-bold atyear1" style="color: rgb(2, 121, 251);">ปี</h6>
+                    </div>
+                </div> -->
+                <img src="img/logoit.JPG" style="height: 50px;">
+                <h6 class="font-weight-bold ml-5" style="color: rgb(2, 121, 251);">ประจำปี</h6>
+                <h6 class="font-weight-bold atyear1 ml-2" style="color: rgb(2, 121, 251);">ปี</h6>
+
+                <ul class="navbar-nav ml-auto navbar-right-top">
+                    <li class="nav-item dropdown notification">
+                        <ul class="dropdown-menu dropdown-menu-right notification-dropdown">
+                            <li>
+                                <div class="list-footer"> <a href="#">การแจ้งเตือนทั้งหมด</a></div>
+                            </li>
+                        </ul>
+                    </li>
+
+                    <li class="nav-item dropdown nav-user">
+                        <a class="nav-link nav-user-img" href="#" id="navbarDropdownMenuLink2" data-toggle="dropdown"
+                            aria-haspopup="true" aria-expanded="false"><img id="pic" src="img/avatar-1.jpg"
+                                alt="" class="user-avatar-md rounded-circle"></a>
+                        <div class="dropdown-menu dropdown-menu-right nav-user-dropdown"
+                            aria-labelledby="navbarDropdownMenuLink2">
+                            <div class="nav-user-info">
+                                <h5 class="mb-0 text-white nav-user-name user" id="user">Ruttathorn </h5>
+                                <span class="status"></span><span class="ml-2" id="rol2"></span>
+                            </div>
+                            <a class="dropdown-item" href="/auth/logout"><i
+                                    class="fas fa-power-off mr-2"></i>ออกจากระบบ</a>
+                        </div>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+        <!-- ============================================================== -->
+        <!-- จบ navbar -->
+        <!-- ============================================================== -->
+        <!-- ============================================================== -->
+        <!-- navbar ด้านข้าง -->
+        <!-- ============================================================== -->
+        <div class="nav-left-sidebar sidebar-light">
+            <div class="menu-list">
+                <nav class="navbar navbar-expand-lg navbar-light">
+                    <a class="d-xl-none d-lg-none" href="#">Dashboard</a>
+                    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+                        aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="collapse navbar-collapse" id="navbarNav">
+                        <ul class="navbar-nav flex-column">
+
+                            <li class="nav-item ">
+                                <a class="nav-link" href="/mainpage" aria-expanded="false"><i
+                                        class="fa fa-home"></i>หน้าหลัก
+                                </a>
+                                <div id="submenu-1" class="collapse submenu">
+                                    <ul class="nav flex-column">
+                                    </ul>
+                                </div>
+                            </li>
+                            <li class="nav-item ">
+                                <a class="nav-link" href="/adminhistory" aria-expanded="false" id="admin_history"><i
+                                        class="fa fa-user"></i>ประวัติผู้ใช้งาน </a>
+                                <div id="submenu-1" class="collapse submenu">
+                                    <ul class="nav flex-column">
+                                    </ul>
+                                </div>
+                            </li>
+                            <li class="nav-item ">
+                                <a class="nav-link " href="/User_history" aria-expanded="false" id="userhistory"><i
+                                        class="fa fa-user"></i>โปรไฟล์ </a>
+                                <div id="submenu-1" class="collapse submenu">
+                                    <ul class="nav flex-column">
+                                    </ul>
+                                </div>
+                            </li>
+
+                            <li class="nav-item ">
+                                <a class="nav-link active" href="/dashboard" aria-expanded="false"><i
+                                        class="fa fa-dashboard"></i>แดชบอร์ด </a>
+                                <div id="submenu-1" class="collapse submenu">
+                                    <ul class="nav flex-column">
+                                    </ul>
+                                </div>
+                            </li>
+
+                            <li class="nav-item ">
+                                <a class="nav-link" href="/asset" aria-expanded="false"><i
+                                        class="fa fa-archive"></i>ครุภัณฑ์ </a>
+                                <div id="submenu-1" class="collapse submenu">
+                                    <ul class="nav flex-column">
+                                    </ul>
+                                </div>
+                            </li>
+
+                            <li class="nav-item ">
+                                <a class="nav-link" href="/announce" aria-expanded="false" id="News_announce"><i
+                                        class="fa fa-bullhorn"></i>ข่าวประชาสัมพันธ์ </a>
+                                <div id="submenu-1" class="collapse submenu">
+                                    <ul class="nav flex-column">
+                                    </ul>
+                                </div>
+                            </li>
+
+                            <li class="nav-item " id="manageu">
+                                <a class="nav-link " href="/manageUser" aria-expanded="false"><i
+                                        class="fa fa-edit"></i>จัดการผู้ใช้
+                                </a>
+                                <div id="submenu-1" class="collapse submenu">
+                                    <ul class="nav flex-column">
+                                    </ul>
+                                </div>
+                            </li>
+
+                            <li class="nav-item" id="DateManage">
+                                <a class="nav-link " href="/Date_manage" aria-expanded="false"><i
+                                        class="fa fa-clock"></i>จัดการเวลา
+                                </a>
+                                <div id="submenu-1" class="collapse submenu">
+                                    <ul class="nav flex-column">
+                                    </ul>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </nav>
+            </div>
+        </div>
+        <!-- ============================================================== -->
+        <!-- เสร็จ navbar -->
+        <!-- ============================================================== -->
+
+        <div class="dashboard-wrapper" style="background-color:rgba(255, 255, 255, 0.768)">
+            <div class="dashboard-finance">
+                <div class="container-fluid dashboard-content">
+                    <!-- ============================================================== -->
+                    <!-- หัวกระดาษ  -->
+                    <!-- ============================================================== -->
+                    <div class="row ">
+                        <div class="nav">
+                            <div class="col-xl-8 col-lg-8 col-md-8 col-sm-8 col-8">
+                                <div class="page-header ml-5 ">
+                                    <h2 class=" ">แดชบอร์ด </h2>
+                                </div>
+                            </div>
+
+                            <!-- ======================================================== -->
+                            <!-- ดรอปดาว -->
+                            <!-- ======================================================== -->
+                            <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-4">
+                                <div class="input-group mb-3">
+                                    <div class="input-group-append be-addon mt-3"><span
+                                            style="font-size: 18px;color: black;">ปี</span>
+                                        <div class="btn-group " role="group">
+                                            <div class="year mb-4">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-xl-3 col-md-6 mb-4">
+                            <div class="card border-left-success  py-2" style="background-color:#eeefff">
+                                <div class="card-body">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">
+                                            <b style="color: #000000;" class="h5 font-weight-bold">ครุภัณฑ์ทั้งหมด</b>
+                                            <h1 id="all" class="" style="color: #000000;">0</h1>
+                                        </div>
+                                        <div class="col-auto">
+                                            <img class="fas fa-calendar fa-2x text-gray-300" src="img/all.PNG " alt=""
+                                                style="width:70%;">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-3 col-md-6 mb-4">
+                            <div class="card border-left-primary  py-2" style="background-color:#e7f5ee">
+                                <div class="card-body">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">
+                                            <b style="color: #000000;" class="">ครุภัณฑ์ปกติ</b>
+                                            <h1 id="normal">0</h1>
+                                        </div>
+                                        <div class="col-auto">
+                                            <img class="fas fa-calendar fa-2x text-gray-300" src="img/normal.png" alt=""
+                                                style="width:70%;">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-3 col-md-6 mb-4">
+                            <div class="card border-left-primary py-2" style="background-color:#f9f2d5">
+                                <div class="card-body">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">
+                                            <b style="color: #000000;" class="">ครุภัณฑ์เสื่อมสภาพ</b>
+                                            <h1 id="fix">0</h1>
+                                        </div>
+                                        <div class="col-auto">
+                                            <img class="fas fa-calendar fa-2x text-gray-300" src="img/fix.PNG " alt=""
+                                                style="width:70%;">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-3 col-md-6 mb-4">
+                            <div class="card border-left-primary py-2" style="background-color:#fbe1d3">
+                                <div class="card-body">
+                                    <div class="row no-gutters align-items-center">
+                                        <b style="color: #000000;" class="">ครุภัณฑ์สูญหาย/ยังไม่ได้ตรวจ</b>
+                                        <!-- <p style="color: #000000;" class=""><strong>/ยังไม่ได้ตรวจ</strong></p> -->
+                                    </div>
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">
+                                            <h1 id="dis">0</h1>
+                                        </div>
+
+                                        <div class="col-auto">
+                                            <img class="fas fa-calendar fa-2x text-gray-300" src="img/dis.PNG" alt=""
+                                                style="width:70%;">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- ============================================================== -->
+                    <!-- เสร็จหัวกระดาษ  -->
+                    <!-- ============================================================== -->
+                    <!-- แถบ -->
+                    <!-- ============================================================== -->
+                    <!--กราฟ-->
+                    <!-- ============================================================== -->
+                    <div class="col">
+                        <div class="row ">
+                            <div class=" col-xl-11 col-lg-11 col-md-11 col-sm-11 col-11 ml-5 border "
+                                style="background-color: white;border: 5px solid red;">
+                                <div id="bar-chart" class="my-3"></div>
+                            </div>
+                        </div>
+                        <!-- ============================================================== -->
+                        <!-- ============================================================== -->
+
+                        <div class="modal bd-example-modal-sm fade" id="alertmodal" tabindex="-1" role="dialog"
+                            aria-labelledby="mySmallModalLabel" data-backdrop="static" data-keyboard="false"
+                            aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content" style="background-color : #3f3f3f">
+                                    <div class="modal-body">
+                                        <h5 style="color: #ffffff; font-weight:bold;">ประกาศ</h5>
+                                        <p class="alertText" style="color: white">กรุณาติดต่อเพื่อขอใช้บริการ</p>
+                                        <input class="btn btn-sm" type="button" value="ตกลง" data-dismiss="modal"
+                                            style="float: right; background-color: #0a72c1; color:white">
+                                        <div class="but"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- ============================================================== -->
+                        <!-- เสร็จ modal  -->
+                        <!-- ============================================================== -->
+                    </div>
+                    <br><br><br>
+                </div>
+                <!-- footer  -->
+                <!-- ============================================================== -->
+
+                <!-- <div class="" style="background-color:  rgb(50, 50, 51);  ">
+                    <div class="row ml-5 mr-5" style="background-color: rgb(50, 50, 51);">
+                        <div class="col-xs-12 col-sm-12 col-md-4 mt-5">
+                            <h3>
+                                <blockquote>
+                                    <img src="/img/itlogo.png">
+                                    <h4 style="color:azure;font-size:30px;">สำนักวิชาเทคโนโลยีสารสนเทศ</h4>
+                                    <div style="border: 0.5px solid red; width: 7cm;"></div>
+                                    <code style="color: azure;font-size: 20px;">มหาวิทยาลัยแม่ฟ้าหลวง</code>
+                                </blockquote>
+                            </h3>
+                        </div>
+                        <div class="col-xs-12 col-sm-6 col-md-4 mt-5">
+                            <div class="copyright">
+                                <h4 class="header-footer" style="color: azure;">ติดต่อ <br>
+                                    <div style="border: 1px solid red; width: 7cm;"></div>
+                                </h4>
+                                <p style="color: azure; font-size: 14px; font-weight: 200;">
+                                    สำนักวิชาเทคโนโลยีสารสนเทศ
+                                    <br>
+                                    มหาวิทยาลัยแม่ฟ้าหลวง
+                                    <br>
+                                    333 หมู่ 1 ตำบลท่าสุด อำเภอเมือง จังหวัดเชียงราย 57100
+                                    <br>
+                                    โทรศัพท์ 0 5391 6741-2
+                                    <br>
+                                    โทรสาร 0 5391 6743
+                                    <br>
+                                    อีเมล: itschool@mfu.ac.th
+                                </p>
+                                <p></p>
+                                <ul class="mfu-social">
+
+                                    <a href="https://www.facebook.com/itschool.mfu.page/" target="_blank"
+                                        class="facebook-icon mr-3">
+                                        <i class="fab fa-facebook">
+
+                                        </i>
+                                    </a>
+
+                                    <a href="https://www.youtube.com/channel/UCbvvlT0UyZHCYdPTXL7vHXQ/featured"
+                                        target="_blank" class="youtube-icon">
+                                        <i class="fab fa-youtube">
+
+                                        </i>
+                                    </a>
+                                </ul>
+                                <p></p>
+                            </div>
+                        </div>
+                        <div class="col-xs-12 col-sm-6 col-md-4 mt-5"><iframe
+                                src="https://www.facebook.com/plugins/page.php?href=https%3A%2F%2Fwww.facebook.com%2Fitschool.mfu.page%2F&amp;tabs=timeline&amp;width=340&amp;height=250&amp;small_header=true&amp;adapt_container_width=true&amp;hide_cover=false&amp;show_facepile=true&amp;appId"
+                                width="100%" height="300" style="border:none;overflow:hidden" scrolling="no"
+                                frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>
+                        </div>
+
+                    </div>
+                    <a class="scroll-to-top" style="display: none;">
+                        <i class="fa fa-long-arrow-up" aria-hidden="true"></i>
+                    </a>
+                    <script>
+                        window.dataLayer = window.dataLayer || [];
+                        function gtag() { dataLayer.push(arguments); }
+                        gtag('js', new Date());
+
+                        gtag('config', 'UA-148131712-1');
+                    </script>
+                    <script type="text/javascript" src="/assets/vendor/Export/jquery.table2excel.js"> </script>
+                    <script type="text/javascript" src="/assets/vendor/Export/jquery.table2excel.min.js"></script>
+
+                    <script type="text/javascript">
+                        $('#excelExport').click(function () {
+                            $('#myTable').table2excel({
+                                exclude: ".noExl",
+                                name: "ครุภัณฑ์",
+                                filename: "ครุภัณฑ์"
+                            })
+                        });
+
+                    </script>
+
+                    <script type="text/javascript"
+                        src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.22/pdfmake.min.js"></script>
+                    <script type="text/javascript"
+                        src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.min.js"></script>
+                    <script type="text/javascript">
+                        $("body").on("click", "#btn_export_PDF", function () {
+                            html2canvas($('#myTable')[0], {
+                                onrendered: function (canvas) {
+                                    var data = canvas.toDataURL();
+                                    var docDefinition = {
+                                        content: [{
+                                            image: data,
+                                            width: 500
+                                        }]
+                                    };
+                                    pdfMake.createPdf(docDefinition).download("ครุภัณฑ์.pdf");
+                                }
+                            });
+                        });
+                    </script>
+
+                </div> -->
+                <!-- ============================================================== -->
+                <!-- ======================== เสร็จ footer ========================= -->
+                <!-- ============================================================== -->
+            </div>
+        </div>
+</body>
+</html>
