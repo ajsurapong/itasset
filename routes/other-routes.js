@@ -2,6 +2,7 @@ const app = require("express").Router();
 const multer = require("multer");
 const mysql = require("mysql");
 const moment = require('moment');
+// const xlsx = require("xlsx");
 const readXlsxfile = require("read-excel-file/node")
 const pdfMake = require('pdfmake/build/pdfmake.js');
 const pdfFonts = require('pdfmake/build/vfs_fonts.js');
@@ -73,7 +74,7 @@ app.post("/uploading/:email", function (req, res) {
         }
         // Everything went fine.
         // console.log(email)
-        importExelData2MySQL(res, __dirname + '/upload/Exel/' + req.file.filename, email)
+        importExelData2MySQL(res, process.cwd() + '/upload/Exel/' + req.file.filename, email)
         // console.log(req.file.filename)
         // res.status(200).send("บันทึกสำเร็จ");
     })
@@ -163,7 +164,7 @@ app.post("/uploadif/:email", function (req, res) {
             return;
         }
         // Everything went fine.
-        importfromexel(res, __dirname + '/upload/' + req.file.filename, email)
+        importfromexel(res, process.cwd() + '/upload/' + req.file.filename, email)
 
     })
 });

@@ -4,7 +4,6 @@ const path = require("path");
 //Root Page
 app.get("/", (req, res) => {
     res.sendFile(path.join(__dirname, "index.html"));
-    // res.render("home.ejs", {user: req.user});
 });
 
 //Return manageUser page

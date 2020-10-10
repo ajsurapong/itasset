@@ -51,10 +51,10 @@
         }
     </style>
     <script>
-        var table
+        var table;
         var today = new Date();
         var yyyy = today.getFullYear() + 543;
-        var aYear
+        var aYear;
         $(document).ready(function () {
             //====================================== drop down location ======================================
             $.ajax({
@@ -85,8 +85,6 @@
                     }))
                 }
                 $('.สถานที่').hide()
-
-
             })
 
 
@@ -252,10 +250,7 @@
                         //get data failed
                         alert(xhr.responseText);
                     });
-
-
                 });
-
             }).fail(function (xhr, state, error) {
                 //get data failed
                 alert(xhr.responseText);
@@ -397,7 +392,7 @@
             <div class="col-xs-12 col-sm-12 col-md-4 mt-5">
                 <h3>
                     <blockquote>
-                        <img src="/img/itlogo.png">
+                        <img src="img/itlogo.png">
                         <h4 style="color:azure;font-size:30px;">สำนักวิชาเทคโนโลยีสารสนเทศ</h4>
                         <div style="border: 0.5px solid red; width: 7cm;"></div>
                         <code style="color: azure;font-size: 20px;">มหาวิทยาลัยแม่ฟ้าหลวง</code>
@@ -467,9 +462,6 @@
     <!-- ============================================================== -->
     </div>
     </div>
-
-
-
 </body>
 
 </html>
