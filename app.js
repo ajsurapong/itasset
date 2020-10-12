@@ -8,7 +8,7 @@ const body_parser = require("body-parser");
 
 // const helmet = require("helmet");        //FIXME: Cross-site scripting is used, cannot use helmet, fix later!
 
-const pageRoutes = require("./page-routes");
+const pageRoutes = require("./routes/page-routes");
 const otherRoutes = require("./routes/other-routes");
 const authRoutes = require("./routes/auth-routes");
 const profileRoutes = require("./routes/profile-routes");
@@ -43,7 +43,7 @@ app.use(passport.session());
 // app.use("/style.css", express.static(path.join(__dirname, 'style.css')));
 app.use("/upload", express.static(path.join(__dirname, 'upload')));
 // app.use("/assets", express.static(path.join(__dirname, 'assets')));
-app.use("/JS_Files", express.static(path.join(__dirname, 'JS_Files')));
+// app.use("/JS_Files", express.static(path.join(__dirname, 'JS_Files')));
 
 // =========== Services (authen) ===========
 // authen
