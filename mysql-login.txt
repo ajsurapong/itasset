@@ -1,0 +1,14 @@
+## Note that you can complete all processes below using phymyadmin
+
+We should create a new mySQL user and grant the privileges
+login as admin
+>mysql -u root -p
+
+create new user and grant all privilegs
+>CREATE USER newuser@localhost IDENTIFIED BY 'user-password';
+>grant all privileges on database.* to newuser@localhost;
+
+if you use nodejs mysql vs server' latest mysql, it causes authen problem
+see https://stackoverflow.com/questions/50093144/mysql-8-0-client-does-not-support-authentication-protocol-requested-by-server
+>ALTER USER newuser@localhost IDENTIFIED WITH mysql_native_password BY 'user-password';
+>FLUSH PRIVILEGES;

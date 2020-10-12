@@ -1,8 +1,11 @@
 *** Bug ***
+*** sql table name and field must be exactly matched (case-sensitive)
 *** Date should be server's date
 ** Delete users and then auto page reload says no user but refresh one more time works (seems to be misplaced getuser())
 *** Manage users, admin should not be able to delete or edit other admins
 * Manage users, edit admin should show tick at admin's checkbox
+[DONE] *** sql error, "/adminhistorytableEmailCommittee/infoshow"
+*** all file extensions must be small characters ex: images
 
 *** Minor fixes ***
 [DONE] -First file should be 'index.html'
@@ -14,6 +17,7 @@
 -code revision: no </html>, too much 'for'
 [DONE] -Remove footer in all pages
 -Do not mix JS and jQuery if not necessary
+-service API name is too long
 
 -QR code must include asset's name
 [DONE] -bypass login to a page, fix at profile-routes.js

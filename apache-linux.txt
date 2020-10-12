@@ -1,0 +1,28 @@
+https://tecadmin.net/apache-frontend-proxy-nodejs/
+https://medium.com/@sumitnair89/configure-apache-with-node-js-application-on-aws-ubuntu-18-04-server-for-different-http-ports-4e6838c7357f
+
+-Install apache2
+    >sudo apt install apache2
+
+-Config apache2 for proxy
+    >sudo a2enmod proxy proxy_http
+    >systemctl restart apache2
+
+-Create a new file by 'sudo nano /etc/apache2/sites-available/itasset.conf'
+<VirtualHost *:80>
+    DocumentRoot /home/asset/web
+	ProxyRequests off
+	ProxyPreserveHost On
+	ProxyPass /api http://localhost:3000
+	ProxyPassReverse /api http://localhost:3000
+	<Directory /home/asset/web>
+		Options Indexes FollowSymLinks Includes ExecCGI
+		AllowOverride All
+		Require all granted
+	</Directory>
+</VirtualHost>
+
+-activate the new config file and deactive the old default file
+    >sudo a2ensite itasset.conf
+    >sudo a2dissite 000-default.conf
+    >sudo systemctl reload apache2

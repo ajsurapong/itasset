@@ -267,10 +267,11 @@ app.put("/item/addImage", function (req, res) {
 app.get("/manageUser/showAllUsers/:Email_user", function (req, res) {
     const Email_user = req.params.Email_user;
     // const Year =  new Date().getFullYear();
-    const sql = "select Year,Email_user,Email_assigner,Role from Year_user WHERE Email_user = ? ORDER BY Year DESC"
+    const sql = "select Year,Email_user,Email_assigner,Role from year_user WHERE Email_user = ? ORDER BY Year DESC"
 
     con.query(sql, [Email_user], function (err, result, fields) {
         if (err) {
+            console.log(err);
             res.status(503).send("เซิร์ฟเวอร์ไม่ตอบสนอง");
         } else {
             if (result.length === 0) {
@@ -304,9 +305,10 @@ app.get("/adminhistorytableEmailCommittee/info/:year", function (req, res) {
 
 // // Load info of commitee
 app.get("/adminhistorytableEmailCommittee/infoshow", function (req, res) {
-    const sql = "SELECT DISTINCT Email_Committee FROM item WHERE Email_Committee IS NOT NULL ORDER BY Year DESC "
+    const sql = "SELECT DISTINCT Email_Committee, Year FROM item WHERE Email_Committee IS NOT NULL ORDER BY Year DESC";
     con.query(sql, function (err, result, fields) {
         if (err) {
+            console.log(err);
             res.status(503).send("เซิร์ฟเวอร์ไม่ตอบสนอง");
         } else {
             res.json(result)
@@ -431,7 +433,7 @@ app.get("/user/profile/inspectedItem/:Status/:Email_Committee", function (req, r
 });
 // Load Year
 app.get("/Year/user", function (req, res) {
-    const sql = "SELECT DISTINCT Year FROM Year_user ORDER BY Year DESC"
+    const sql = "SELECT DISTINCT Year FROM year_user ORDER BY Year DESC"
 
 
     con.query(sql, function (err, result, fields) {
@@ -500,7 +502,7 @@ app.put("/manageUser/updatename/:Name/:Email_user", function (req, res) {
     const Name = req.params.Name;
     const Email_user = req.params.Email_user;
 
-    const sql = "UPDATE Year_user SET Name = ? WHERE Email_user = ?;";
+    const sql = "UPDATE year_user SET Name = ? WHERE Email_user = ?;";
     con.query(sql, [Name, Email_user], function (err, result, fields) {
         if (err) {
             res.status(503).send("เซิร์ฟเวอร์ไม่ตอบสนอง");
@@ -514,7 +516,7 @@ app.put("/manageUser/updatename/:Name/:Email_user", function (req, res) {
 // Load email of user
 app.get("/user/index/info/emailUser/:Email_user", function (req, res) {
     const Email_user = req.params.Email_user;
-    const sql = "SELECT Email_user FROM `Year_user` WHERE Email_user=?;"
+    const sql = "SELECT Email_user FROM `year_user` WHERE Email_user=?;"
 
     con.query(sql, [Email_user], function (err, result, fields) {
         if (err) {
@@ -1088,7 +1090,7 @@ app.put("/item/edit", function (req, res) {
     const Status = req.body.Status;
     const Inventory_Number = req.body.Inventory_Number;
     const Email_user = req.body.Email_user;
-    const sql = "UPDATE item,Year_user SET item.Status=? where item.Inventory_Number=? AND Year_user.Email_user=?;"
+    const sql = "UPDATE item,year_user SET item.Status=? where item.Inventory_Number=? AND year_user.Email_user=?;"
     con.query(sql, [Status, Inventory_Number, Email_user], function (err, result, fields) {
         if (err) {
             res.status(503).send("เซิร์ฟเวอร์ไม่ตอบสนอง");
@@ -1103,7 +1105,7 @@ app.put("/item/edit", function (req, res) {
 app.delete("/manageUser/deleteAllUser/:Email", function (req, res) {
     const Email = req.params.Email;
 
-    const sql = "DELETE from Year_user WHERE Email_user = ? AND Year=?"
+    const sql = "DELETE from year_user WHERE Email_user = ? AND Year=?"
     con.query(sql, [Email, d], function (err, result, fields) {
         if (err) {
             console.log(err)
@@ -1131,7 +1133,7 @@ app.delete("/manageItem/deleteAllitem", function (req, res) {
 // Load info of all user of manage user page
 app.get("/manageUser/showAllUser/:Year", function (req, res) {
     const Year = req.params.Year;
-    const sql = "select Year,Email_user,Email_assigner,Role,Name from Year_user WHERE Year=? "
+    const sql = "select Year,Email_user,Email_assigner,Role,Name from year_user WHERE Year=? "
 
     con.query(sql, [Year], function (err, result, fields) {
         if (err) {
@@ -1145,10 +1147,11 @@ app.get("/manageUser/showAllUser/:Year", function (req, res) {
 // Load mane
 app.get("/manageUser/showAlladminname", function (req, res) {
     Email_assigner = req.params.Email_assigner;
-    const sql = "select * from Year_user WHERE Role = 1"
+    const sql = "select * from year_user WHERE Role = 1"
 
     con.query(sql, function (err, result, fields) {
         if (err) {
+            console.log(err);
             res.status(503).send("เซิร์ฟเวอร์ไม่ตอบสนอง");
         } else {
             res.json(result)
@@ -1164,7 +1167,7 @@ app.post("/manageUser/add/:Email_user/:Email_assigner/:Role", function (req, res
     const Email_assigner = req.params.Email_assigner;
     const Role = req.params.Role;
 
-    const sql = "INSERT INTO Year_user(Year,Email_user,Email_assigner,Role) VALUES (?,?,?,?)";
+    const sql = "INSERT INTO year_user(Year,Email_user,Email_assigner,Role) VALUES (?,?,?,?)";
     con.query(sql, [d, Email_user, Email_assigner, Role], function (err, result, fields) {
         if (err) {
             console.error(err.message);

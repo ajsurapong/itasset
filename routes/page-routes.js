@@ -11,7 +11,7 @@ router.get("/checkpage", function (req, res) {
     res.sendFile(path.join(__dirname, "../views/checkpage.html"))
 });
 router.get("/manageUser", function (req, res) {
-    res.sendFile(path.join(__dirname, "../views/manageUser.html"))
+    res.sendFile(path.join(__dirname, "../views/manageuser.html"))
 });
 
 router.get("/printqrcode", function (req, res) {
