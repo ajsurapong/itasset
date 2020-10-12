@@ -17,7 +17,12 @@
 Performance and Security
 -Remove all console.log/error
 -Separate scripts to external JS
--Change port to 8080 and database server
+-Change database server
+[In progress] -Set virtual host (reverse proxy) using Apache or Nginx
+[In progress] -Separate static files to be handled by reverse proxy, 
+    ex: use "/img/" instead of "img/"
+    "/img/" -> localhost/img
+    "img/" -> localhost/server_name/img
 -Cross-site scripting: try to remove it before using 'helmet'
 [DONE] change all secrete keys to node_env
 -set node to auto start

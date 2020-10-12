@@ -62,7 +62,7 @@
             //====================================== drop down year ======================================
             $.ajax({
                 method: "GET",
-                url: "/item/Year"
+                url: "/api/item/Year"
             }).done(function (data, state, xhr) {
 
                 if (data.length == 0) {
@@ -85,32 +85,32 @@
                 else {
                     $.ajax({
                         method: "GET",
-                        url: "/item/dashboard/number1/" + data[0].Year
+                        url: "/api/item/dashboard/number1/" + data[0].Year
                     }).done(function (dataSet, state, xhr) {
                         $("#all").html(dataSet[0].Numbers_of_item);
                     })
                     $.ajax({
                         method: "GET",
-                        url: "/item/dashboard/number2/0/" + data[0].Year
+                        url: "/api/item/dashboard/number2/0/" + data[0].Year
                     }).done(function (dataSet, state, xhr) {
                         $("#dis").html(dataSet[0].Numbers_of_item);
                     })
 
                     $.ajax({
                         method: "GET",
-                        url: "/item/dashboard/number2/1/" + data[0].Year
+                        url: "/api/item/dashboard/number2/1/" + data[0].Year
                     }).done(function (dataSet, state, xhr) {
                         $("#normal").html(dataSet[0].Numbers_of_item);
                     })
                     $.ajax({
                         method: "GET",
-                        url: "/item/dashboard/number2/2/" + data[0].Year
+                        url: "/api/item/dashboard/number2/2/" + data[0].Year
                     }).done(function (dataSet, state, xhr) {
                         $("#fix").html(dataSet[0].Numbers_of_item);
                     })
                     $.ajax({
                         method: "GET",
-                        url: "/year/iteem"
+                        url: "/api/year/iteem"
                     }).done(function (data, state, xhr) {
                         let nor = parseInt($("#normal").html());
                         let fix = parseInt($("#fix").html());
@@ -204,32 +204,32 @@
 
                         $.ajax({
                             method: "GET",
-                            url: "/item/dashboard/number1/" + selected
+                            url: "/api/item/dashboard/number1/" + selected
                         }).done(function (dataSet, state, xhr) {
                             $("#all").html(dataSet[0].Numbers_of_item);
                         })
                         $.ajax({
                             method: "GET",
-                            url: "/item/dashboard/number2/0/" + selected
+                            url: "/api/item/dashboard/number2/0/" + selected
                         }).done(function (dataSet, state, xhr) {
                             $("#dis").html(dataSet[0].Numbers_of_item);
                         })
 
                         $.ajax({
                             method: "GET",
-                            url: "/item/dashboard/number2/1/" + selected
+                            url: "/api/item/dashboard/number2/1/" + selected
                         }).done(function (dataSet, state, xhr) {
                             $("#normal").html(dataSet[0].Numbers_of_item);
                         })
                         $.ajax({
                             method: "GET",
-                            url: "/item/dashboard/number2/2/" + selected
+                            url: "/api/item/dashboard/number2/2/" + selected
                         }).done(function (dataSet, state, xhr) {
                             $("#fix").html(dataSet[0].Numbers_of_item);
                         })
                         $.ajax({
                             method: "GET",
-                            url: "/year/iteem"
+                            url: "/api/year/iteem"
                         }).done(function (data, state, xhr) {
                             let nor = parseInt($("#normal").html());
                             let fix = parseInt($("#fix").html());
@@ -253,7 +253,7 @@
 
                         $.ajax({
                             method: "GET",
-                            url: "/item/dashboard/showAllInfo4/" + selected
+                            url: "/api/item/dashboard/showAllInfo4/" + selected
                         }).done(function (dataSet, state, xhr) {
                             for (let i = 0; i < dataSet.length; i++) {
                                 if (dataSet[i].Status == 0) {
@@ -272,20 +272,20 @@
 
             $.ajax({
                 method: "GET",
-                url: "/profile/infouser"
+                url: "/api/profile/infouser"
             }).done(function (data, state, xhr) {
                 user = data.email
                 $("#user").html(data.name);
                 document.getElementById('pic').src = data.photo;
                 if (data.email === undefined) {
-                    window.location.replace("/checkpage")
+                    window.location.replace("/api/checkpage")
                 } else {
                     $.ajax({
                         method: "GET",
-                        url: "/manageUser/showAllUsers/" + data.email
+                        url: "/api/manageUser/showAllUsers/" + data.email
                     }).done(function (dataSet, state, xhr) {
                         if (dataSet[0] === undefined || dataSet[0].data === 0) {
-                            window.location.replace("/checkpage")
+                            window.location.replace("/api/checkpage")
                         }
                         if (dataSet[0].Role == 2) {
                             $("#DateManage").hide();
@@ -354,7 +354,7 @@
                         <h6 class="font-weight-bold atyear1" style="color: rgb(2, 121, 251);">ปี</h6>
                     </div>
                 </div> -->
-                <img src="img/logoit.JPG" style="height: 50px;">
+                <img src="/img/logoit.JPG" style="height: 50px;">
                 <h6 class="font-weight-bold ml-5" style="color: rgb(2, 121, 251);">ประจำปี</h6>
                 <h6 class="font-weight-bold atyear1 ml-2" style="color: rgb(2, 121, 251);">ปี</h6>
 
@@ -369,7 +369,7 @@
 
                     <li class="nav-item dropdown nav-user">
                         <a class="nav-link nav-user-img" href="#" id="navbarDropdownMenuLink2" data-toggle="dropdown"
-                            aria-haspopup="true" aria-expanded="false"><img id="pic" src="img/avatar-1.jpg"
+                            aria-haspopup="true" aria-expanded="false"><img id="pic" src="/img/avatar-1.jpg"
                                 alt="" class="user-avatar-md rounded-circle"></a>
                         <div class="dropdown-menu dropdown-menu-right nav-user-dropdown"
                             aria-labelledby="navbarDropdownMenuLink2">
@@ -377,7 +377,7 @@
                                 <h5 class="mb-0 text-white nav-user-name user" id="user">Ruttathorn </h5>
                                 <span class="status"></span><span class="ml-2" id="rol2"></span>
                             </div>
-                            <a class="dropdown-item" href="/auth/logout"><i
+                            <a class="dropdown-item" href="/api/auth/logout"><i
                                     class="fas fa-power-off mr-2"></i>ออกจากระบบ</a>
                         </div>
                     </li>
@@ -402,7 +402,7 @@
                         <ul class="navbar-nav flex-column">
 
                             <li class="nav-item ">
-                                <a class="nav-link" href="/mainpage" aria-expanded="false"><i
+                                <a class="nav-link" href="/api/mainpage" aria-expanded="false"><i
                                         class="fa fa-home"></i>หน้าหลัก
                                 </a>
                                 <div id="submenu-1" class="collapse submenu">
@@ -411,7 +411,7 @@
                                 </div>
                             </li>
                             <li class="nav-item ">
-                                <a class="nav-link" href="/adminhistory" aria-expanded="false" id="admin_history"><i
+                                <a class="nav-link" href="/api/adminhistory" aria-expanded="false" id="admin_history"><i
                                         class="fa fa-user"></i>ประวัติผู้ใช้งาน </a>
                                 <div id="submenu-1" class="collapse submenu">
                                     <ul class="nav flex-column">
@@ -419,7 +419,7 @@
                                 </div>
                             </li>
                             <li class="nav-item ">
-                                <a class="nav-link " href="/User_history" aria-expanded="false" id="userhistory"><i
+                                <a class="nav-link " href="/api/User_history" aria-expanded="false" id="userhistory"><i
                                         class="fa fa-user"></i>โปรไฟล์ </a>
                                 <div id="submenu-1" class="collapse submenu">
                                     <ul class="nav flex-column">
@@ -428,7 +428,7 @@
                             </li>
 
                             <li class="nav-item ">
-                                <a class="nav-link active" href="/dashboard" aria-expanded="false"><i
+                                <a class="nav-link active" href="/api/dashboard" aria-expanded="false"><i
                                         class="fa fa-dashboard"></i>แดชบอร์ด </a>
                                 <div id="submenu-1" class="collapse submenu">
                                     <ul class="nav flex-column">
@@ -437,7 +437,7 @@
                             </li>
 
                             <li class="nav-item ">
-                                <a class="nav-link" href="/asset" aria-expanded="false"><i
+                                <a class="nav-link" href="/api/asset" aria-expanded="false"><i
                                         class="fa fa-archive"></i>ครุภัณฑ์ </a>
                                 <div id="submenu-1" class="collapse submenu">
                                     <ul class="nav flex-column">
@@ -446,7 +446,7 @@
                             </li>
 
                             <li class="nav-item ">
-                                <a class="nav-link" href="/announce" aria-expanded="false" id="News_announce"><i
+                                <a class="nav-link" href="/api/announce" aria-expanded="false" id="News_announce"><i
                                         class="fa fa-bullhorn"></i>ข่าวประชาสัมพันธ์ </a>
                                 <div id="submenu-1" class="collapse submenu">
                                     <ul class="nav flex-column">
@@ -455,7 +455,7 @@
                             </li>
 
                             <li class="nav-item " id="manageu">
-                                <a class="nav-link " href="/manageUser" aria-expanded="false"><i
+                                <a class="nav-link " href="/api/manageUser" aria-expanded="false"><i
                                         class="fa fa-edit"></i>จัดการผู้ใช้
                                 </a>
                                 <div id="submenu-1" class="collapse submenu">
@@ -465,7 +465,7 @@
                             </li>
 
                             <li class="nav-item" id="DateManage">
-                                <a class="nav-link " href="/Date_manage" aria-expanded="false"><i
+                                <a class="nav-link " href="/api/Date_manage" aria-expanded="false"><i
                                         class="fa fa-clock"></i>จัดการเวลา
                                 </a>
                                 <div id="submenu-1" class="collapse submenu">
@@ -523,7 +523,7 @@
                                             <h1 id="all" class="" style="color: #000000;">0</h1>
                                         </div>
                                         <div class="col-auto">
-                                            <img class="fas fa-calendar fa-2x text-gray-300" src="img/all.PNG " alt=""
+                                            <img class="fas fa-calendar fa-2x text-gray-300" src="/img/all.PNG " alt=""
                                                 style="width:70%;">
                                         </div>
                                     </div>
@@ -539,7 +539,7 @@
                                             <h1 id="normal">0</h1>
                                         </div>
                                         <div class="col-auto">
-                                            <img class="fas fa-calendar fa-2x text-gray-300" src="img/normal.png" alt=""
+                                            <img class="fas fa-calendar fa-2x text-gray-300" src="/img/normal.png" alt=""
                                                 style="width:70%;">
                                         </div>
                                     </div>
@@ -555,7 +555,7 @@
                                             <h1 id="fix">0</h1>
                                         </div>
                                         <div class="col-auto">
-                                            <img class="fas fa-calendar fa-2x text-gray-300" src="img/fix.PNG " alt=""
+                                            <img class="fas fa-calendar fa-2x text-gray-300" src="/img/fix.PNG " alt=""
                                                 style="width:70%;">
                                         </div>
                                     </div>
@@ -575,7 +575,7 @@
                                         </div>
 
                                         <div class="col-auto">
-                                            <img class="fas fa-calendar fa-2x text-gray-300" src="img/dis.PNG" alt=""
+                                            <img class="fas fa-calendar fa-2x text-gray-300" src="/img/dis.PNG" alt=""
                                                 style="width:70%;">
                                         </div>
                                     </div>

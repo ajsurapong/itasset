@@ -61,7 +61,7 @@
 
             $.ajax({
                 method: "GET",
-                url: "/item/dashboard/showuser"
+                url: "/api/item/dashboard/showuser"
             }).done(function (data, state, xhr) {
                 let status = 0
                 for (let i = 0; i < data.length; i++) {
@@ -77,7 +77,7 @@
 
             $.ajax({
                 method: "GET",
-                url: "/profile/infouser"
+                url: "/api/profile/infouser"
             }).done(function (data, state, xhr) {
                 $("#user").html(data.name);
                 document.getElementById('pic').src = data.photo;
@@ -86,7 +86,7 @@
                 } else {
                     $.ajax({
                         method: "GET",
-                        url: "/manageUser/showAllUsers/" + data.email
+                        url: "/api/manageUser/showAllUsers/" + data.email
                     }).done(function (dataSet, state, xhr) {
                         if (dataSet[0] === undefined || dataSet[0].data === 0) {
                             window.location.replace("/checkpage")
@@ -137,7 +137,7 @@
 
             $.ajax({
                 method: "GET",
-                url: "/dateTime/showDateTime"
+                url: "/api/dateTime/showDateTime"
             }).done(function (data, state, xhr) {
                 console.log(data)
 
@@ -149,14 +149,14 @@
 
                     $.ajax({
                         method: "GET",
-                        url: "/datescan/user"
+                        url: "/api/datescan/user"
                     }).done(function (dataSet, state, xhr) {
                         if (dataSet != dataSet.length) {
                             dateBackCheck = dataSet[dataSet.length - 1].Date_Scan
                         }
                         $.ajax({
                             method: "GET",
-                            url: "/user/datescan"
+                            url: "/api/user/datescan"
                         }).done(function (datas, state, xhr) {
                             var date = 0
                             var event = []
@@ -164,7 +164,7 @@
 
                             $.ajax({
                                 method: "GET",
-                                url: "/numberitem"
+                                url: "/api/numberitem"
                             }).done(function (dataitem, state, xhr) {
 
                                 for (let i = 0; i < dataSet.length; i++) {
@@ -305,7 +305,7 @@
                 else {
                     $.ajax({
                         method: "PUT",
-                        url: "/dateTime/updateTime/" + date_start_update + "/" + date_end_update
+                        url: "/api/dateTime/updateTime/" + date_start_update + "/" + date_end_update
                     }).done(function (data, state, xhr) {
 
                         swal({
@@ -359,7 +359,7 @@
                 } else {
                     $.ajax({
                         method: "POST",
-                        url: "/dateTime/insertTime/" + date_start_add + "/" + date_end_add
+                        url: "/api/dateTime/insertTime/" + date_start_add + "/" + date_end_add
                     }).done(function (data, state, xhr) {
                         swal({
                             title: "<small>บันทึกสำเร็จ</small>",
@@ -410,7 +410,7 @@
                         <h6 class="font-weight-bold atyear1" style="color: rgb(2, 121, 251);">ปี</h6>
                     </div>
                 </div> -->
-                <img src="img/logoit.JPG" style="height: 50px;">
+                <img src="/img/logoit.JPG" style="height: 50px;">
                 <h6 class="font-weight-bold ml-5" style="color: rgb(2, 121, 251);">ประจำปี</h6>
                 <h6 class="font-weight-bold atyear1 ml-2" style="color: rgb(2, 121, 251);">ปี</h6>
 
@@ -428,7 +428,7 @@
 
                     <li class="nav-item dropdown nav-user">
                         <a class="nav-link nav-user-img" href="#" id="navbarDropdownMenuLink2" data-toggle="dropdown"
-                            aria-haspopup="true" aria-expanded="false"><img id="pic" src="img/avatar-1.jpg"
+                            aria-haspopup="true" aria-expanded="false"><img id="pic" src="/img/avatar-1.jpg"
                                 alt="" class="user-avatar-md rounded-circle"></a>
                         <div class="dropdown-menu dropdown-menu-right nav-user-dropdown"
                             aria-labelledby="navbarDropdownMenuLink2">
@@ -436,7 +436,7 @@
                                 <h5 class="mb-0 text-white nav-user-name user" id="user">Ruttathorn </h5>
                                 <span class="status"></span><span class="ml-2" id="rol2">กรรมการ</span>
                             </div>
-                            <a class="dropdown-item" href="/auth/logout"><i
+                            <a class="dropdown-item" href="/api/auth/logout"><i
                                     class="fas fa-power-off mr-2"></i>ออกจากระบบ</a>
                         </div>
                     </li>
@@ -462,7 +462,7 @@
                         <ul class="navbar-nav flex-column">
 
                             <li class="nav-item ">
-                                <a class="nav-link" href="/mainpage" aria-expanded="false"><i
+                                <a class="nav-link" href="/api/mainpage" aria-expanded="false"><i
                                         class="fa fa-home"></i>หน้าหลัก
                                 </a>
                                 <div id="submenu-1" class="collapse submenu">
@@ -472,7 +472,7 @@
                                 </div>
                             </li>
                             <li class="nav-item ">
-                                <a class="nav-link" href="/adminhistory" aria-expanded="false"><i
+                                <a class="nav-link" href="/api/adminhistory" aria-expanded="false"><i
                                         class="fa fa-user"></i>ประวัติผู้ใช้งาน </a>
                                 <div id="submenu-1" class="collapse submenu">
                                     <ul class="nav flex-column">
@@ -481,7 +481,7 @@
                                 </div>
                             </li>
                             <li class="nav-item ">
-                                <a class="nav-link " href="/User_history" aria-expanded="false" id="userhistory"><i
+                                <a class="nav-link " href="/api/User_history" aria-expanded="false" id="userhistory"><i
                                         class="fa fa-user"></i>โปรไฟล์ </a>
                                 <div id="submenu-1" class="collapse submenu">
                                     <ul class="nav flex-column">
@@ -491,7 +491,7 @@
                             </li>
 
                             <li class="nav-item ">
-                                <a class="nav-link" href="/dashboard" aria-expanded="false"><i
+                                <a class="nav-link" href="/api/dashboard" aria-expanded="false"><i
                                         class="fa fa-dashboard"></i>แดชบอร์ด </a>
                                 <div id="submenu-1" class="collapse submenu">
                                     <ul class="nav flex-column">
@@ -501,7 +501,7 @@
                             </li>
 
                             <li class="nav-item ">
-                                <a class="nav-link" href="/asset" aria-expanded="false"><i
+                                <a class="nav-link" href="/api/asset" aria-expanded="false"><i
                                         class="fa fa-archive"></i>ครุภัณฑ์ </a>
                                 <div id="submenu-1" class="collapse submenu">
                                     <ul class="nav flex-column">
@@ -512,7 +512,7 @@
 
 
                             <li class="nav-item ">
-                                <a class="nav-link" href="/announce" aria-expanded="false"><i
+                                <a class="nav-link" href="/api/announce" aria-expanded="false"><i
                                         class="fa fa-bullhorn"></i>ข่าวประชาสัมพันธ์ </a>
                                 <div id="submenu-1" class="collapse submenu">
                                     <ul class="nav flex-column">
@@ -523,7 +523,7 @@
 
 
                             <li class="nav-item " id="manageu">
-                                <a class="nav-link " href="/manageUser" aria-expanded="false"><i
+                                <a class="nav-link " href="/api/manageUser" aria-expanded="false"><i
                                         class="fa fa-edit"></i>จัดการผู้ใช้
                                 </a>
                                 <div id="submenu-1" class="collapse submenu">
@@ -534,7 +534,7 @@
                             </li>
 
                             <li class="nav-item ">
-                                <a class="nav-link active" href="/Date_manage" aria-expanded="false"><i
+                                <a class="nav-link active" href="/api/Date_manage" aria-expanded="false"><i
                                         class="fa fa-clock"></i>จัดการเวลา
                                 </a>
                                 <div id="submenu-1" class="collapse submenu">

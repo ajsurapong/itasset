@@ -123,7 +123,7 @@
 
                     $.ajax({
                         method: "GET",
-                        url: "/item/dashboard/showuser" //ดึง status ex: [{"Status":0}]
+                        url: "/api/item/dashboard/showuser" //ดึง status ex: [{"Status":0}]
                     }).done(function (data, state, xhr) {
 
                         if (data.length > 1) {
@@ -143,7 +143,7 @@
                         } else {
                             $.ajax({
                                 method: "GET",
-                                url: "/item/dashboard/showuser"
+                                url: "/api/item/dashboard/showuser"
                             }).done(function (dataSet, state, xhr) {
                                 if (dataSet.length != 0) {
 
@@ -166,7 +166,7 @@
 
                                                     $.ajax({
                                                         method: "POST",
-                                                        url: "/uploading/" + user,
+                                                        url: "/api/uploading/" + user,
                                                         data: formData,
                                                         contentType: false,     //tell jQuery not to add a Content-Type header for us
                                                         processData: false,      //tell jQuery not to convert the formData object to a string
@@ -243,7 +243,7 @@
 
                                                 $.ajax({
                                                     method: "POST",
-                                                    url: "/uploading/" + user,
+                                                    url: "/api/uploading/" + user,
                                                     data: formData,
                                                     contentType: false,     //tell jQuery not to add a Content-Type header for us
                                                     processData: false,      //tell jQuery not to convert the formData object to a string
@@ -317,7 +317,7 @@
             // //====================================== drop down year ======================================
             $.ajax({
                 method: "GET",
-                url: "/item/Year"
+                url: "/api/item/Year"
             }).done(function (data, state, xhr) {
                 if (data.length == 0) {
                     getItem();
@@ -367,7 +367,7 @@
                         $("#Room").children().remove().end().append('<option selected id="hideroom" value="ห้อง">ห้อง</option>');
                         $.ajax({
                             method: "GET",
-                            url: "/item/dashboard/showAllInfo4/" + selected
+                            url: "/api/item/dashboard/showAllInfo4/" + selected
                         }).done(function (dataSet, state, xhr) {
                             getItem()
 
@@ -381,7 +381,7 @@
 
 
             $("#all").click(function () {
-                window.location.replace("/information");
+                window.location.replace("/api/information");
             });
 
             //======================= เปลี่ยน font PDF ========================
@@ -498,7 +498,7 @@
                 if (rows_selected.length != 0) {
                     $.ajax({
                         method: "put",
-                        url: "/item/take/" + SelectedYear,
+                        url: "/api/item/take/" + SelectedYear,
                         data: { records: arr, Status: takephoto },
                         success: function (response) {
 
@@ -546,7 +546,7 @@
                 if (rows_selected.length != 0) {
                     $.ajax({
                         method: "put",
-                        url: "/item/take/" + SelectedYear,
+                        url: "/api/item/take/" + SelectedYear,
                         data: { records: arr, Status: NoTakePhoto },
                         success: function (response) {
                             swal({
@@ -589,20 +589,20 @@
 
             $.ajax({
                 method: "GET",
-                url: "/profile/infouser"
+                url: "/api/profile/infouser"
             }).done(function (data, state, xhr) {
                 user = data.email
                 $("#user").html(data.name);
                 document.getElementById('pic').src = data.photo;
                 if (data.email === undefined) {
-                    window.location.replace("/checkpage")
+                    window.location.replace("/api/checkpage")
                 } else {
                     $.ajax({
                         method: "GET",
-                        url: "/manageUser/showAllUsers/" + data.email
+                        url: "/api/manageUser/showAllUsers/" + data.email
                     }).done(function (dataSet, state, xhr) {
                         if (dataSet[0] === undefined || dataSet[0].data === 0) {
-                            window.location.replace("/checkpage")
+                            window.location.replace("/api/checkpage")
                         }
                         if (dataSet[0].Role == 2) {
                             $("#DateManage").hide();
@@ -649,7 +649,7 @@
                 // console.log(table.length)
                 $.ajax({
                     method: "GET",
-                    url: "/item5/" + inven + '/' + SelectedYear
+                    url: "/api/item5/" + inven + '/' + SelectedYear
                 }).done(function (dataSet, state, xhr) {
                     // console.log(dataSet[0].Inventory_Number)
                     if (dataSet[0].Image === null) {
@@ -681,7 +681,7 @@
 
             $.ajax({
                 method: "GET",
-                url: "/item/dashboard/showAllInfo4/" + SelectedYear
+                url: "/api/item/dashboard/showAllInfo4/" + SelectedYear
             }).done(function (dataSet, state, xhr) {
                 // console.log(dataSet.length)
 
@@ -808,7 +808,7 @@
                 // ========== Drop Down Location ===============
                 $.ajax({
                     method: "GET",
-                    url: "/item/Location/" + SelectedYear
+                    url: "/api/item/Location/" + SelectedYear
                 }).done(function (data, state, xhr) {
 
                     for (let i = data.length - 1; i >= 0; i--) {
@@ -838,7 +838,7 @@
 
                         $.ajax({
                             method: "GET",
-                            url: "/item/dashboard/showAllInfoall/" + selected + "/" + SelectedYear
+                            url: "/api/item/dashboard/showAllInfoall/" + selected + "/" + SelectedYear
                         }).done(function (dataSet, state, xhr) {
                             for (let i = 0; i < dataSet.length; i++) {
                                 if (dataSet[i].Status == 0) {
@@ -880,7 +880,7 @@
                 // ========== Drop Down Room ===============
                 $.ajax({
                     method: "GET",
-                    url: "/item/Room/" + SelectedYear
+                    url: "/api/item/Room/" + SelectedYear
                 }).done(function (data, state, xhr) {
                     // console.log(data)
 
@@ -912,7 +912,7 @@
 
                         $.ajax({
                             method: "GET",
-                            url: "/item/dashboard/showAllInfo/" + selected + "/" + SelectedYear
+                            url: "/api/item/dashboard/showAllInfo/" + selected + "/" + SelectedYear
                         }).done(function (dataSet, state, xhr) {
                             for (let i = 0; i < dataSet.length; i++) {
                                 if (dataSet[i].Status == 0) {
@@ -954,7 +954,7 @@
                 // ========== Drop Down Status ======================
                 $.ajax({
                     method: "GET",
-                    url: "/item/Status/" + SelectedYear
+                    url: "/api/item/Status/" + SelectedYear
                 }).done(function (data, state, xhr) {
                     for (let i = data.length - 1; i >= 0; i--) {
                         if (data[i].Status == 0) {
@@ -985,7 +985,7 @@
 
                         $.ajax({
                             method: "GET",
-                            url: "/item/dashboard/showAllInfostatus/" + num + "/" + SelectedYear
+                            url: "/api/item/dashboard/showAllInfostatus/" + num + "/" + SelectedYear
                         }).done(function (datastatus, state, xhr) {
 
                             for (let i = 0; i < datastatus.length; i++) {
@@ -1033,7 +1033,7 @@
 
                 $.ajax({
                     method: "GET",
-                    url: "/item/Email_Committee/" + SelectedYear
+                    url: "/api/item/Email_Committee/" + SelectedYear
                 }).done(function (data, state, xhr) {
 
                     for (let i = data.length - 1; i >= 0; i--) {
@@ -1052,7 +1052,7 @@
 
                         $.ajax({
                             method: "GET",
-                            url: "/item/dashboard/showAllInfo3/" + selected + '/' + SelectedYear
+                            url: "/api/item/dashboard/showAllInfo3/" + selected + '/' + SelectedYear
                         }).done(function (dataSet, state, xhr) {
                             for (let i = 0; i < dataSet.length; i++) {
                                 if (dataSet[i].Status == 0) {
@@ -1117,7 +1117,7 @@
                         <h6 class="font-weight-bold atyear1" style="color: rgb(2, 121, 251);">ปี</h6>
                     </div>
                 </div> -->
-                <img src="img/logoit.JPG" style="height: 50px;">
+                <img src="/img/logoit.JPG" style="height: 50px;">
                 <h6 class="font-weight-bold ml-5" style="color: rgb(2, 121, 251);">ประจำปี</h6>
                 <h6 class="font-weight-bold atyear1 ml-2" style="color: rgb(2, 121, 251);">ปี</h6>
 
@@ -1135,7 +1135,7 @@
 
                     <li class="nav-item dropdown nav-user">
                         <a class="nav-link nav-user-img" href="#" id="navbarDropdownMenuLink2" data-toggle="dropdown"
-                            aria-haspopup="true" aria-expanded="false"><img id="pic" src="img/avatar-1.jpg"
+                            aria-haspopup="true" aria-expanded="false"><img id="pic" src="/img/avatar-1.jpg"
                                 alt="" class="user-avatar-md rounded-circle"></a>
                         <div class="dropdown-menu dropdown-menu-right nav-user-dropdown"
                             aria-labelledby="navbarDropdownMenuLink2">
@@ -1143,7 +1143,7 @@
                                 <h5 class="mb-0 text-white nav-user-name user" id="user">Ruttathorn </h5>
                                 <span class="status"></span><span class="ml-2" id="rol2"></span>
                             </div>
-                            <a class="dropdown-item" href="/auth/logout"><i
+                            <a class="dropdown-item" href="/api/auth/logout"><i
                                     class="fas fa-power-off mr-2"></i>ออกจากระบบ</a>
                         </div>
                     </li>
@@ -1169,7 +1169,7 @@
                         <ul class="navbar-nav flex-column">
 
                             <li class="nav-item ">
-                                <a class="nav-link" href="/mainpage" aria-expanded="false"><i
+                                <a class="nav-link" href="/api/mainpage" aria-expanded="false"><i
                                         class="fa fa-home"></i>หน้าหลัก
                                 </a>
                                 <div id="submenu-1" class="collapse submenu">
@@ -1179,7 +1179,7 @@
                                 </div>
                             </li>
                             <li class="nav-item ">
-                                <a class="nav-link" href="/adminhistory" aria-expanded="false" id="admin_history"><i
+                                <a class="nav-link" href="/api/adminhistory" aria-expanded="false" id="admin_history"><i
                                         class="fa fa-user"></i>ประวัติผู้ใช้งาน </a>
                                 <div id="submenu-1" class="collapse submenu">
                                     <ul class="nav flex-column">
@@ -1188,7 +1188,7 @@
                                 </div>
                             </li>
                             <li class="nav-item ">
-                                <a class="nav-link " href="/User_history" aria-expanded="false" id="userhistory"><i
+                                <a class="nav-link " href="/api/User_history" aria-expanded="false" id="userhistory"><i
                                         class="fa fa-user"></i>โปรไฟล์ </a>
                                 <div id="submenu-1" class="collapse submenu">
                                     <ul class="nav flex-column">
@@ -1198,7 +1198,7 @@
                             </li>
 
                             <li class="nav-item ">
-                                <a class="nav-link" href="/dashboard" aria-expanded="false"><i
+                                <a class="nav-link" href="/api/dashboard" aria-expanded="false"><i
                                         class="fa fa-dashboard"></i>แดชบอร์ด </a>
                                 <div id="submenu-1" class="collapse submenu">
                                     <ul class="nav flex-column">
@@ -1208,7 +1208,7 @@
                             </li>
 
                             <li class="nav-item ">
-                                <a class="nav-link active" href="/asset" aria-expanded="false"><i
+                                <a class="nav-link active" href="/api/asset" aria-expanded="false"><i
                                         class="fa fa-archive"></i>ครุภัณฑ์ </a>
                                 <div id="submenu-1" class="collapse submenu">
                                     <ul class="nav flex-column">
@@ -1218,7 +1218,7 @@
                             </li>
 
                             <li class="nav-item ">
-                                <a class="nav-link" href="/announce" aria-expanded="false" id="News_announce"><i
+                                <a class="nav-link" href="/api/announce" aria-expanded="false" id="News_announce"><i
                                         class="fa fa-bullhorn"></i>ข่าวประชาสัมพันธ์ </a>
                                 <div id="submenu-1" class="collapse submenu">
                                     <ul class="nav flex-column">
@@ -1228,7 +1228,7 @@
                             </li>
 
                             <li class="nav-item " id="manageu">
-                                <a class="nav-link " href="/manageUser" aria-expanded="false"><i
+                                <a class="nav-link " href="/api/manageUser" aria-expanded="false"><i
                                         class="fa fa-edit"></i>จัดการผู้ใช้
                                 </a>
                                 <div id="submenu-1" class="collapse submenu">
@@ -1239,7 +1239,7 @@
                             </li>
 
                             <li class="nav-item" id="DateManage">
-                                <a class="nav-link " href="/Date_manage" aria-expanded="false"><i
+                                <a class="nav-link " href="/api/Date_manage" aria-expanded="false"><i
                                         class="fa fa-clock"></i>จัดการเวลา
                                 </a>
                                 <div id="submenu-1" class="collapse submenu">
@@ -1504,7 +1504,7 @@
                         </div>
                         <div class="row mb-3">
                             <div class="col-md-5 mt-5 ml-3">
-                                <img class="card-img-top mx-auto " id="picmodal" src="img/Pixels.png" alt="Card image">
+                                <img class="card-img-top mx-auto " id="picmodal" src="/img/Pixels.png" alt="Card image">
                             </div>
                             <div class="col-md-6 ">
 

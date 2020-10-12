@@ -38,7 +38,7 @@ app.use(passport.initialize());
 // session
 app.use(passport.session());
 
-app.use("/img", express.static(path.join(__dirname, 'img')));
+// app.use("/img", express.static(path.join(__dirname, 'img')));
 // app.use("/img1", express.static(path.join(__dirname, '../mobile/assets/img')));
 // app.use("/style.css", express.static(path.join(__dirname, 'style.css')));
 app.use("/upload", express.static(path.join(__dirname, 'upload')));
@@ -48,6 +48,7 @@ app.use("/JS_Files", express.static(path.join(__dirname, 'JS_Files')));
 // =========== Services (authen) ===========
 // authen
 app.use("/auth", authRoutes);
+
 // profle
 app.use("/profile", profileRoutes);
 // =========== Services (Page loading) ===========

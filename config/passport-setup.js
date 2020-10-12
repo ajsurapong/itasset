@@ -16,7 +16,7 @@ passport.use(
     new GoogleStrategy(
         {   clientID: key.google.client,
             clientSecret: key.google.secret,
-            callbackURL: "/auth/google/redirect"},
+            callbackURL: "/api/auth/google/redirect"},
         (accessToken, refreshToken, profile, done) => {
             // console.log(profile.displayName);
             // console.log(profile.emails[0].value);
