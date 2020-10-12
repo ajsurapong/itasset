@@ -1,20 +1,19 @@
 const router = require("express").Router();
 
-const authCheck = (req,res,next) => {
-//    if not yet login
-    if(!req.user){
+const authCheck = (req, res, next) => {
+    //    if not yet login
+    if (!req.user) {
         // res.redirect("/auth/login");
-        res.redirect("/");
-    }else{
+        res.redirect("/api");
+    } else {
         next();
     }
 };
 
-
 router.use(authCheck);
 router.get("/infouser", function (req, res) {
-            //console.log(req.user);
-            res.send(req.user);
+    //console.log(req.user);
+    res.send(req.user);
 });
 
 module.exports = router;

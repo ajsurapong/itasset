@@ -18,9 +18,9 @@
     <script src="https://cdn.datatables.net/responsive/2.2.3/js/dataTables.responsive.min.js"></script>
     <script src="https://cdn.datatables.net/responsive/2.2.3/js/responsive.bootstrap4.min.js"></script>
     <!-- <link rel="stylesheet" href="assets/vendor/bootstrap/css/bootstrap.min.css"> -->
-    <link href="assets/vendor/fonts/circular-std/style.css" rel="stylesheet">
-    <link rel="stylesheet" href="assets/libs/css/style.css">
-    <link rel="stylesheet" href="assets/vendor/fonts/fontawesome/css/fontawesome-all.css">
+    <link href="/assets/vendor/fonts/circular-std/style.css" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/libs/css/style.css">
+    <link rel="stylesheet" href="/assets/vendor/fonts/fontawesome/css/fontawesome-all.css">
     <!-- <link rel="stylesheet" href="assets/vendor/vector-map/jqvmap.css">
     <link href="assets/vendor/jvectormap/jquery-jvectormap-2.0.2.css" rel="stylesheet">
     <link rel="stylesheet" href="assets/vendor/charts/chartist-bundle/chartist.css">
@@ -62,6 +62,7 @@
                     }
                 ],
             });
+
             $.ajax({
                 method: "GET",
                 url: "/api/year/user"
@@ -140,7 +141,6 @@
                         confirmButtonText: "ตกลง",
                         closeOnConfirm: true,
                     })
-
                 } else {
                     $(".btn-sm").hide();
                     $(".but").append('<input class="btn btn-sm" type="button" value = "ตกลง" onclick = "location.reload()" style="float: right; background-color: #0a72c1; color:white">')
@@ -333,7 +333,7 @@
                             }
                         }
                         $("#rol2").html(dataSet[0].Role)
-
+                        getuser();
                     }).fail(function (xhr, state, error) {
                         //get data failed
                         $(".alertText").html(xhr.responseText)
@@ -430,7 +430,6 @@
                         url: "/api/user/profile/inspectedItem/Total/Number1/" + Email_user
                     }).done(function (dataSet, state, xhr) {
                         if (dataSet[0].Numbers_of_Inspected_Item == 0) {
-
                             $("#modaledit").modal('toggle');
                         } else {
                             $(".btn-sm").hide();
@@ -446,13 +445,12 @@
                             })
                         }
                     }).fail(function (xhr, state, error) {
-                        alert("reere")
+                        alert(xhr);
                     });
-
                 }).fail(function (xhr, state, error) {
+                    alert(xhr);
                 });
-            });
-            getuser()
+            });            
         });
 
         function getuser() {

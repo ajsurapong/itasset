@@ -1,3 +1,10 @@
+*** Bug ***
+*** Date should be server's date
+** Delete users and then auto page reload says no user but refresh one more time works (seems to be misplaced getuser())
+*** Manage users, admin should not be able to delete or edit other admins
+* Manage users, edit admin should show tick at admin's checkbox
+
+*** Minor fixes ***
 [DONE] -First file should be 'index.html'
 [DONE] -Is bcrypt required?
 -DO NOT use non-english filename
@@ -5,16 +12,16 @@
 -Remove unnecessary CSS and JS files
 -Remove unnecessary services
 -code revision: no </html>, too much 'for'
-[DONE] -Remove footer in all pages except the landing pages
--Manage users, admin should not be able to delete or edit admin
--Delete users bug
+[DONE] -Remove footer in all pages
+-Do not mix JS and jQuery if not necessary
+
 -QR code must include asset's name
 [DONE] -bypass login to a page, fix at profile-routes.js
 [DONE] -404 page not found
 -wrong login code is not well managed
 -dropdown filter shows 'null' or repeated values when there is only one status
 
-Performance and Security
+*** Performance and Security ***
 -Remove all console.log/error
 -Separate scripts to external JS
 -Change database server
