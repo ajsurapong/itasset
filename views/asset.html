@@ -113,10 +113,8 @@
                     })
                 }
                 else {
-
                     const formData = new FormData(this);
                     var today = new Date();
-
 
                     $.ajax({
                         method: "GET",
@@ -124,7 +122,6 @@
                     }).done(function (data, state, xhr) {
 
                         if (data.length > 1) {
-
                             swal({
                                 title: "ไม่สามารถนำเข้าไฟล์เพิ่มเติม",
                                 text: "เนื่องจากปีนี้ได้ทำการตรวจนับแล้ว",
@@ -143,7 +140,6 @@
                                 url: "/api/item/dashboard/showuser"
                             }).done(function (dataSet, state, xhr) {
                                 if (dataSet.length != 0) {
-
                                     swal({
                                         title: "ปีนี้ได้มีการนำเข้าไฟล์แล้ว",
                                         text: "ถ้านำเข้าซ้ำ จะทำการล้างข้อมูลเก่าทั้งหมด",
@@ -160,7 +156,6 @@
                                         function (isConfirm) {
                                             setTimeout(function () {
                                                 if (isConfirm) {
-
                                                     $.ajax({
                                                         method: "POST",
                                                         url: "/api/uploading/" + user,
@@ -200,25 +195,17 @@
                                                                     window.location.reload()
                                                                 });
                                                             }
-
-
                                                         },
                                                         error: function (xhr, state, err) {
                                                             $(".btn-sm").hide();
                                                             $(".but").append('<input class="btn btn-sm" type="button" value = "ตกลง" onclick = "location.reload()" style="float: right; background-color: #0a72c1; color:white">')
                                                             $(".alertText").html(xhr.responseText)
                                                             $("#alertmodal").modal();
-
                                                         }
                                                     });
-
-
                                                 }
                                             }, 2000);
-
                                         });
-
-
                                 }
                                 else {
                                     swal({
@@ -277,8 +264,6 @@
                                                                 window.location.reload()
                                                             });
                                                         }
-
-
                                                     },
                                                     error: function (xhr, state, err) {
                                                         $(".btn-sm").hide();

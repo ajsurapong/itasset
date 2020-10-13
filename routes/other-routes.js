@@ -100,7 +100,7 @@ function importExelData2MySQL(res, filePath, email) {
                     // res.send("delete")
                     con.query(sql, [rows], function (err, result, fields) {
                         if (err) {
-                            // console.log('มีข้อมูลนี้แล้วในระบบ');
+                            console.log(err);
                             res.send("มีข้อมูลนี้แล้วในระบบ")
                         }
                         else {

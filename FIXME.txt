@@ -1,4 +1,7 @@
 *** Bug ***
+*** DB fields/ some fields must set to nullable coz real data columns are missing
+*** DB fields are too small for imported data ex: date in excel contains also time
+*** Cannot upload same xlsx file if older file exists, even it is not during checking period
 [DONE] *** sql table name and field must be exactly matched (case-sensitive)
 *** Date should be server's date
 [DONE] ** Delete users and then auto page reload says no user but refresh one more time works (seems to be misplaced getuser())

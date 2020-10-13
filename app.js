@@ -60,7 +60,7 @@ app.use("/mobile", mobileRoutes);
 
 // 500 error
 app.use(function (err, req, res, next) {
-    // console.error(err.stack);
+    console.error(err.stack);
     res.status(500).send('มีความผิดพลาดจากเครื่องแม่ข่าย กรุณารอและทดสอบใหม่อีกครั้ง');
   })
   

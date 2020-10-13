@@ -153,10 +153,10 @@ router.post('/uploadNoImage', function (req, res) {
 })
 
 router.put('/keepusername', function (req, res) {
-    let { email } = req.body;
-    let { name } = req.body;
+    const currentYear = new Date().getFullYear() + 543;
+    const { email, name } = req.body;
     let sql = 'UPDATE year_user SET Name = ? where Email_user = ? AND Year = ?';
-    con.query(sql, [name,email,d], function (err, result) {
+    con.query(sql, [name,email, currentYear], function (err, result) {
         if (err) {
             console.log(err);
         }
