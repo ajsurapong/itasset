@@ -12,6 +12,7 @@ const pageRoutes = require("./routes/page-routes");
 const otherRoutes = require("./routes/other-routes");
 const authRoutes = require("./routes/auth-routes");
 const profileRoutes = require("./routes/profile-routes");
+const mobileRoutes = require("./routes/mobile-routes");
 
 require("./config/passport-setup");
 const passport = require("passport");
@@ -48,13 +49,14 @@ app.use("/upload", express.static(path.join(__dirname, 'upload')));
 // =========== Services (authen) ===========
 // authen
 app.use("/auth", authRoutes);
-
-// profle
+// profile
 app.use("/profile", profileRoutes);
 // =========== Services (Page loading) ===========
 app.use(pageRoutes);
 // =========== Services (Others) ===========
 app.use(otherRoutes);
+// =========== Services (Mobile) ===========
+app.use("/mobile", mobileRoutes);
 
 // 500 error
 app.use(function (err, req, res, next) {

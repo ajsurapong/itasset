@@ -1,16 +1,18 @@
 *** Bug ***
-*** sql table name and field must be exactly matched (case-sensitive)
+[DONE] *** sql table name and field must be exactly matched (case-sensitive)
 *** Date should be server's date
-** Delete users and then auto page reload says no user but refresh one more time works (seems to be misplaced getuser())
+[DONE] ** Delete users and then auto page reload says no user but refresh one more time works (seems to be misplaced getuser())
 *** Manage users, admin should not be able to delete or edit other admins
 * Manage users, edit admin should show tick at admin's checkbox
 [DONE] *** sql error, "/adminhistorytableEmailCommittee/infoshow"
-*** all file extensions must be small characters ex: images
+[DONE] *** all file extensions must be small characters ex: images
+* Sometimes 'User_history' has no select dropdown for 'year'
 
 *** Minor fixes ***
+-Left menubar, instead of hide, should set display:none and show if necessary
 [DONE] -First file should be 'index.html'
 [DONE] -Is bcrypt required?
--DO NOT use non-english filename
+[DONE] -DO NOT use non-english filename
 -Some alert texts do not match pages
 -Remove unnecessary CSS and JS files
 -Remove unnecessary services
@@ -21,21 +23,20 @@
 
 -QR code must include asset's name
 [DONE] -bypass login to a page, fix at profile-routes.js
-[DONE] -404 page not found
+[TEMP] -404 and 500 pages
 -wrong login code is not well managed
 -dropdown filter shows 'null' or repeated values when there is only one status
 
 *** Performance and Security ***
--Remove all console.log/error
+-Remove all console.log for non-error ex: testing
 -Separate scripts to external JS
--Change database server
-[In progress] -Set virtual host (reverse proxy) using Apache or Nginx
-[In progress] -Separate static files to be handled by reverse proxy, 
+[DONE] -Set virtual host (reverse proxy) using Apache or Nginx
+[DONE] -Separate static files to be handled by reverse proxy, 
     ex: use "/img/" instead of "img/"
     "/img/" -> localhost/img
     "img/" -> localhost/server_name/img
 -Cross-site scripting: try to remove it before using 'helmet'
-[DONE] change all secrete keys to node_env
--set node to auto start
+[DONE] -change all secrete keys to node_env
+[DONE] -set node to auto start using pm2
 -http://expressjs.com/en/advanced/best-practice-performance.html
 -mySQL pooling

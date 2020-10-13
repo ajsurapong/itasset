@@ -1,15 +1,14 @@
-const app = require("express").Router();
+const router = require("express").Router();
 const multer = require("multer");
 const mysql = require("mysql");
-const moment = require('moment');
 // const xlsx = require("xlsx");
 const readXlsxfile = require("read-excel-file/node")
 const pdfMake = require('pdfmake/build/pdfmake.js');
 const pdfFonts = require('pdfmake/build/vfs_fonts.js');
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 const config = require("../config/dbConfig.js");
-
 const con = mysql.createConnection(config);
+
 const d = new Date().getFullYear() + 543;
 
 //=========Put to use==========
@@ -24,47 +23,13 @@ const storageOption = multer.diskStorage({
     }
 });
 
-// Upload image
-const storageOptionpic = multer.diskStorage({
-    destination: function (req, file, cb) {
-        cb(null, './upload/Image')
-    },
-    filename: function (req, file, cb) {
-        cb(null, file.originalname)
-    }
-});
-var uploadpic = multer({ storage: storageOptionpic }).single("photo");
 const upload = multer({ storage: storageOption }).single("filetoupload");
 
 // =========== Services ===========
-app.post('/api/uploadWithImage', function (req, res, next) {
-    uploadpic(req, res, err => {
-        if (err) {
-            res.status(500);
-        } else {
-            let data = JSON.parse(req.body.data)
-            let path_image = req.file.originalname;
-            // console.log(path_image)
-            let product_editDate = data.product_editorDate;
-            let user_editor = data.user_editor;
-            let product_statusID = data.product_statusID;
-            let product_code = data.product_code;
-            let sql = 'UPDATE item SET item.Image = ? , item.Date_scan = ? , item.Email_Committee = ?, item.Status = ? WHERE item.Inventory_Number = ? AND item.Year = (YEAR(CURDATE()))+543';
-            con.query(sql, [path_image, product_editDate, user_editor, product_statusID, product_code], function (err, result) {
-                if (err) {
-                    res.status(404).end();
-                }
-                else {
-                    res.status(200).end();
-                }
-            })
-        }
-    })
-})
 
 //================== Services (functions) ===================
 // ============= Upload ==============
-app.post("/uploading/:email", function (req, res) {
+router.post("/uploading/:email", function (req, res) {
     const email = req.params.email
     upload(req, res, function (err) {
         if (err) {
@@ -155,7 +120,7 @@ function importExelData2MySQL(res, filePath, email) {
 }
 
 // ============= Upload if already upload ==============
-app.post("/uploadif/:email", function (req, res) {
+router.post("/uploadif/:email", function (req, res) {
     const email = req.params.email
     upload(req, res, function (err) {
         if (err) {
@@ -213,7 +178,7 @@ function importfromexel(res, filePath, email) {
 
 
 // บังคับถ่ายรูป
-app.put("/item/take/:year", function (req, res) {
+router.put("/item/take/:year", function (req, res) {
     const year = req.params.year;
     const Status = req.body.Status;
     const records = req.body.records;
@@ -249,7 +214,7 @@ app.put("/item/take/:year", function (req, res) {
 
 
 // Add image to an item
-app.put("/item/addImage", function (req, res) {
+router.put("/item/addImage", function (req, res) {
     const image = req.body.image;
     const Inventory_Number = req.body.Inventory_Number;
     const sql = "UPDATE item SET Image=? where Inventory_Number=?;"
@@ -264,7 +229,7 @@ app.put("/item/addImage", function (req, res) {
 });
 
 // Load info of all user 
-app.get("/manageUser/showAllUsers/:Email_user", function (req, res) {
+router.get("/manageUser/showAllUsers/:Email_user", function (req, res) {
     const Email_user = req.params.Email_user;
     // const Year =  new Date().getFullYear();
     const sql = "select Year,Email_user,Email_assigner,Role from year_user WHERE Email_user = ? ORDER BY Year DESC"
@@ -290,7 +255,7 @@ app.get("/manageUser/showAllUsers/:Email_user", function (req, res) {
 
 
 // // Load info of commitee
-app.get("/adminhistorytableEmailCommittee/info/:year", function (req, res) {
+router.get("/adminhistorytableEmailCommittee/info/:year", function (req, res) {
     const Year = req.params.year;
     const sql = "SELECT DISTINCT Email_Committee FROM item WHERE Year = ? AND Email_Committee IS NOT NULL "
     con.query(sql, [Year], function (err, result, fields) {
@@ -304,7 +269,7 @@ app.get("/adminhistorytableEmailCommittee/info/:year", function (req, res) {
 });
 
 // // Load info of commitee
-app.get("/adminhistorytableEmailCommittee/infoshow", function (req, res) {
+router.get("/adminhistorytableEmailCommittee/infoshow", function (req, res) {
     const sql = "SELECT DISTINCT Email_Committee, Year FROM item WHERE Email_Committee IS NOT NULL ORDER BY Year DESC";
     con.query(sql, function (err, result, fields) {
         if (err) {
@@ -318,7 +283,7 @@ app.get("/adminhistorytableEmailCommittee/infoshow", function (req, res) {
 });
 
 // // Load info of Year that scaned
-app.get("/adminhistorytableEmailCommittee/year", function (req, res) {
+router.get("/adminhistorytableEmailCommittee/year", function (req, res) {
     const sql = "SELECT DISTINCT Year FROM item WHERE Email_Committee IS NOT NULL ORDER BY Year"
     con.query(sql, function (err, result, fields) {
         if (err) {
@@ -341,7 +306,7 @@ app.get("/adminhistorytableEmailCommittee/year", function (req, res) {
 });
 
 //Load info of adminhistory page
-app.get("/adminhistorytable/info/:EmailCommittee/:year", function (req, res) {
+router.get("/adminhistorytable/info/:EmailCommittee/:year", function (req, res) {
     const Email_Committee = req.params.EmailCommittee;
     const year = req.params.year;
     const sql = "SELECT COUNT(Inventory_Number) AS num FROM item WHERE Email_Committee = ? and Year = ?"
@@ -361,7 +326,7 @@ app.get("/adminhistorytable/info/:EmailCommittee/:year", function (req, res) {
 
 
 // // Load info of name commitee
-app.get("/EmailCommitteename/info/:Email_name", function (req, res) {
+router.get("/EmailCommitteename/info/:Email_name", function (req, res) {
     const Email_user = req.params.Email_name;
     const sql = "SELECT Name FROM year_user WHERE Email_user = ?"
     con.query(sql, [Email_user], function (err, result, fields) {
@@ -376,7 +341,7 @@ app.get("/EmailCommitteename/info/:Email_name", function (req, res) {
 
 
 // Load inspected total item numbers by a user
-app.get("/user/profile/inspectedItem/Total/Number1/:Email_Committee", function (req, res) {
+router.get("/user/profile/inspectedItem/Total/Number1/:Email_Committee", function (req, res) {
     const Email_Committee = req.params.Email_Committee;
     const sql = "SELECT count(Status) AS 'Numbers_of_Inspected_Item' FROM item WHERE Email_Committee=? AND Year =?;"
 
@@ -390,7 +355,7 @@ app.get("/user/profile/inspectedItem/Total/Number1/:Email_Committee", function (
 });
 
 // Loadnumber people scan in that day
-app.get("/user/datescan", function (req, res) {
+router.get("/user/datescan", function (req, res) {
     const Year = new Date().getFullYear();
     const sql = "SELECT Date_Scan FROM item WHERE Year = ? AND Date_Scan IS NOT NULL ;"
 
@@ -404,7 +369,7 @@ app.get("/user/datescan", function (req, res) {
 });
 
 // Load inspected total item numbers by a user
-app.get("/user/profile/inspectedItem/Total/Number/:Email_Committee", function (req, res) {
+router.get("/user/profile/inspectedItem/Total/Number/:Email_Committee", function (req, res) {
     const Email_Committee = req.params.Email_Committee;
     const sql = "SELECT count(Status) AS 'Numbers_of_Inspected_Item' FROM item WHERE Email_Committee=?;"
 
@@ -418,7 +383,7 @@ app.get("/user/profile/inspectedItem/Total/Number/:Email_Committee", function (r
 });
 
 // Load inspected item numbers of status by user
-app.get("/user/profile/inspectedItem/:Status/:Email_Committee", function (req, res) {
+router.get("/user/profile/inspectedItem/:Status/:Email_Committee", function (req, res) {
     const Email_Committee = req.params.Email_Committee;
     const Status = req.params.Status;
     const sql = "SELECT count(Status) AS 'Numbers_of_Inspected_Item' FROM item WHERE Status=? AND Email_Committee=?;"
@@ -432,7 +397,7 @@ app.get("/user/profile/inspectedItem/:Status/:Email_Committee", function (req, r
     })
 });
 // Load Year
-app.get("/Year/user", function (req, res) {
+router.get("/Year/user", function (req, res) {
     const sql = "SELECT DISTINCT Year FROM year_user ORDER BY Year DESC"
 
 
@@ -446,7 +411,7 @@ app.get("/Year/user", function (req, res) {
 });
 
 // Load date scan
-app.get("/datescan/user", function (req, res) {
+router.get("/datescan/user", function (req, res) {
     const Year = new Date().getFullYear();
     const sql = "SELECT DISTINCT Date_Scan FROM item where Year = ? AND Date_scan IS NOT NULL ORDER BY Date_scan "
     con.query(sql, [d], function (err, result, fields) {
@@ -459,7 +424,7 @@ app.get("/datescan/user", function (req, res) {
 });
 
 // Load Year
-app.get("/Year/iteem", function (req, res) {
+router.get("/Year/iteem", function (req, res) {
     const sql = "SELECT DISTINCT Year FROM item ORDER BY Year "
 
 
@@ -478,7 +443,7 @@ app.get("/Year/iteem", function (req, res) {
 
 
 // Add info of new user in manage user page
-app.put("/manageUser/update/:Email_user/:Email_assigner/:Role/:Email_useru", function (req, res) {
+router.put("/manageUser/update/:Email_user/:Email_assigner/:Role/:Email_useru", function (req, res) {
 
     const Email_user = req.params.Email_user;
     const Email_assigner = req.params.Email_assigner;
@@ -498,7 +463,7 @@ app.put("/manageUser/update/:Email_user/:Email_assigner/:Role/:Email_useru", fun
 });
 
 // add name to database
-app.put("/manageUser/updatename/:Name/:Email_user", function (req, res) {
+router.put("/manageUser/updatename/:Name/:Email_user", function (req, res) {
     const Name = req.params.Name;
     const Email_user = req.params.Email_user;
 
@@ -514,7 +479,7 @@ app.put("/manageUser/updatename/:Name/:Email_user", function (req, res) {
 });
 
 // Load email of user
-app.get("/user/index/info/emailUser/:Email_user", function (req, res) {
+router.get("/user/index/info/emailUser/:Email_user", function (req, res) {
     const Email_user = req.params.Email_user;
     const sql = "SELECT Email_user FROM `year_user` WHERE Email_user=?;"
 
@@ -528,7 +493,7 @@ app.get("/user/index/info/emailUser/:Email_user", function (req, res) {
 });
 
 // Load inspected item by the user
-app.get("/user/profile/inspectedInfoItem/:Email_Committee", function (req, res) {
+router.get("/user/profile/inspectedInfoItem/:Email_Committee", function (req, res) {
     const Email_Committee = req.params.Email_Committee;
     const sql = "select Image,Inventory_Number,Received_date,Date_scan,Model,Date_Scan,Department,Date_Upload,Status,Email_Committee from item where Email_Committee=?;"
 
@@ -542,7 +507,7 @@ app.get("/user/profile/inspectedInfoItem/:Email_Committee", function (req, res) 
 });
 
 // Load all item info
-app.get("/item/dashboard/showAllInfo", function (req, res) {
+router.get("/item/dashboard/showAllInfo", function (req, res) {
     const sql = "select * from item"
 
     con.query(sql, function (err, result, fields) {
@@ -555,7 +520,7 @@ app.get("/item/dashboard/showAllInfo", function (req, res) {
 });
 
 // Load all item for import
-app.get("/item/dashboard/showuser", function (req, res) {
+router.get("/item/dashboard/showuser", function (req, res) {
 
 
     const sql = "select DISTINCT Status from item WHERE Year = ?;"
@@ -571,7 +536,7 @@ app.get("/item/dashboard/showuser", function (req, res) {
 
 // Load all item info with location
 
-app.get("/item/dashboard/showAllInfo/:location/:email/:year", function (req, res) {
+router.get("/item/dashboard/showAllInfo/:location/:email/:year", function (req, res) {
     const location = req.params.location;
     const email = req.params.email;
     const year = req.params.year;
@@ -589,7 +554,7 @@ app.get("/item/dashboard/showAllInfo/:location/:email/:year", function (req, res
 
 // Load all item info with location
 
-app.get("/item/dashboard/showAllInfoall/:location/:year", function (req, res) {
+router.get("/item/dashboard/showAllInfoall/:location/:year", function (req, res) {
     const location = req.params.location;
     const year = req.params.year;
     const sql = "select * FROM item WHERE Location = ? AND Year = ?"
@@ -606,7 +571,7 @@ app.get("/item/dashboard/showAllInfoall/:location/:year", function (req, res) {
 
 // Load all item info with location
 
-app.get("/item/dashboard/showAllInfoall/:location/:year", function (req, res) {
+router.get("/item/dashboard/showAllInfoall/:location/:year", function (req, res) {
     const location = req.params.location;
     const year = req.params.year;
     const sql = "select * FROM item WHERE Location = ? AND Year = ?"
@@ -622,7 +587,7 @@ app.get("/item/dashboard/showAllInfoall/:location/:year", function (req, res) {
 });
 
 // Load all item info with location with normal status
-app.get("/item/dashboard/showAllInfonormal/:location/:Year", function (req, res) {
+router.get("/item/dashboard/showAllInfonormal/:location/:Year", function (req, res) {
     const location = req.params.location;
     const Year= req.params.Year
     const sql = "select * FROM item WHERE Location = ? AND Status = 1 AND Year = ?"
@@ -637,7 +602,7 @@ app.get("/item/dashboard/showAllInfonormal/:location/:Year", function (req, res)
 });
 
 // Load item numbers
-app.get("/item/dashboard/number/:status", function (req, res) {
+router.get("/item/dashboard/number/:status", function (req, res) {
     const sql = "SELECT count(Status) AS 'Numbers_of_item' FROM item WHERE Status=?;"
     const Year = new Date().getFullYear();
     const status = req.params.status;
@@ -652,7 +617,7 @@ app.get("/item/dashboard/number/:status", function (req, res) {
 
 // Load all item info with location
 
-app.get("/item/dashboard/showAllInfo/:Room/:year", function (req, res) {
+router.get("/item/dashboard/showAllInfo/:Room/:year", function (req, res) {
     const Room = req.params.Room;
     const year = req.params.year;
     const sql = "select * FROM item WHERE Room = ? AND Year = ?"
@@ -669,7 +634,7 @@ app.get("/item/dashboard/showAllInfo/:Room/:year", function (req, res) {
 });
 
 // Load item numbers
-app.get("/item/dashboard/number", function (req, res) {
+router.get("/item/dashboard/number", function (req, res) {
     const sql = "SELECT count(Status) AS 'Numbers_of_item' FROM item ;"
     con.query(sql, [d], function (err, result, fields) {
         if (err) {
@@ -681,7 +646,7 @@ app.get("/item/dashboard/number", function (req, res) {
 });
 
 // Load item numbers 
-app.get("/item/dashboard/number2/:status/:Year", function (req, res) {
+router.get("/item/dashboard/number2/:status/:Year", function (req, res) {
     const sql = "SELECT count(Status) AS 'Numbers_of_item' FROM item WHERE Status=? AND Year = ?;"
     const Year = req.params.Year;
     const email = req.params.email;
@@ -696,7 +661,7 @@ app.get("/item/dashboard/number2/:status/:Year", function (req, res) {
 });
 
 // Load item numbers with Year
-app.get("/item/dashboard/number2user/:status/:Year/:email", function (req, res) {
+router.get("/item/dashboard/number2user/:status/:Year/:email", function (req, res) {
     const sql = "SELECT count(Status) AS 'Numbers_of_item' FROM item WHERE Status=? AND Year = ? AND Email_Committee = ?;"
     const Year = req.params.Year;
     const email = req.params.email;
@@ -711,7 +676,7 @@ app.get("/item/dashboard/number2user/:status/:Year/:email", function (req, res) 
 });
 
 // Load item numbers Year
-app.get("/item/dashboard/number1/:Year", function (req, res) {
+router.get("/item/dashboard/number1/:Year", function (req, res) {
     const sql = "SELECT count(Status) AS 'Numbers_of_item' FROM item WHERE Year = ?;"
     const Year = req.params.Year;
     con.query(sql, [Year], function (err, result, fields) {
@@ -725,7 +690,7 @@ app.get("/item/dashboard/number1/:Year", function (req, res) {
 
 
 // Load item numbers Year
-app.get("/item/dashboard/number1all/:Year/:email", function (req, res) {
+router.get("/item/dashboard/number1all/:Year/:email", function (req, res) {
     const sql = "SELECT count(Status) AS 'Numbers_of_item' FROM item WHERE Year = ? AND Email_Committee = ?;"
     const Year = req.params.Year;
     const email = req.params.email;
@@ -740,7 +705,7 @@ app.get("/item/dashboard/number1all/:Year/:email", function (req, res) {
 
 
 // // Load location
-app.get("/item/Location/:year", function (req, res) {
+router.get("/item/Location/:year", function (req, res) {
     const year = req.params.year
     const sql = "SELECT DISTINCT Location FROM item where Year = ?"
 
@@ -755,7 +720,7 @@ app.get("/item/Location/:year", function (req, res) {
 });
 
 // // Load Room
-app.get("/item/Room/:year", function (req, res) {
+router.get("/item/Room/:year", function (req, res) {
     const year = req.params.year
     const sql = "SELECT DISTINCT Room FROM item where Year = ?"
 
@@ -769,7 +734,7 @@ app.get("/item/Room/:year", function (req, res) {
 });
 
 // // Load location
-app.get("/item/location/:email/:year", function (req, res) {
+router.get("/item/location/:email/:year", function (req, res) {
     const email = req.params.email;
     const year = req.params.year;
     const sql = "SELECT DISTINCT Location FROM item WHERE Email_Committee = ? AND Year = ?;"
@@ -785,7 +750,7 @@ app.get("/item/location/:email/:year", function (req, res) {
 });
 
 // // Load location
-app.get("/item/Locationnormal", function (req, res) {
+router.get("/item/Locationnormal", function (req, res) {
     const sql = "SELECT DISTINCT Location FROM item WHERE Status = 1 AND Year = ?"
     con.query(sql, [d], function (err, result, fields) {
         if (err) {
@@ -808,7 +773,7 @@ app.get("/item/Locationnormal", function (req, res) {
 });
 
 // // Load Status
-app.get("/item/Status/:year", function (req, res) {
+router.get("/item/Status/:year", function (req, res) {
     const year = req.params.year
     const sql = "SELECT DISTINCT Status FROM item where year=?"
 
@@ -823,7 +788,7 @@ app.get("/item/Status/:year", function (req, res) {
 });
 
 // // Load Status
-app.get("/item/Status/:email/:year", function (req, res) {
+router.get("/item/Status/:email/:year", function (req, res) {
     const email = req.params.email;
     const year = req.params.year;
     const sql = "SELECT DISTINCT Status FROM item WHERE Email_Committee = ? AND Year =?"
@@ -841,7 +806,7 @@ app.get("/item/Status/:email/:year", function (req, res) {
 
 
 
-app.get("/item/dashboard/showAllInfo1/:status/:email/:year", function (req, res) {
+router.get("/item/dashboard/showAllInfo1/:status/:email/:year", function (req, res) {
     const status = req.params.status;
     const email = req.params.email;
     const year = req.params.year;
@@ -860,7 +825,7 @@ app.get("/item/dashboard/showAllInfo1/:status/:email/:year", function (req, res)
 
 // Load all item info with Status no email
 
-app.get("/item/dashboard/showAllInfostatus/:status/:year", function (req, res) {
+router.get("/item/dashboard/showAllInfostatus/:status/:year", function (req, res) {
     const status = req.params.status;
     const year = req.params.year;
     const sql = "select * from item WHERE Status = ? AND Year =?"
@@ -877,7 +842,7 @@ app.get("/item/dashboard/showAllInfostatus/:status/:year", function (req, res) {
 
 
 // // Load Year
-app.get("/item/Year", function (req, res) {
+router.get("/item/Year", function (req, res) {
     const sql = "SELECT DISTINCT Year FROM item ORDER BY Year DESC"
 
 
@@ -892,7 +857,7 @@ app.get("/item/Year", function (req, res) {
 
 
 // // Load Year
-app.get("/item/Yearuser/:email", function (req, res) {
+router.get("/item/Yearuser/:email", function (req, res) {
     const email = req.params.email;
     const sql = "SELECT DISTINCT Year FROM item WHERE Email_Committee=? ORDER BY Year DESC"
 
@@ -907,7 +872,7 @@ app.get("/item/Yearuser/:email", function (req, res) {
 
 
 // Load all item info with Year
-app.get("/item/dashboard/showAllInfo4/:Year", function (req, res) {
+router.get("/item/dashboard/showAllInfo4/:Year", function (req, res) {
     const Year = req.params.Year;
     const sql = "select * from item WHERE Year = ?"
 
@@ -922,7 +887,7 @@ app.get("/item/dashboard/showAllInfo4/:Year", function (req, res) {
 
 
 // Load all item info with Year email
-app.get("/item/showAllInfoall/:Year/:email", function (req, res) {
+router.get("/item/showAllInfoall/:Year/:email", function (req, res) {
     // /item/dashboard/number1all/
     const Year = req.params.Year;
     const email = req.params.email;
@@ -944,7 +909,7 @@ app.get("/item/showAllInfoall/:Year/:email", function (req, res) {
 
 
 // // Load commitee
-app.get("/item/Email_Committee/:year", function (req, res) {
+router.get("/item/Email_Committee/:year", function (req, res) {
     const year = req.params.year;
     const sql = "SELECT DISTINCT Email_Committee FROM item where Email_Committee is NOT NULL and Year = ? ORDER BY Email_Committee"
 
@@ -958,7 +923,7 @@ app.get("/item/Email_Committee/:year", function (req, res) {
 });
 
 // Load all item info with commitee
-app.get("/item/dashboard/showAllInfo3/:Email_Committee/:Year", function (req, res) {
+router.get("/item/dashboard/showAllInfo3/:Email_Committee/:Year", function (req, res) {
     const thecommittee = req.params.Email_Committee;
     const committee_year = req.params.Year;
     const sql = "select * from item WHERE Email_Committee  = ? and Year = ?"
@@ -974,7 +939,7 @@ app.get("/item/dashboard/showAllInfo3/:Email_Committee/:Year", function (req, re
 
 
 // Load item info
-app.get("/item/:status", function (req, res) {
+router.get("/item/:status", function (req, res) {
     const sql = "select Image,Inventory_Number,Model,Serial,Location,Received_date,Original_value,Department,Vendor_name,Date_Upload,Date_scan,Email_Committee,Status from item where Status=? AND Year =?"
     const Year = new Date().getFullYear();
     const status = req.params.status;
@@ -988,7 +953,7 @@ app.get("/item/:status", function (req, res) {
 });
 // UPDATE item,Year_user SET item.Status=? where item.Inventory_Number=? AND Year_user.Email_user=?
 // For print barcode or QR code of item
-app.get("/item/forPrintQRcode_Barcode/:Email_Committee", function (req, res) {
+router.get("/item/forPrintQRcode_Barcode/:Email_Committee", function (req, res) {
     const sql = "select Inventory_Number, Asset_Description, Received_date, Department, Year,Status, Image from item where Year=? and Email_Committee=?;"
     const Year = new Date().getFullYear();
     const Email_Committee = req.params.Email_Committee;
@@ -1002,7 +967,7 @@ app.get("/item/forPrintQRcode_Barcode/:Email_Committee", function (req, res) {
 });
 
 // Load some info of item of landing1
-app.get("/landing1/showSomeInfo", function (req, res) {
+router.get("/landing1/showSomeInfo", function (req, res) {
     const sql = "select Inventory_Number,Asset_description,Received_date,Department,Image from item"
 
     con.query(sql, function (err, result, fields) {
@@ -1015,7 +980,7 @@ app.get("/landing1/showSomeInfo", function (req, res) {
 });
 
 // Load all info of item of landing1
-app.get("/landing1/showAllInfo", function (req, res) {
+router.get("/landing1/showAllInfo", function (req, res) {
     const sql = "select Inventory_Number,Status,Model,Location,Original_value,Email_Committee,Cost_center,Serial,Date_Upload,Asset_description,Received_date,Department,Image from item"
 
     con.query(sql, function (err, result, fields) {
@@ -1028,7 +993,7 @@ app.get("/landing1/showAllInfo", function (req, res) {
 });
 
 // Load some info of item of landing2
-app.get("/landing2/showSomeInfo", function (req, res) {
+router.get("/landing2/showSomeInfo", function (req, res) {
     const sql = "select Inventory_Number,Status,Model,Cost_center,Received_date,Department,Image from item"
 
     con.query(sql, function (err, result, fields) {
@@ -1041,7 +1006,7 @@ app.get("/landing2/showSomeInfo", function (req, res) {
 });
 
 // Load item number all in database
-app.get("/item/numberAll", function (req, res) {
+router.get("/item/numberAll", function (req, res) {
     const Year = new Date().getFullYear();
     const sql = "SELECT count(Status) AS 'Numbers_of_Inspected_Item' FROM item WHERE Year = ?"
     con.query(sql, [d], function (err, result, fields) {
@@ -1054,7 +1019,7 @@ app.get("/item/numberAll", function (req, res) {
 });
 
 // Load date and time of job
-app.get("/dateTime/showDateTime", function (req, res) {
+router.get("/dateTime/showDateTime", function (req, res) {
     const sql = "select * from date_check where Years = ?"
 
     con.query(sql, [d], function (err, result, fields) {
@@ -1072,7 +1037,7 @@ app.get("/dateTime/showDateTime", function (req, res) {
 });
 
 // Load info of main datatable page
-app.get("/maindataTable/info/:status/:Year", function (req, res) {
+router.get("/maindataTable/info/:status/:Year", function (req, res) {
     const sql = "select Image,Asset_Description,Inventory_Number,Model,Serial,Location,Received_date,Original_value,Cost_center,Room,Department,Vendor_name,Date_Upload,Date_scan,Email_Committee,Status,Date_Scan from item where Status=? and  Year=?"
     const Year = req.params.Year;
     const status = req.params.status;
@@ -1086,7 +1051,7 @@ app.get("/maindataTable/info/:status/:Year", function (req, res) {
 });
 
 // Edit status of item
-app.put("/item/edit", function (req, res) {
+router.put("/item/edit", function (req, res) {
     const Status = req.body.Status;
     const Inventory_Number = req.body.Inventory_Number;
     const Email_user = req.body.Email_user;
@@ -1102,7 +1067,7 @@ app.put("/item/edit", function (req, res) {
 });
 
 // delete user 
-app.delete("/manageUser/deleteAllUser/:Email", function (req, res) {
+router.delete("/manageUser/deleteAllUser/:Email", function (req, res) {
     const Email = req.params.Email;
 
     const sql = "DELETE from year_user WHERE Email_user = ? AND Year=?"
@@ -1117,7 +1082,7 @@ app.delete("/manageUser/deleteAllUser/:Email", function (req, res) {
 });
 
 // delete item
-app.delete("/manageItem/deleteAllitem", function (req, res) {
+router.delete("/manageItem/deleteAllitem", function (req, res) {
 
     const Year = new Date().getFullYear();
     const sql2 = "DELETE from item WHERE Year=?"
@@ -1131,7 +1096,7 @@ app.delete("/manageItem/deleteAllitem", function (req, res) {
 });
 
 // Load info of all user of manage user page
-app.get("/manageUser/showAllUser/:Year", function (req, res) {
+router.get("/manageUser/showAllUser/:Year", function (req, res) {
     const Year = req.params.Year;
     const sql = "select Year,Email_user,Email_assigner,Role,Name from year_user WHERE Year=? "
 
@@ -1145,7 +1110,7 @@ app.get("/manageUser/showAllUser/:Year", function (req, res) {
 });
 
 // Load mane
-app.get("/manageUser/showAlladminname", function (req, res) {
+router.get("/manageUser/showAlladminname", function (req, res) {
     Email_assigner = req.params.Email_assigner;
     const sql = "select * from year_user WHERE Role = 1"
 
@@ -1161,7 +1126,7 @@ app.get("/manageUser/showAlladminname", function (req, res) {
 });
 
 // Add info of new user in manage user page
-app.post("/manageUser/add/:Email_user/:Email_assigner/:Role", function (req, res) {
+router.post("/manageUser/add/:Email_user/:Email_assigner/:Role", function (req, res) {
     const Year = new Date().getFullYear();
     const Email_user = req.params.Email_user;
     const Email_assigner = req.params.Email_assigner;
@@ -1188,7 +1153,7 @@ app.post("/manageUser/add/:Email_user/:Email_assigner/:Role", function (req, res
 });
 
 // Load item info landing 2
-app.get("/con/:Inventory_Number/:Year", function (req, res) {
+router.get("/con/:Inventory_Number/:Year", function (req, res) {
     const sql = "SELECT Image,Inventory_Number,Model,Serial,Location,Received_date,Asset_Description,Room,Original_value,Cost_center,Department,Vendor_name,Date_Upload,Date_scan,Email_Committee,Status,Date_Scan FROM `item` WHERE `Inventory_Number` =? AND Year =?"
     const Year = req.params.Year;
     const Inventory_Number = req.params.Inventory_Number;
@@ -1202,7 +1167,7 @@ app.get("/con/:Inventory_Number/:Year", function (req, res) {
 });
 
 // Load item info landing 2
-app.get("/item5/:Inventory_Number/:Year", function (req, res) {
+router.get("/item5/:Inventory_Number/:Year", function (req, res) {
     const sql = "SELECT Image,Inventory_Number,Model,Serial,Location,Received_date,Asset_Description,Room,Original_value,Cost_center,Department,Vendor_name,Date_Upload,Date_scan,Email_Committee,Status,Date_Scan FROM `item` WHERE `Inventory_Number` =? AND Year =?"
     const Year = req.params.Year;
     const Inventory_Number = req.params.Inventory_Number;
@@ -1215,7 +1180,7 @@ app.get("/item5/:Inventory_Number/:Year", function (req, res) {
     })
 });
 
-app.get("/numberitem", function (req, res) {
+router.get("/numberitem", function (req, res) {
     const Year = new Date().getFullYear();
     const sql = "SELECT count(Inventory_Number) AS numofitem FROM item WHERE Year = ?"
     con.query(sql, [d], function (err, result, fields) {
@@ -1229,7 +1194,7 @@ app.get("/numberitem", function (req, res) {
 });
 
 // Insert Work Time
-app.post("/dateTime/insertTime/:Date_start/:Date_end", function (req, res) {
+router.post("/dateTime/insertTime/:Date_start/:Date_end", function (req, res) {
     // ฟิค Years ไว้ใน database ทำให้ไม่สามารถใส่ปีซ้ำได้
     const Date_start = req.params.Date_start;
     const Date_end = req.params.Date_end;
@@ -1256,7 +1221,7 @@ app.post("/dateTime/insertTime/:Date_start/:Date_end", function (req, res) {
 });
 
 // Update date
-app.put("/dateTime/updateTime/:Date_start/:Date_end", function (req, res) {
+router.put("/dateTime/updateTime/:Date_start/:Date_end", function (req, res) {
 
     const Date_start = req.params.Date_start;
     const Date_end = req.params.Date_end;
@@ -1272,7 +1237,7 @@ app.put("/dateTime/updateTime/:Date_start/:Date_end", function (req, res) {
 });
 
 // Load announement
-app.get("/Loadannounce", function (req, res) {
+router.get("/Loadannounce", function (req, res) {
     // const Year = new Date().getFullYear();
     const sql = "SELECT * FROM `announcement` ORDER BY `Number`  DESC"
     con.query(sql, function (err, result, fields) {
@@ -1286,7 +1251,7 @@ app.get("/Loadannounce", function (req, res) {
 });
 
 // upload photo announce
-app.post("/UploadingPhoto", function (req, res) {
+router.post("/UploadingPhoto", function (req, res) {
 
     upload(req, res, function (err) {
         if (err) {
@@ -1304,7 +1269,7 @@ app.post("/UploadingPhoto", function (req, res) {
 });
 
 //upload annonce
-app.post("/AddAnnounce/:EmailOwner", function (req, res) {
+router.post("/AddAnnounce/:EmailOwner", function (req, res) {
     const EmailOwner = req.params.EmailOwner
     const { Head, Detail, DateEndCreate, Status } = req.body
     const sql = "INSERT INTO `announcement` ( `Head`, `Detail`,`DateEndCreate` ,`Status`, `Email_announcer`) VALUES (?, ?, ?, ?,?);"
@@ -1320,7 +1285,7 @@ app.post("/AddAnnounce/:EmailOwner", function (req, res) {
 });
 
 //update announce
-app.put("/EditAnnounce/:EmailOwner/:Number1", function (req, res) {
+router.put("/EditAnnounce/:EmailOwner/:Number1", function (req, res) {
     const EmailOwner = req.params.EmailOwner
     const Number1 = req.params.Number1
     const { Head, Detail, DateEndCreate, Status } = req.body
@@ -1338,7 +1303,7 @@ app.put("/EditAnnounce/:EmailOwner/:Number1", function (req, res) {
 });
 
 //delete announce
-app.delete("/DeleteAnnounce/:Number1", function (req, res) {
+router.delete("/DeleteAnnounce/:Number1", function (req, res) {
     // const EmailOwner = req.params.EmailOwner
     const Number1 = req.params.Number1
 
@@ -1361,133 +1326,4 @@ app.delete("/DeleteAnnounce/:Number1", function (req, res) {
     })
 });
 
-
-app.post('/api/uploadNoImage', function (req, res) {
-    let product_editDate = req.body.product_data.product_editorDate;
-    let user_editor = req.body.product_data.user_editor;
-    let product_statusID = req.body.product_data.product_statusID;
-    let product_code = req.body.product_data.product_code;
-    let sql = 'UPDATE item SET item.Date_scan = ? , item.Email_Committee = ?, item.Status = ? WHERE  item.Inventory_Number = ? AND item.Year = (YEAR(CURDATE()))+543';
-    con.query(sql, [product_editDate, user_editor, product_statusID, product_code], function (err, result) {
-        if (err) {
-            res.status(404).end();
-        } else {
-            res.status(200).end();
-        }
-    })
-
-})
-
-app.put('/api/keepusername', function (req, res) {
-    let { email } = req.body;
-    let { name } = req.body;
-    let sql = 'UPDATE year_user SET Name = ? where Email_user = ? AND Year = ?';
-    con.query(sql, [name,email,d], function (err, result) {
-        if (err) {
-            console.log(err);
-        }
-        if (result.length == 0) {
-            res.status(403).end();
-        }
-        else {
-            res.send(result).end();
-
-        }
-    });
-})
-
-app.post('/api/login', function (req, res) {
-    let { email } = req.body;
-    let sql = 'SELECT * FROM year_user where Email_user = ? ORDER BY Year DESC';
-    con.query(sql, email, function (err, result) {
-        if (err) {
-            console.log(err);
-        }
-        if (result.length == 0) {
-            res.status(403).end();
-        }
-        else {
-            res.send(result).end();
-
-        }
-    });
-})
-
-app.get('/api/get_product/:id', function (req, res) {
-
-    let product_code = req.params.id;
-    let sql = 'SELECT item.Asset_Number, item.Inventory_Number, item.Asset_Description, item.Takepicture, DATE_FORMAT(item.Received_date , "%Y-%m-%d") AS product_receivedate, item.Year, item.Image, DATE_FORMAT(item.Date_scan , "%Y-%m-%d") AS product_editdate, item.Email_Committee AS name_editor, item.Location ,item.Room ,item.Cost_center ,item.Department , item.Status FROM item WHERE item.Inventory_Number = ? AND item.Year = (YEAR(CURDATE()))+543'
-    con.query(sql, product_code, function (err, result) {
-        if (err) {
-            res.status(404).end();
-        }
-        if (result.length > 0) {
-            res.json(result);
-        } else {
-            res.send('ไม่พบข้อมูล').end();
-        }
-    });
-});
-
-
-app.get('/api/get_productfromotheryear/:id', function (req, res) {
-
-    let product_code = req.params.id;
-    let sql2 = 'SELECT DISTINCT Year FROM item ORDER BY Year DESC'
-    con.query(sql2, function (err, result1) {
-
-
-        let sql = 'SELECT item.Asset_Number, item.Inventory_Number, item.Asset_Description, item.Takepicture, DATE_FORMAT(item.Received_date , "%Y-%m-%d") AS product_receivedate, item.Year, item.Image, DATE_FORMAT(item.Date_scan , "%Y-%m-%d") AS product_editdate, item.Email_Committee AS name_editor, item.Location ,item.Room ,item.Cost_center ,item.Department , item.Status FROM item WHERE item.Inventory_Number = ? AND item.Year = ?'
-        con.query(sql, [product_code, result1[0].Year], function (err, result) {
-            if (err) {
-                res.status(404).end();
-            }
-            if (result.length > 0) {
-                res.json(result);
-            } else {
-                res.send('ไม่พบข้อมูล').end();
-            }
-        });
-
-    });
-});
-
-app.get('/api/check_date/:code', function (req, res) {
-    let product_code = req.params.code;
-    let currectDate = moment().add(543, 'years').format('YYYY-MM-DD');
-    let sql = 'SELECT DATE_FORMAT(Date_start , "%Y-%m-%d") AS start_date , DATE_FORMAT(Date_end , "%Y-%m-%d") AS stop_date , item.Status FROM date_check , item WHERE date_check.Years = (year(CURDATE()))+543 AND item.Inventory_Number = ? AND item.Year = (year(CURDATE()))+543'
-    con.query(sql, product_code, function (err, result) {
-        if (err) {
-            res.status(404).end();
-        } else {
-            if (result.length == 0) {
-                res.send('3').end(); // don't have product id  
-                // console.log('3')
-            }
-
-            if (result.length > 0) {
-
-                if (currectDate >= result[0].start_date && currectDate <= result[0].stop_date && result[0].Status == 0) {
-                    res.send('1').end(); // 1 is can edit  
-                    // console.log("Can Edit")                  
-                } else {
-                    res.send('2').end(); // 2 is can see only bacause current date more than end_date in database   
-                    // console.log("See only")                 
-                }
-            }
-        }
-    });
-});
-
-app.get('/api/home_chart', function (req, res) {
-    let sql = 'SELECT date_check.*,(SELECT COUNT(*) FROM item WHERE Status = 0 AND Year = (year(CURDATE()))+543)AS defaultStatus ,(SELECT COUNT(*) FROM item WHERE Status = 1 AND Year = (year(CURDATE()))+543)AS product_normal ,(SELECT COUNT(*) FROM item WHERE Status = 2 AND Year = year(CURDATE())+543)AS product_repair FROM item,date_check WHERE date_check.Years = (year(CURDATE()))+543 GROUP BY status';
-    con.query(sql, function (err, result) {
-        if (err) {
-            res.status(404).end();
-        } else {
-            res.json(result);
-        }
-    });
-});
-
-module.exports = app;
+module.exports = router;
