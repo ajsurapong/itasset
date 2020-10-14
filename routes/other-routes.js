@@ -39,95 +39,96 @@ router.post("/uploading/:email", function (req, res) {
         }
         // Everything went fine.
         // console.log(email)
-        importExelData2MySQL(res, process.cwd() + '/upload/Exel/' + req.file.filename, email);
+        // importExelData2MySQL(res, process.cwd() + '/upload/Exel/' + req.file.filename, email);
+        importExelData2MySQL(res, path.join(__dirname, '../upload/Exel/' , req.file.filename), email);
         // console.log(req.file.filename)
         // res.status(200).send("บันทึกสำเร็จ");
     })
 });
 
 // Old import function 
-function importExelData2MySQL(res, filePath, email) {
-    readXlsxfile(filePath).then((rows) => {
-        let head = rows[0]
-        const date = new Date();
-        rows.shift();
+// function OLDimportExelData2MySQL(res, filePath, email) {
+//     readXlsxfile(filePath).then((rows) => {
+//         let head = rows[0]
+//         const date = new Date();
+//         rows.shift();
 
-        let sql = "INSERT INTO item (`Asset_Number`,Inventory_Number,`Asset_Description`,`Model`,`Serial`,`Location`,`Room`,`Received_date`,`Original_value`,`Cost_center`,`Department`,`Vendor_name`,Year,Status, Email_Importer,Date_Upload) VALUES ?";
-        let sql2 = "DELETE from item WHERE Year=?"
-        var count = [1, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13];
-        let result = []
-        for (var i = 0; i < rows.length; i++) {
-            var temp = rows[i];
-            rows[i] = [];
+//         let sql = "INSERT INTO item (`Asset_Number`,Inventory_Number,`Asset_Description`,`Model`,`Serial`,`Location`,`Room`,`Received_date`,`Original_value`,`Cost_center`,`Department`,`Vendor_name`,Year,Status, Email_Importer,Date_Upload) VALUES ?";
+//         let sql2 = "DELETE from item WHERE Year=?"
+//         var count = [1, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13];
+//         let result = []
+//         for (var i = 0; i < rows.length; i++) {
+//             var temp = rows[i];
+//             rows[i] = [];
 
-            for (var j = 0; j < 12; j++) {
-                rows[i].push(temp[count[j]]);
-                if (j == 1) {
-                    result.push(temp[count[j]]);
-                }
-            }
-            rows[i].push(d);
-            rows[i].push(0);
-            rows[i].push(email);
-            rows[i].push(date);
-        }
-        let sortre = result.sort();
-        let count_dup = 0
-        let duplicate = '';
-        for (let i = 0; i < sortre.length - 1; i++) {
-            if (sortre[i + 1] == sortre[i]) {
-                count_dup++;
-                duplicate = sortre[i];
-            }
-        }
+//             for (var j = 0; j < 12; j++) {
+//                 rows[i].push(temp[count[j]]);
+//                 if (j == 1) {
+//                     result.push(temp[count[j]]);
+//                 }
+//             }
+//             rows[i].push(d);
+//             rows[i].push(0);
+//             rows[i].push(email);
+//             rows[i].push(date);
+//         }
+//         let sortre = result.sort();
+//         let count_dup = 0
+//         let duplicate = '';
+//         for (let i = 0; i < sortre.length - 1; i++) {
+//             if (sortre[i + 1] == sortre[i]) {
+//                 count_dup++;
+//                 duplicate = sortre[i];
+//             }
+//         }
 
-        var checkhead = ["Asset", "Inventory number", "Asset description", "ยี่ห้อ/รุ่น", "Serial number", "Location", "Room", "วันที่รับทรัพย์สิน", "Original value", "Cost Center", "หน่วยงาน", "Vendor Name1"];
-        let count_head = 0
+//         var checkhead = ["Asset", "Inventory number", "Asset description", "ยี่ห้อ/รุ่น", "Serial number", "Location", "Room", "วันที่รับทรัพย์สิน", "Original value", "Cost Center", "หน่วยงาน", "Vendor Name1"];
+//         let count_head = 0
         
-        for (let i = 0; i < count.length; i++) {
-            if (head[count[i]] != checkhead[i]) {
-                // console.log(head[count[i]] + "  " + checkhead[i] + "  " + i)
-                count_head++;
-            }
-        }
-        // console.log(count_dup)
+//         for (let i = 0; i < count.length; i++) {
+//             if (head[count[i]] != checkhead[i]) {
+//                 // console.log(head[count[i]] + "  " + checkhead[i] + "  " + i)
+//                 count_head++;
+//             }
+//         }
+//         // console.log(count_dup)
 
-        if (count_dup == 0 && count_head == 0) {
-            con.query(sql2, [d], function (err, result, fields) {
-                if (err) {
-                    console.log(err);
-                }
-                else {
-                    // res.send("delete")
-                    con.query(sql, [rows], function (err, result, fields) {
-                        if (err) {
-                            console.log(err);
-                            res.send("มีข้อมูลนี้แล้วในระบบ")
-                        }
-                        else {
-                            res.send("1")//บันทึกสำเสร็จ
+//         if (count_dup == 0 && count_head == 0) {
+//             con.query(sql2, [d], function (err, result, fields) {
+//                 if (err) {
+//                     console.log(err);
+//                 }
+//                 else {
+//                     // res.send("delete")
+//                     con.query(sql, [rows], function (err, result, fields) {
+//                         if (err) {
+//                             console.log(err);
+//                             res.send("มีข้อมูลนี้แล้วในระบบ")
+//                         }
+//                         else {
+//                             res.send("1")//บันทึกสำเสร็จ
 
-                        }
-                    })
+//                         }
+//                     })
 
-                }
-            })
-        }
-        else {
-            res.send(duplicate)//ข้อมูลซ้ำหรือไม่ครบ
-        }
-    });
-}
+//                 }
+//             })
+//         }
+//         else {
+//             res.send(duplicate)//ข้อมูลซ้ำหรือไม่ครบ
+//         }
+//     });
+// }
 
 // ======= read excel and insert to DB ==========
-router.get("/testexcel", function(req, res) {
+function importExelData2MySQL(res, filePath, email_importer) {
     // this module will read only the first sheet of Excel
-    readXlsxfile(path.join(__dirname, "../upload/Exel/test-10-nodup.xlsx")).then((rows) => {
+    readXlsxfile(filePath).then((rows) => {
         // 'rows' is 2D array
         // the first row is header
         // read data must have at least 1 data row
         if(rows.length <= 1) {
-            res.status(500).send("ไฟล์ที่อัพโหลดไม่มีข้อมูล");
+            res.send("ไฟล์ที่อัพโหลดไม่มีข้อมูล");
             return;
         }
 
@@ -136,7 +137,7 @@ router.get("/testexcel", function(req, res) {
         const idx = rows[0].indexOf("Inventory number");
         // if this column is not found, data may be bad
         if(idx == -1) {
-            res.status(500).send("ไฟล์ที่อัพโหลดมีรูปแบบที่ไม่ถูกต้อง, ไม่มี Inventory number");
+            res.send("ไฟล์ที่อัพโหลดมีรูปแบบที่ไม่ถูกต้อง, ไม่มี Inventory number");
             return;
         }
         // 2. keep the 'Inventory number' column in another 1D array
@@ -150,7 +151,8 @@ router.get("/testexcel", function(req, res) {
         // if duplicated inventory number
         if(arr_dup.length > 0) {
             // send dup array to notify user
-            res.status(500).json({"dup":arr_dup});
+            // res.status(500).json({"dup":arr_dup});
+            res.send(arr_dup.join("\n"));
             return;
         }
 
@@ -168,7 +170,7 @@ router.get("/testexcel", function(req, res) {
         const today = new Date();
         const currentYear = today.getFullYear();
         const yearBE = currentYear + 543;
-        const email_importer = 'usurapong@gmail.com';        
+        // const email_importer = 'usurapong@gmail.com';        
         // const dateUpload = `${currentYear}-${today.getMonth()+1}-${today.getDate()}`; 
         const dateUpload = currentYear + "-" + (today.getMonth()+1) + "-" + today.getDate();        
 
@@ -190,36 +192,36 @@ router.get("/testexcel", function(req, res) {
         con.beginTransaction(function(err) {
             if(err) {
                 console.log(err);
-                res.status(503).send("ไม่สามารถจัดการฐานข้อมูลได้");
+                res.send("ไม่สามารถจัดการฐานข้อมูลได้");
                 return; 
             }
             let sql = "DELETE from item WHERE Year=?";
             con.query(sql, [yearBE], function (err, result, fields) {
                 if (err) {
                     console.log(err);
-                    res.status(503).send("ไม่สามารถลบข้อมูลเดิมจากฐานข้อมูลได้");
+                    res.send("ไม่สามารถลบข้อมูลเดิมจากฐานข้อมูลได้");
                     return;             
                 }
                 sql = "INSERT INTO `item`(`Asset_Number`, `Inventory_Number`, `Asset_Description`, `Model`, `Serial`,`Location`, `Room`,`Received_date`,`Original_value`,`Cost_center`,`Department`,`Vendor_name`,`Year`, `Email_Importer`, `Date_Upload`) VALUES ?";
                 con.query(sql, [rows], function (err, result, fields) {
                     if (err) {
                         console.log(err);
-                        res.status(503).send("การนำเข้าข้อมูลสู่ฐานข้อมูลผิดพลาด");
+                        res.send("การนำเข้าข้อมูลสู่ฐานข้อมูลผิดพลาด");
                         return;             
                     }
                     con.commit(function (err) {
                         if(err) {
                             console.log(err);
-                            res.status(503).send("ไม่สามารถลบและนำเข้าสู่ฐานข้อมูลได้");
+                            res.send("ไม่สามารถลบและนำเข้าสู่ฐานข้อมูลได้");
                             return; 
                         }
-                        res.send("1");  //Done
+                        res.send("1");  //All good and done
                     });                    
                 });
             });
         });
     });    
-});
+}
 
 // ============= Upload if already upload ==============
 router.post("/uploadif/:email", function (req, res) {
@@ -277,8 +279,8 @@ router.put("/item/take/:year", function (req, res) {
     // console.log(Status)
 
     if (Status == 1) {
-        const sql = "UPDATE item SET Takepicture = 1 where Inventory_Number IN(?) ;"
-        con.query(sql, [records, year], function (err, result, fields) {
+        const sql = "UPDATE item SET Takepicture = 1 where Year = ? AND Inventory_Number IN(?);"
+        con.query(sql, [year, records], function (err, result, fields) {
             if (err) {
                 res.status(503).send("เซิร์ฟเวอร์ไม่ตอบสนอง");
                 console.log(err)
@@ -290,8 +292,8 @@ router.put("/item/take/:year", function (req, res) {
         })
     }
     else {
-        const sql = "UPDATE item SET Takepicture = 0 where Inventory_Number IN(?) ;"
-        con.query(sql, [records, year], function (err, result, fields) {
+        const sql = "UPDATE item SET Takepicture = 0 where Year = ? AND Inventory_Number IN(?) ;"
+        con.query(sql, [year, records], function (err, result, fields) {
             if (err) {
                 res.status(503).send("เซิร์ฟเวอร์ไม่ตอบสนอง");
                 console.log(err)

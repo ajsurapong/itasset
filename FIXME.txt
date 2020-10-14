@@ -1,4 +1,5 @@
 *** Bug ***
+*** Force taking photos update all years, wrong API
 *** DB fields/ some fields must set to nullable coz real data columns are missing
 *** DB fields are too small for imported data ex: date in excel contains also time
 *** Cannot upload same xlsx file if older file exists, even it is not during checking period
