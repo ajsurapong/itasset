@@ -12,6 +12,7 @@
 * Sometimes 'User_history' has no select dropdown for 'year'
 
 *** Minor fixes ***
+-Year should be either BE or CE
 -Left menubar, instead of hide, should set display:none and show if necessary
 [DONE] -First file should be 'index.html'
 [DONE] -Is bcrypt required?

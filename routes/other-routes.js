@@ -1,7 +1,7 @@
 const router = require("express").Router();
+const path = require('path');
 const multer = require("multer");
 const mysql = require("mysql");
-// const xlsx = require("xlsx");
 const readXlsxfile = require("read-excel-file/node")
 const pdfMake = require('pdfmake/build/pdfmake.js');
 const pdfFonts = require('pdfmake/build/vfs_fonts.js');
@@ -30,7 +30,7 @@ const upload = multer({ storage: storageOption }).single("filetoupload");
 //================== Services (functions) ===================
 // ============= Upload ==============
 router.post("/uploading/:email", function (req, res) {
-    const email = req.params.email
+    const email = req.params.email;
     upload(req, res, function (err) {
         if (err) {
             // An unknown error occurred when uploading.
@@ -39,12 +39,13 @@ router.post("/uploading/:email", function (req, res) {
         }
         // Everything went fine.
         // console.log(email)
-        importExelData2MySQL(res, process.cwd() + '/upload/Exel/' + req.file.filename, email)
+        importExelData2MySQL(res, process.cwd() + '/upload/Exel/' + req.file.filename, email);
         // console.log(req.file.filename)
         // res.status(200).send("บันทึกสำเร็จ");
     })
 });
-// import 
+
+// Old import function 
 function importExelData2MySQL(res, filePath, email) {
     readXlsxfile(filePath).then((rows) => {
         let head = rows[0]
@@ -111,13 +112,114 @@ function importExelData2MySQL(res, filePath, email) {
 
                 }
             })
-
         }
         else {
             res.send(duplicate)//ข้อมูลซ้ำหรือไม่ครบ
         }
     });
 }
+
+// ======= read excel and insert to DB ==========
+router.get("/testexcel", function(req, res) {
+    // this module will read only the first sheet of Excel
+    readXlsxfile(path.join(__dirname, "../upload/Exel/test-10-nodup.xlsx")).then((rows) => {
+        // 'rows' is 2D array
+        // the first row is header
+        // read data must have at least 1 data row
+        if(rows.length <= 1) {
+            res.status(500).send("ไฟล์ที่อัพโหลดไม่มีข้อมูล");
+            return;
+        }
+
+        // extract column (Inventory number)
+        // 1. first, search whether this field exists at the first row
+        const idx = rows[0].indexOf("Inventory number");
+        // if this column is not found, data may be bad
+        if(idx == -1) {
+            res.status(500).send("ไฟล์ที่อัพโหลดมีรูปแบบที่ไม่ถูกต้อง, ไม่มี Inventory number");
+            return;
+        }
+        // 2. keep the 'Inventory number' column in another 1D array
+        let arr_ivn = [];
+        rows.forEach((value) => {
+            arr_ivn.push(value[idx]);
+        });
+        // 3. get array of duplicates
+        // see https://stackoverflow.com/questions/840781/get-all-non-unique-values-i-e-duplicate-more-than-one-occurrence-in-an-array
+        const arr_dup = arr_ivn.filter((value, index, arr) => arr.indexOf(value) !== index);
+        // if duplicated inventory number
+        if(arr_dup.length > 0) {
+            // send dup array to notify user
+            res.status(500).json({"dup":arr_dup});
+            return;
+        }
+
+        // Now data is good but need more processing       
+        // 1. Delete the columns which do not match with the DB i.e. 'Company Code' and 'Subnumber'
+        const idx1 = rows[0].indexOf("Company Code");
+        const idx2 = rows[0].indexOf("Subnumber");
+        // console.log(idx1, idx2);
+
+        // 2. remove header row (field name)
+        rows.shift();
+
+        // 3. Insert fields that are required in DB but not available in input file
+        // i.e. 'Year', 'Email_Importer', 'Date_Upload'
+        const today = new Date();
+        const currentYear = today.getFullYear();
+        const yearBE = currentYear + 543;
+        const email_importer = 'usurapong@gmail.com';        
+        // const dateUpload = `${currentYear}-${today.getMonth()+1}-${today.getDate()}`; 
+        const dateUpload = currentYear + "-" + (today.getMonth()+1) + "-" + today.getDate();        
+
+        // let finalData = [];        
+        for(let i=0; i<rows.length; i++) {
+            // remove 'Company Code'
+            rows[i].splice(idx1, 1);
+            // remove 'Subnumber'
+            //we know that idx1 comes before idx2, after splicing idx1 we have to splice idx2-1
+            rows[i].splice(idx2-1, 1);
+            // add 'Year', 'Email_Importer', 'Date_Upload'
+            rows[i].push(yearBE, email_importer, dateUpload);
+        }
+        // res.json(rows);
+        // return;
+
+        // Insert to DB
+        // first delete existing data of current year
+        con.beginTransaction(function(err) {
+            if(err) {
+                console.log(err);
+                res.status(503).send("ไม่สามารถจัดการฐานข้อมูลได้");
+                return; 
+            }
+            let sql = "DELETE from item WHERE Year=?";
+            con.query(sql, [yearBE], function (err, result, fields) {
+                if (err) {
+                    console.log(err);
+                    res.status(503).send("ไม่สามารถลบข้อมูลเดิมจากฐานข้อมูลได้");
+                    return;             
+                }
+                sql = "INSERT INTO `item`(`Asset_Number`, `Inventory_Number`, `Asset_Description`, `Model`, `Serial`,`Location`, `Room`,`Received_date`,`Original_value`,`Cost_center`,`Department`,`Vendor_name`,`Year`, `Email_Importer`, `Date_Upload`) VALUES ?";
+                con.query(sql, [rows], function (err, result, fields) {
+                    if (err) {
+                        console.log(err);
+                        res.status(503).send("การนำเข้าข้อมูลสู่ฐานข้อมูลผิดพลาด");
+                        return;             
+                    }
+                    con.commit(function (err) {
+                        if(err) {
+                            console.log(err);
+                            res.status(503).send("ไม่สามารถลบและนำเข้าสู่ฐานข้อมูลได้");
+                            return; 
+                        }
+                        res.send("1");  //Done
+                    });                    
+                });
+            });
+        });
+    });    
+});
 
 // ============= Upload if already upload ==============
 router.post("/uploadif/:email", function (req, res) {
@@ -130,24 +232,19 @@ router.post("/uploadif/:email", function (req, res) {
         }
         // Everything went fine.
         importfromexel(res, process.cwd() + '/upload/' + req.file.filename, email)
-
     })
 });
+
 // import
 function importfromexel(res, filePath, email) {
     readXlsxfile(filePath).then((rows) => {
-
-        const date = new Date();
         rows.shift();
-        const Year = new Date().getFullYear();
+        const currentYear = new Date().getFullYear() + 543;
         const sql = "DELETE FROM item WHERE Year = ? ;"
-        con.query(sql, [d], function (err, result, fields) {
+        con.query(sql, [currentYear], function (err, result, fields) {
             if (err) {
                 res.status(503).send("เซิร์ฟเวอร์ไม่ตอบสนอง");
                 console.log(err)
-            }
-            else {
-
             }
         })
         let sql2 = "INSERT INTO item (`Asset_Number`,Inventory_Number,`Asset_Description`,`Model`,`Serial`,`Location`,`Room`,`Received_date`,`Original_value`,`Cost_center`,`Department`,`Vendor_name`,Year,Status, Email_Importer,Date_Upload) VALUES ?";
@@ -164,18 +261,13 @@ function importfromexel(res, filePath, email) {
             rows[i].push(date);
         }
 
-
         con.query(sql2, [rows], function (err, result, fields) {
             if (err) {
                 res.send("มีข้อมูลนี้แล้วในระบบ")
-            } else {
-
             }
         })
-
     });
 }
-
 
 // บังคับถ่ายรูป
 router.put("/item/take/:year", function (req, res) {
