@@ -22,6 +22,7 @@ router.post('/login', function (req, res) {
     con.query(sql, email, function (err, result) {
         if (err) {
             console.log(err);
+            res.status(403).end();
         }
         if (result.length == 0) {
             res.status(403).end();
@@ -37,6 +38,7 @@ router.get('/get_product/:id', function (req, res) {
     let sql = 'SELECT item.Asset_Number, item.Inventory_Number, item.Asset_Description, item.Takepicture, DATE_FORMAT(item.Received_date , "%Y-%m-%d") AS product_receivedate, item.Year, item.Image, DATE_FORMAT(item.Date_scan , "%Y-%m-%d") AS product_editdate, item.Email_Committee AS name_editor, item.Location ,item.Room ,item.Cost_center ,item.Department , item.Status FROM item WHERE item.Inventory_Number = ? AND item.Year = (YEAR(CURDATE()))+543'
     con.query(sql, product_code, function (err, result) {
         if (err) {
+            console.log(err);
             res.status(404).end();
         }
         if (result.length > 0) {
@@ -52,11 +54,10 @@ router.get('/get_productfromotheryear/:id', function (req, res) {
     let product_code = req.params.id;
     let sql2 = 'SELECT DISTINCT Year FROM item ORDER BY Year DESC'
     con.query(sql2, function (err, result1) {
-
-
         let sql = 'SELECT item.Asset_Number, item.Inventory_Number, item.Asset_Description, item.Takepicture, DATE_FORMAT(item.Received_date , "%Y-%m-%d") AS product_receivedate, item.Year, item.Image, DATE_FORMAT(item.Date_scan , "%Y-%m-%d") AS product_editdate, item.Email_Committee AS name_editor, item.Location ,item.Room ,item.Cost_center ,item.Department , item.Status FROM item WHERE item.Inventory_Number = ? AND item.Year = ?'
         con.query(sql, [product_code, result1[0].Year], function (err, result) {
             if (err) {
+                console.log(err);
                 res.status(404).end();
             }
             if (result.length > 0) {
@@ -75,6 +76,7 @@ router.get('/check_date/:code', function (req, res) {
     let sql = 'SELECT DATE_FORMAT(Date_start , "%Y-%m-%d") AS start_date , DATE_FORMAT(Date_end , "%Y-%m-%d") AS stop_date , item.Status FROM date_check , item WHERE date_check.Years = (year(CURDATE()))+543 AND item.Inventory_Number = ? AND item.Year = (year(CURDATE()))+543'
     con.query(sql, product_code, function (err, result) {
         if (err) {
+            console.log(err);
             res.status(404).end();
         } else {
             if (result.length == 0) {
@@ -100,6 +102,7 @@ router.get('/home_chart', function (req, res) {
     let sql = 'SELECT date_check.*,(SELECT COUNT(*) FROM item WHERE Status = 0 AND Year = (year(CURDATE()))+543)AS defaultStatus ,(SELECT COUNT(*) FROM item WHERE Status = 1 AND Year = (year(CURDATE()))+543)AS product_normal ,(SELECT COUNT(*) FROM item WHERE Status = 2 AND Year = year(CURDATE())+543)AS product_repair FROM item,date_check WHERE date_check.Years = (year(CURDATE()))+543 GROUP BY status';
     con.query(sql, function (err, result) {
         if (err) {
+            console.log(err);
             res.status(404).end();
         } else {
             res.json(result);
@@ -114,15 +117,17 @@ router.post('/uploadWithImage', function (req, res, next) {
             console.log("upload " + err);
             res.status(500);
         } else {
-            let data = JSON.parse(req.body.data)
-            let path_image = req.file.originalname;
+            const data = JSON.parse(req.body.data)
+            const path_image = req.file.originalname;
             // console.log(path_image)
-            let product_editDate = data.product_editorDate;
-            let user_editor = data.user_editor;
-            let product_statusID = data.product_statusID;
-            let product_code = data.product_code;
-            let sql = 'UPDATE item SET item.Image = ? , item.Date_scan = ? , item.Email_Committee = ?, item.Status = ? WHERE item.Inventory_Number = ? AND item.Year = (YEAR(CURDATE()))+543';
-            con.query(sql, [path_image, product_editDate, user_editor, product_statusID, product_code], function (err, result) {
+            const product_editDate = data.product_editorDate;
+            const user_editor = data.user_editor;
+            const product_statusID = data.product_statusID;
+            const product_code = data.product_code;
+            const product_location = data.product_location;
+            const product_room = data.product_room;
+            const sql = 'UPDATE item SET item.Image = ? , item.Date_scan = ? , item.Email_Committee = ?, item.Status = ?, item.Location =?, item.Room = ? WHERE item.Inventory_Number = ? AND item.Year = (YEAR(CURDATE()))+543';
+            con.query(sql, [path_image, product_editDate, user_editor, product_statusID, product_location, product_room,product_code], function (err, result) {
                 if (err) {
                     console.log("sql " + err);
                     res.status(404).end();
@@ -132,24 +137,26 @@ router.post('/uploadWithImage', function (req, res, next) {
                 }
             })
         }
-    })
+    });
 });
 
 
 router.post('/uploadNoImage', function (req, res) {
-    let product_editDate = req.body.product_data.product_editorDate;
-    let user_editor = req.body.product_data.user_editor;
-    let product_statusID = req.body.product_data.product_statusID;
-    let product_code = req.body.product_data.product_code;
-    let sql = 'UPDATE item SET item.Date_scan = ? , item.Email_Committee = ?, item.Status = ? WHERE  item.Inventory_Number = ? AND item.Year = (YEAR(CURDATE()))+543';
-    con.query(sql, [product_editDate, user_editor, product_statusID, product_code], function (err, result) {
+    const product_editDate = req.body.product_data.product_editorDate;
+    const user_editor = req.body.product_data.user_editor;
+    const product_statusID = req.body.product_data.product_statusID;
+    const product_code = req.body.product_data.product_code;
+    const product_location = req.body.product_data.product_location;
+    const product_room = req.body.product_data.product_room;
+    const sql = 'UPDATE item SET item.Date_scan = ? , item.Email_Committee = ?, item.Status = ?, item.Location =?, item.Room = ? WHERE  item.Inventory_Number = ? AND item.Year = (YEAR(CURDATE()))+543';
+    con.query(sql, [product_editDate, user_editor, product_statusID, product_location, product_room, product_code], function (err, result) {
         if (err) {
+            console.log("sql " + err);
             res.status(404).end();
         } else {
             res.status(200).end();
         }
-    })
-
+    });
 })
 
 router.put('/keepusername', function (req, res) {
