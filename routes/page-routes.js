@@ -19,7 +19,7 @@ router.get("/printqrcode", function (req, res) {
 });
 
 router.get("/printbarcode", function (req, res) {
-    res.sendFile(path.join(__dirname, "/views/printbarcode.html"))
+    res.sendFile(path.join(__dirname, "../views/printbarcode.html"))
 });
 
 //Return home page
