@@ -99,11 +99,14 @@ router.get('/check_date/:code', function (req, res) {
 });
 
 router.get('/home_chart', function (req, res) {
-    let sql = 'SELECT date_check.*,(SELECT COUNT(*) FROM item WHERE Status = 0 AND Year = (year(CURDATE()))+543)AS defaultStatus ,(SELECT COUNT(*) FROM item WHERE Status = 1 AND Year = (year(CURDATE()))+543)AS product_normal ,(SELECT COUNT(*) FROM item WHERE Status = 2 AND Year = year(CURDATE())+543)AS product_repair FROM item,date_check WHERE date_check.Years = (year(CURDATE()))+543 GROUP BY status';
+    // let sql = 'SELECT date_check.*,(SELECT COUNT(*) FROM item WHERE Status = 0 AND Year = (year(CURDATE()))+543) AS defaultStatus ,(SELECT COUNT(*) FROM item WHERE Status = 1 AND Year = (year(CURDATE()))+543) AS product_normal ,(SELECT COUNT(*) FROM item WHERE Status = 2 AND Year = year(CURDATE())+543) AS product_repair FROM item,date_check WHERE date_check.Years = (year(CURDATE()))+543 GROUP BY status';
+
+    let sql = 'SELECT one.*, two.*, three.*, four.* FROM (SELECT * FROM date_check WHERE Years = (year(CURDATE()))+543) AS one, (SELECT COUNT(Inventory_Number) AS defaultStatus FROM item WHERE Status = 0 AND Year = (year(CURDATE()))+543) AS two, (SELECT COUNT(Inventory_Number) AS product_normal FROM item WHERE Status = 1 AND Year = (year(CURDATE()))+543) AS three, (SELECT COUNT(Inventory_Number) AS product_repair FROM item WHERE Status = 2 AND Year = (year(CURDATE()))+543) AS four';
+
     con.query(sql, function (err, result) {
         if (err) {
             console.log(err);
-            res.status(404).end("sql error");
+            res.status(400).end("sql error");
         } else {
             res.json(result);
         }
