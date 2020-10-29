@@ -198,20 +198,20 @@ function importExelData2MySQL(res, filePath, email_importer) {
             let sql = "DELETE from item WHERE Year=?";
             con.query(sql, [yearBE], function (err, result, fields) {
                 if (err) {
-                    console.log(err);
+                    console.log(err.code + ": " + err.sqlMessage);
                     res.send("ไม่สามารถลบข้อมูลเดิมจากฐานข้อมูลได้");
                     return;             
                 }
                 sql = "INSERT INTO `item`(`Asset_Number`, `Inventory_Number`, `Asset_Description`, `Model`, `Serial`,`Location`, `Room`,`Received_date`,`Original_value`,`Cost_center`,`Department`,`Vendor_name`,`Year`, `Email_Importer`, `Date_Upload`) VALUES ?";
                 con.query(sql, [rows], function (err, result, fields) {
                     if (err) {
-                        console.log(err);
+                        console.log(err.code + ": " + err.sqlMessage);
                         res.send("การนำเข้าข้อมูลสู่ฐานข้อมูลผิดพลาด");
                         return;             
                     }
                     con.commit(function (err) {
                         if(err) {
-                            console.log(err);
+                            console.log(err.code + ": " + err.sqlMessage);
                             res.send("ไม่สามารถลบและนำเข้าสู่ฐานข้อมูลได้");
                             return; 
                         }

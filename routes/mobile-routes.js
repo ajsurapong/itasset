@@ -103,7 +103,7 @@ router.get('/home_chart', function (req, res) {
     con.query(sql, function (err, result) {
         if (err) {
             console.log(err);
-            res.status(404).end();
+            res.status(404).end("sql error");
         } else {
             res.json(result);
         }
@@ -114,7 +114,7 @@ var uploadpic = multer({ storage: storageOptionpic }).single("photo");
 router.post('/uploadWithImage', function (req, res, next) {
     uploadpic(req, res, err => {
         if (err) {
-            console.log("upload " + err);
+            console.log("upload error: " + err);
             res.status(500);
         } else {
             const data = JSON.parse(req.body.data)
@@ -130,7 +130,7 @@ router.post('/uploadWithImage', function (req, res, next) {
             con.query(sql, [path_image, product_editDate, user_editor, product_statusID, product_location, product_room,product_code], function (err, result) {
                 if (err) {
                     console.log("sql " + err);
-                    res.status(404).end();
+                    res.status(404).end("sql error");
                 }
                 else {
                     res.status(200).end();
@@ -152,7 +152,7 @@ router.post('/uploadNoImage', function (req, res) {
     con.query(sql, [product_editDate, user_editor, product_statusID, product_location, product_room, product_code], function (err, result) {
         if (err) {
             console.log("sql " + err);
-            res.status(404).end();
+            res.status(404).end("sql error");
         } else {
             res.status(200).end();
         }
@@ -172,7 +172,6 @@ router.put('/keepusername', function (req, res) {
         }
         else {
             res.send(result).end();
-
         }
     });
 });
