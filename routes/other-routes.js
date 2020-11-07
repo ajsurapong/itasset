@@ -422,7 +422,7 @@ router.get("/adminhistorytable/info/:EmailCommittee/:year", function (req, res) 
 // // Load info of name commitee
 router.get("/EmailCommitteename/info/:Email_name", function (req, res) {
     const Email_user = req.params.Email_name;
-    const sql = "SELECT Name FROM year_user WHERE Email_user = ?"
+    const sql = "SELECT Email_user FROM year_user WHERE Email_user = ?"
     con.query(sql, [Email_user], function (err, result, fields) {
         if (err) {
             res.status(503).send("เซิร์ฟเวอร์ไม่ตอบสนอง");
@@ -431,6 +431,18 @@ router.get("/EmailCommitteename/info/:Email_name", function (req, res) {
 
         }
     })
+});
+
+// Get committee's email and his/her amount of items checked
+router.get("/committee/checkedItems/:year", function(req, res) {
+    const sql = "SELECT Email_Committee, COUNT(Inventory_Number) AS num FROM item WHERE Year = ? AND Email_Committee IS NOT NULL GROUP BY Email_Committee";
+    con.query(sql, [req.params.year], function (err, result, fields) {
+        if (err) {
+            res.status(503).send("เซิร์ฟเวอร์ไม่ตอบสนอง");
+        } else {
+            res.json(result);
+        }
+    });
 });
 
 

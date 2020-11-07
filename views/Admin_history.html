@@ -44,7 +44,7 @@
         var table;
         var today = new Date();
         var yyyy = today.getFullYear() + 543;
-        var selectedYear
+        var selectedYear;
 
         $(document).ready(function () {
 
@@ -77,29 +77,40 @@
                         // alert('aaaaaaaa')
                         // console.length(dataSet.length)
                     }
-                    let datatotable = []
-                    for (let i = 0; i < datakeep.length; i++) {
-                        $.ajax({
-                            method: "GET",
-                            url: "/api/adminhistorytable/info/" + datakeep[i].Email_Committee + "/" + selectedYear
-                        }).done(function (datae, state, xhr) {
-                            $.ajax({
-                                method: "GET",
-                                url: "/api/EmailCommitteename/info/" + datakeep[i].Email_Committee
-                            }).done(function (datat, state, xhr) {
-                                datatotable.push(
-                                    {
-                                        Name: datat[0].Name,
-                                        num: datae[0].num
-                                    }
-                                )
-                                table.clear();
-                                table.rows.add(datatotable).draw();
+                    // let datatotable = []
+                    // for (let i = 0; i < datakeep.length; i++) {
+                    //     $.ajax({
+                    //         method: "GET",
+                    //         url: "/api/adminhistorytable/info/" + datakeep[i].Email_Committee + "/" + selectedYear
+                    //     }).done(function (datae, state, xhr) {
+                    //         $.ajax({
+                    //             method: "GET",
+                    //             url: "/api/EmailCommitteename/info/" + datakeep[i].Email_Committee
+                    //         }).done(function (datat, state, xhr) {
+                    //             datatotable.push(
+                    //                 {
+                    //                     Name: datat[0].Email_user,
+                    //                     num: datae[0].num
+                    //                 }
+                    //             )
+                    //             table.clear();
+                    //             table.rows.add(datatotable).draw();
 
-                            })
-                        })
-                    }
-                })
+                    //         })
+                    //     })
+                    // }
+
+                    $.ajax({
+                        method: "GET",
+                        url: "/api/committee/checkedItems/" + selectedYear,
+                        // / adminhistorytableEmailCommittee / info /
+                    }).done(function (datacheck, state, xhr) {
+                        table.clear();
+                        table.rows.add(datacheck).draw();
+                    }).fail(function (xhr, state, error) {
+                        console.log(error);
+                    });
+                });
 
                 var values = [];
                 let countyear = 0
@@ -140,42 +151,50 @@
                         method: "GET",
                         url: "/api/adminhistorytableEmailCommittee/info/" + selected
                     }).done(function (datakeep, state, xhr) {
-                        let datatotable = []
-                        for (let i = 0; i < datakeep.length; i++) {
-                            $.ajax({
-                                method: "GET",
-                                url: "/api/adminhistorytable/info/" + datakeep[i].Email_Committee + "/" + selected
-                            }).done(function (datae, state, xhr) {
+                        // let datatotable = []
+                        // for (let i = 0; i < datakeep.length; i++) {
+                        //     $.ajax({
+                        //         method: "GET",
+                        //         url: "/api/adminhistorytable/info/" + datakeep[i].Email_Committee + "/" + selected
+                        //     }).done(function (datae, state, xhr) {
 
-                                $.ajax({
-                                    method: "GET",
-                                    url: "/api/EmailCommitteename/info/" + datakeep[i].Email_Committee
-                                }).done(function (datat, state, xhr) {
-                                    datatotable.push(
-                                        {
-                                            Name: datat[0].Name,
-                                            num: datae[0].num
-                                        }
-                                    )
-                                    table.clear();
-                                    table.rows.add(datatotable).draw();
+                        //         $.ajax({
+                        //             method: "GET",
+                        //             url: "/api/EmailCommitteename/info/" + datakeep[i].Email_Committee
+                        //         }).done(function (datat, state, xhr) {
+                        //             datatotable.push(
+                        //                 {
+                        //                     Name: datat[0].Name,
+                        //                     num: datae[0].num
+                        //                 }
+                        //             )
+                        //             table.clear();
+                        //             table.rows.add(datatotable).draw();
 
-                                })
-                            })
-                        }
-                    })
+                        //         })
+                        //     })
+                        // }
 
-                })
+                        $.ajax({
+                            method: "GET",
+                            url: "/api/committee/checkedItems/" + selected,
+                            // / adminhistorytableEmailCommittee / info /
+                        }).done(function (datacheck, state, xhr) {
+                            table.clear();
+                            table.rows.add(datacheck).draw();
+                        }).fail(function (xhr, state, error) {
+                            console.log(error);
+                        });
+                    });
+                });
 
             })
 
             //========================================== Table =============================================
             table = $('#myTable').DataTable({
-
                 columns: [
-                    { data: "Name", title: "ชื่อผู้ตรวจนับ" },
+                    { data: "Email_Committee", title: "ผู้ตรวจนับ" },
                     { data: "num", title: "จำนวนที่ตรวจนับ" }
-
                 ],
             });
 
