@@ -34,6 +34,7 @@ router.post("/uploading/:email", function (req, res) {
     upload(req, res, function (err) {
         if (err) {
             // An unknown error occurred when uploading.
+            console.log(err);
             res.status(500).send("ไม่สามารถอัพโหลดไฟล์นี้ได้");
             return;
         }
@@ -229,6 +230,7 @@ router.post("/uploadif/:email", function (req, res) {
     upload(req, res, function (err) {
         if (err) {
             // An unknown error occurred when uploading.
+            console.log(err);
             res.status(500).send("ไม่สามารถอัพโหลดไฟล์นี้ได้");
             return;
         }
@@ -281,7 +283,7 @@ router.put("/item/take/:year", function (req, res) {
     if (Status == 1) {
         const sql = "UPDATE item SET Takepicture = 1 where Year = ? AND Inventory_Number IN(?);"
         con.query(sql, [year, records], function (err, result, fields) {
-            if (err) {
+            if (err) {                
                 res.status(503).send("เซิร์ฟเวอร์ไม่ตอบสนอง");
                 console.log(err)
             }
@@ -314,6 +316,7 @@ router.put("/item/addImage", function (req, res) {
     const sql = "UPDATE item SET Image=? where Inventory_Number=?;"
     con.query(sql, [image, Inventory_Number], function (err, result, fields) {
         if (err) {
+            console.log(err);
             res.status(503).send("เซิร์ฟเวอร์ไม่ตอบสนอง");
         }
         else {
@@ -342,7 +345,6 @@ router.get("/manageUser/showAllUsers/:Email_user", function (req, res) {
             } else {
                 res.json(0)
             }
-
         }
     })
 });
@@ -354,6 +356,7 @@ router.get("/adminhistorytableEmailCommittee/info/:year", function (req, res) {
     const sql = "SELECT DISTINCT Email_Committee FROM item WHERE Year = ? AND Email_Committee IS NOT NULL "
     con.query(sql, [Year], function (err, result, fields) {
         if (err) {
+            console.log(err);
             res.status(503).send("เซิร์ฟเวอร์ไม่ตอบสนอง");
         } else {
             res.json(result)
@@ -381,6 +384,7 @@ router.get("/adminhistorytableEmailCommittee/year", function (req, res) {
     const sql = "SELECT DISTINCT Year FROM item WHERE Email_Committee IS NOT NULL ORDER BY Year"
     con.query(sql, function (err, result, fields) {
         if (err) {
+            console.log(err);
             res.status(503).send("เซิร์ฟเวอร์ไม่ตอบสนอง");
         } else {
             // console.log(result.length)
@@ -407,6 +411,7 @@ router.get("/adminhistorytable/info/:EmailCommittee/:year", function (req, res) 
 
     con.query(sql, [Email_Committee, year], function (err, result, fields) {
         if (err) {
+            console.log(err);
             res.status(503).send("เซิร์ฟเวอร์ไม่ตอบสนอง");
         } else {
 
@@ -425,6 +430,7 @@ router.get("/EmailCommitteename/info/:Email_name", function (req, res) {
     const sql = "SELECT Email_user FROM year_user WHERE Email_user = ?"
     con.query(sql, [Email_user], function (err, result, fields) {
         if (err) {
+            console.log(err);
             res.status(503).send("เซิร์ฟเวอร์ไม่ตอบสนอง");
         } else {
             res.json(result)
@@ -438,6 +444,7 @@ router.get("/committee/checkedItems/:year", function(req, res) {
     const sql = "SELECT Email_Committee, COUNT(Inventory_Number) AS num FROM item WHERE Year = ? AND Email_Committee IS NOT NULL GROUP BY Email_Committee";
     con.query(sql, [req.params.year], function (err, result, fields) {
         if (err) {
+            console.log(err);
             res.status(503).send("เซิร์ฟเวอร์ไม่ตอบสนอง");
         } else {
             res.json(result);
@@ -453,6 +460,7 @@ router.get("/user/profile/inspectedItem/Total/Number1/:Email_Committee", functio
 
     con.query(sql, [Email_Committee, d], function (err, result, fields) {
         if (err) {
+            console.log(err);
             res.status(503).send("เซิร์ฟเวอร์ไม่ตอบสนอง");
         } else {
             res.json(result)
@@ -467,6 +475,7 @@ router.get("/user/datescan", function (req, res) {
 
     con.query(sql, [d], function (err, result, fields) {
         if (err) {
+            console.log(err);
             res.status(503).send("เซิร์ฟเวอร์ไม่ตอบสนอง");
         } else {
             res.json(result)
@@ -481,6 +490,7 @@ router.get("/user/profile/inspectedItem/Total/Number/:Email_Committee", function
 
     con.query(sql, [Email_Committee], function (err, result, fields) {
         if (err) {
+            console.log(err);
             res.status(503).send("เซิร์ฟเวอร์ไม่ตอบสนอง");
         } else {
             res.json(result)
@@ -496,6 +506,7 @@ router.get("/user/profile/inspectedItem/:Status/:Email_Committee", function (req
 
     con.query(sql, [Status, Email_Committee], function (err, result, fields) {
         if (err) {
+            console.log(err);
             res.status(503).send("เซิร์ฟเวอร์ไม่ตอบสนอง");
         } else {
             res.json(result)
@@ -506,9 +517,9 @@ router.get("/user/profile/inspectedItem/:Status/:Email_Committee", function (req
 router.get("/Year/user", function (req, res) {
     const sql = "SELECT DISTINCT Year FROM year_user ORDER BY Year DESC"
 
-
     con.query(sql, function (err, result, fields) {
         if (err) {
+            console.log(err);
             res.status(503).send("เซิร์ฟเวอร์ไม่ตอบสนอง");
         } else {
             res.json(result)
@@ -522,6 +533,7 @@ router.get("/datescan/user", function (req, res) {
     const sql = "SELECT DISTINCT Date_Scan FROM item where Year = ? AND Date_scan IS NOT NULL ORDER BY Date_scan "
     con.query(sql, [d], function (err, result, fields) {
         if (err) {
+            console.log(err);
             res.status(503).send("เซิร์ฟเวอร์ไม่ตอบสนอง");
         } else {
             res.json(result)
@@ -533,9 +545,9 @@ router.get("/datescan/user", function (req, res) {
 router.get("/Year/iteem", function (req, res) {
     const sql = "SELECT DISTINCT Year FROM item ORDER BY Year "
 
-
     con.query(sql, function (err, result, fields) {
         if (err) {
+            console.log(err);
             res.status(503).send("เซิร์ฟเวอร์ไม่ตอบสนอง");
         } else {
             res.json(result)
@@ -576,6 +588,7 @@ router.put("/manageUser/updatename/:Name/:Email_user", function (req, res) {
     const sql = "UPDATE year_user SET Name = ? WHERE Email_user = ?;";
     con.query(sql, [Name, Email_user], function (err, result, fields) {
         if (err) {
+            console.log(err);
             res.status(503).send("เซิร์ฟเวอร์ไม่ตอบสนอง");
         }
         else {
@@ -591,6 +604,7 @@ router.get("/user/index/info/emailUser/:Email_user", function (req, res) {
 
     con.query(sql, [Email_user], function (err, result, fields) {
         if (err) {
+            console.log(err);
             res.status(503).send("เซิร์ฟเวอร์ไม่ตอบสนอง");
         } else {
             res.json(result)
@@ -605,6 +619,7 @@ router.get("/user/profile/inspectedInfoItem/:Email_Committee", function (req, re
 
     con.query(sql, [Email_Committee], function (err, result, fields) {
         if (err) {
+            console.log(err);
             res.status(503).send("เซิร์ฟเวอร์ไม่ตอบสนอง");
         } else {
             res.json(result)
@@ -618,6 +633,7 @@ router.get("/item/dashboard/showAllInfo", function (req, res) {
 
     con.query(sql, function (err, result, fields) {
         if (err) {
+            console.log(err);
             res.status(503).send("เซิร์ฟเวอร์ไม่ตอบสนอง");
         } else {
             res.json(result)
@@ -627,12 +643,11 @@ router.get("/item/dashboard/showAllInfo", function (req, res) {
 
 // Load all item for import
 router.get("/item/dashboard/showuser", function (req, res) {
-
-
     const sql = "select DISTINCT Status from item WHERE Year = ?;"
 
     con.query(sql, [d], function (err, result, fields) {
         if (err) {
+            console.log(err);
             res.status(503).send("เซิร์ฟเวอร์ไม่ตอบสนอง");
         } else {
             res.json(result)
@@ -650,6 +665,24 @@ router.get("/item/dashboard/showAllInfo/:location/:email/:year", function (req, 
 
     con.query(sql, [location, email, year], function (err, result, fields) {
         if (err) {
+            console.log(err);
+            res.status(503).send("เซิร์ฟเวอร์ไม่ตอบสนอง");
+        } else {
+            res.json(result)
+
+        }
+    })
+});
+
+// Load all item info with location
+router.get("/item/dashboard/showAllInfoall/:location/:year", function (req, res) {
+    const location = req.params.location;
+    const year = req.params.year;
+    const sql = "select * FROM item WHERE Location = ? AND Year = ?"
+
+    con.query(sql, [location, year], function (err, result, fields) {
+        if (err) {
+            console.log(err);
             res.status(503).send("เซิร์ฟเวอร์ไม่ตอบสนอง");
         } else {
             res.json(result)
@@ -667,27 +700,10 @@ router.get("/item/dashboard/showAllInfoall/:location/:year", function (req, res)
 
     con.query(sql, [location, year], function (err, result, fields) {
         if (err) {
+            console.log(err);
             res.status(503).send("เซิร์ฟเวอร์ไม่ตอบสนอง");
         } else {
             res.json(result)
-
-        }
-    })
-});
-
-// Load all item info with location
-
-router.get("/item/dashboard/showAllInfoall/:location/:year", function (req, res) {
-    const location = req.params.location;
-    const year = req.params.year;
-    const sql = "select * FROM item WHERE Location = ? AND Year = ?"
-
-    con.query(sql, [location, year], function (err, result, fields) {
-        if (err) {
-            res.status(503).send("เซิร์ฟเวอร์ไม่ตอบสนอง");
-        } else {
-            res.json(result)
-
         }
     })
 });
@@ -700,6 +716,7 @@ router.get("/item/dashboard/showAllInfonormal/:location/:Year", function (req, r
 
     con.query(sql, [location, Year], function (err, result, fields) {
         if (err) {
+            console.log(err);
             res.status(503).send("เซิร์ฟเวอร์ไม่ตอบสนอง");
         } else {
             res.json(result)
@@ -714,6 +731,7 @@ router.get("/item/dashboard/number/:status", function (req, res) {
     const status = req.params.status;
     con.query(sql, [status, Year], function (err, result, fields) {
         if (err) {
+            console.log(err);
             res.status(503).send("เซิร์ฟเวอร์ไม่ตอบสนอง");
         } else {
             res.json(result)
@@ -722,7 +740,6 @@ router.get("/item/dashboard/number/:status", function (req, res) {
 });
 
 // Load all item info with location
-
 router.get("/item/dashboard/showAllInfo/:Room/:year", function (req, res) {
     const Room = req.params.Room;
     const year = req.params.year;
@@ -744,6 +761,7 @@ router.get("/item/dashboard/number", function (req, res) {
     const sql = "SELECT count(Status) AS 'Numbers_of_item' FROM item ;"
     con.query(sql, [d], function (err, result, fields) {
         if (err) {
+            console.log(err);
             res.status(503).send("เซิร์ฟเวอร์ไม่ตอบสนอง");
         } else {
             res.json(result)
@@ -759,6 +777,7 @@ router.get("/item/dashboard/number2/:status/:Year", function (req, res) {
     const status = req.params.status;
     con.query(sql, [status, Year, email], function (err, result, fields) {
         if (err) {
+            console.log(err);
             res.status(503).send("เซิร์ฟเวอร์ไม่ตอบสนอง");
         } else {
             res.json(result)
@@ -774,6 +793,7 @@ router.get("/item/dashboard/number2user/:status/:Year/:email", function (req, re
     const status = req.params.status;
     con.query(sql, [status, Year, email], function (err, result, fields) {
         if (err) {
+            console.log(err);
             res.status(503).send("เซิร์ฟเวอร์ไม่ตอบสนอง");
         } else {
             res.json(result)
@@ -787,6 +807,7 @@ router.get("/item/dashboard/number1/:Year", function (req, res) {
     const Year = req.params.Year;
     con.query(sql, [Year], function (err, result, fields) {
         if (err) {
+            console.log(err);
             res.status(503).send("เซิร์ฟเวอร์ไม่ตอบสนอง");
         } else {
             res.json(result)
@@ -802,6 +823,7 @@ router.get("/item/dashboard/number1all/:Year/:email", function (req, res) {
     const email = req.params.email;
     con.query(sql, [Year, email], function (err, result, fields) {
         if (err) {
+            console.log(err);
             res.status(503).send("เซิร์ฟเวอร์ไม่ตอบสนอง");
         } else {
             res.json(result)
@@ -818,6 +840,7 @@ router.get("/item/Location/:year", function (req, res) {
 
     con.query(sql, [year], function (err, result, fields) {
         if (err) {
+            console.log(err);
             res.status(503).send("เซิร์ฟเวอร์ไม่ตอบสนอง");
         } else {
             res.json(result)
@@ -832,6 +855,7 @@ router.get("/item/Room/:year", function (req, res) {
 
     con.query(sql, [year], function (err, result, fields) {
         if (err) {
+            console.log(err);
             res.status(503).send("เซิร์ฟเวอร์ไม่ตอบสนอง");
         } else {
             res.json(result)
@@ -845,9 +869,9 @@ router.get("/item/location/:email/:year", function (req, res) {
     const year = req.params.year;
     const sql = "SELECT DISTINCT Location FROM item WHERE Email_Committee = ? AND Year = ?;"
 
-
     con.query(sql, [email, year], function (err, result, fields) {
         if (err) {
+            console.log(err);
             res.status(503).send("เซิร์ฟเวอร์ไม่ตอบสนอง");
         } else {
             res.json(result)
@@ -860,20 +884,21 @@ router.get("/item/Locationnormal", function (req, res) {
     const sql = "SELECT DISTINCT Location FROM item WHERE Status = 1 AND Year = ?"
     con.query(sql, [d], function (err, result, fields) {
         if (err) {
+            console.log(err);
             res.status(503).send("เซิร์ฟเวอร์ไม่ตอบสนอง");
         } else {
             if (result.length === 0) {
                 con.query(sql, [d - 1], function (err, result, fields) {
                     if (err) {
+                        console.log(err);
                         res.status(503).send("เซิร์ฟเวอร์ไม่ตอบสนอง");
                     } else {
-                        res.json(result)
+                        res.json(result);
                     }
                 })
             } else {
                 res.json(result)
             }
-
         }
     })
 });
@@ -883,9 +908,9 @@ router.get("/item/Status/:year", function (req, res) {
     const year = req.params.year
     const sql = "SELECT DISTINCT Status FROM item where year=?"
 
-
     con.query(sql, [year], function (err, result, fields) {
         if (err) {
+            console.log(err);
             res.status(503).send("เซิร์ฟเวอร์ไม่ตอบสนอง");
         } else {
             res.json(result)
@@ -901,6 +926,7 @@ router.get("/item/Status/:email/:year", function (req, res) {
 
     con.query(sql, [email, year], function (err, result, fields) {
         if (err) {
+            console.log(err);
             res.status(503).send("เซิร์ฟเวอร์ไม่ตอบสนอง");
         } else {
             res.json(result)
@@ -920,10 +946,10 @@ router.get("/item/dashboard/showAllInfo1/:status/:email/:year", function (req, r
 
     con.query(sql, [status, email, year], function (err, result, fields) {
         if (err) {
+            console.log(err);
             res.status(503).send("เซิร์ฟเวอร์ไม่ตอบสนอง");
         } else {
-            res.json(result)
-
+            res.json(result);
         }
     })
 });
@@ -938,27 +964,27 @@ router.get("/item/dashboard/showAllInfostatus/:status/:year", function (req, res
 
     con.query(sql, [status, year], function (err, result, fields) {
         if (err) {
+            console.log(err);
             res.status(503).send("เซิร์ฟเวอร์ไม่ตอบสนอง");
         } else {
-            res.json(result)
+            res.json(result);
             // console.log(status)
         }
     })
 });
 
-
 // // Load Year
 router.get("/item/Year", function (req, res) {
     const sql = "SELECT DISTINCT Year FROM item ORDER BY Year DESC"
 
-
     con.query(sql, function (err, result, fields) {
         if (err) {
+            console.log(err);
             res.status(503).send("เซิร์ฟเวอร์ไม่ตอบสนอง");
         } else {
             res.json(result)
         }
-    })
+    });
 });
 
 
@@ -969,6 +995,7 @@ router.get("/item/Yearuser/:email", function (req, res) {
 
     con.query(sql, [email], function (err, result, fields) {
         if (err) {
+            console.log(err);
             res.status(503).send("เซิร์ฟเวอร์ไม่ตอบสนอง");
         } else {
             res.json(result)
@@ -984,6 +1011,7 @@ router.get("/item/dashboard/showAllInfo4/:Year", function (req, res) {
 
     con.query(sql, [Year], function (err, result, fields) {
         if (err) {
+            console.log(err);
             res.status(503).send("เซิร์ฟเวอร์ไม่ตอบสนอง");
         } else {
             res.json(result)
@@ -1003,12 +1031,11 @@ router.get("/item/showAllInfoall/:Year/:email", function (req, res) {
 
     con.query(sql, [Year, email,], function (err, result, fields) {
         if (err) {
+            console.log(err);
             res.status(503).send("เซิร์ฟเวอร์ไม่ตอบสนอง");
-
         } else {
             res.json(result)
             // console.log("Success")
-
         }
     })
 });
@@ -1021,6 +1048,7 @@ router.get("/item/Email_Committee/:year", function (req, res) {
 
     con.query(sql, [year], function (err, result, fields) {
         if (err) {
+            console.log(err);            
             res.status(503).send("เซิร์ฟเวอร์ไม่ตอบสนอง");
         } else {
             res.json(result)
@@ -1036,13 +1064,13 @@ router.get("/item/dashboard/showAllInfo3/:Email_Committee/:Year", function (req,
 
     con.query(sql, [thecommittee, committee_year], function (err, result, fields) {
         if (err) {
+            console.log(err);
             res.status(503).send("เซิร์ฟเวอร์ไม่ตอบสนอง");
         } else {
             res.json(result)
         }
     })
 });
-
 
 // Load item info
 router.get("/item/:status", function (req, res) {
@@ -1051,6 +1079,7 @@ router.get("/item/:status", function (req, res) {
     const status = req.params.status;
     con.query(sql, [status, Year], function (err, result, fields) {
         if (err) {
+            console.log(err);
             res.status(503).send("เซิร์ฟเวอร์ไม่ตอบสนอง");
         } else {
             res.json(result)
@@ -1065,6 +1094,7 @@ router.get("/item/forPrintQRcode_Barcode/:Email_Committee", function (req, res) 
     const Email_Committee = req.params.Email_Committee;
     con.query(sql, [d, Email_Committee], function (err, result, fields) {
         if (err) {
+            console.log(err);
             res.status(503).send("เซิร์ฟเวอร์ไม่ตอบสนอง");
         } else {
             res.json(result)
@@ -1078,6 +1108,7 @@ router.get("/landing1/showSomeInfo", function (req, res) {
 
     con.query(sql, function (err, result, fields) {
         if (err) {
+            console.log(err);
             res.status(503).send("เซิร์ฟเวอร์ไม่ตอบสนอง");
         } else {
             res.json(result)
@@ -1091,6 +1122,7 @@ router.get("/landing1/showAllInfo", function (req, res) {
 
     con.query(sql, function (err, result, fields) {
         if (err) {
+            console.log(err);
             res.status(503).send("เซิร์ฟเวอร์ไม่ตอบสนอง");
         } else {
             res.json(result)
@@ -1104,6 +1136,7 @@ router.get("/landing2/showSomeInfo", function (req, res) {
 
     con.query(sql, function (err, result, fields) {
         if (err) {
+            console.log(err);
             res.status(503).send("เซิร์ฟเวอร์ไม่ตอบสนอง");
         } else {
             res.json(result)
@@ -1117,6 +1150,7 @@ router.get("/item/numberAll", function (req, res) {
     const sql = "SELECT count(Status) AS 'Numbers_of_Inspected_Item' FROM item WHERE Year = ?"
     con.query(sql, [d], function (err, result, fields) {
         if (err) {
+            console.log(err);
             res.status(503).send("เซิร์ฟเวอร์ไม่ตอบสนอง");
         } else {
             res.send(result)
@@ -1130,6 +1164,7 @@ router.get("/dateTime/showDateTime", function (req, res) {
 
     con.query(sql, [d], function (err, result, fields) {
         if (err) {
+            console.log(err);
             res.status(503).send("เซิร์ฟเวอร์ไม่ตอบสนอง");
         } else {
             if (result.length > 0) {
@@ -1137,7 +1172,6 @@ router.get("/dateTime/showDateTime", function (req, res) {
             } else {
                 res.json(0)
             }
-
         }
     })
 });
@@ -1149,6 +1183,7 @@ router.get("/maindataTable/info/:status/:Year", function (req, res) {
     const status = req.params.status;
     con.query(sql, [status, Year], function (err, result, fields) {
         if (err) {
+            console.log(err);
             res.status(503).send("เซิร์ฟเวอร์ไม่ตอบสนอง");
         } else {
             res.json(result)
@@ -1164,6 +1199,7 @@ router.put("/item/edit", function (req, res) {
     const sql = "UPDATE item,year_user SET item.Status=? where item.Inventory_Number=? AND year_user.Email_user=?;"
     con.query(sql, [Status, Inventory_Number, Email_user], function (err, result, fields) {
         if (err) {
+            console.log(err);
             res.status(503).send("เซิร์ฟเวอร์ไม่ตอบสนอง");
         }
         else {
@@ -1194,6 +1230,7 @@ router.delete("/manageItem/deleteAllitem", function (req, res) {
     const sql2 = "DELETE from item WHERE Year=?"
     con.query(sql, [d], function (err, result, fields) {
         if (err) {
+            console.log(err);
             res.status(503).send("เซิร์ฟเวอร์ไม่ตอบสนอง");
         } else {
             res.json(result)
@@ -1208,6 +1245,7 @@ router.get("/manageUser/showAllUser/:Year", function (req, res) {
 
     con.query(sql, [Year], function (err, result, fields) {
         if (err) {
+            console.log(err);
             res.status(503).send("เซิร์ฟเวอร์ไม่ตอบสนอง");
         } else {
             res.json(result)
@@ -1218,17 +1256,16 @@ router.get("/manageUser/showAllUser/:Year", function (req, res) {
 // Load mane
 router.get("/manageUser/showAlladminname", function (req, res) {
     Email_assigner = req.params.Email_assigner;
-    const sql = "select * from year_user WHERE Role = 1"
+    const sql = "select * from year_user WHERE Role = 1";
 
     con.query(sql, function (err, result, fields) {
         if (err) {
             console.log(err);
             res.status(503).send("เซิร์ฟเวอร์ไม่ตอบสนอง");
         } else {
-            res.json(result)
-
+            res.json(result);
         }
-    })
+    });
 });
 
 // Add info of new user in manage user page
@@ -1254,7 +1291,6 @@ router.post("/manageUser/add/:Email_user/:Email_assigner/:Role", function (req, 
         else {
             res.send("เพิ่มข้อมูลเรียบร้อย");
         }
-
     });
 });
 
@@ -1265,6 +1301,7 @@ router.get("/con/:Inventory_Number/:Year", function (req, res) {
     const Inventory_Number = req.params.Inventory_Number;
     con.query(sql, [Inventory_Number, Year], function (err, result, fields) {
         if (err) {
+            console.log(err);
             res.status(503).send("เซิร์ฟเวอร์ไม่ตอบสนอง");
         } else {
             res.json(result)
@@ -1279,6 +1316,7 @@ router.get("/item5/:Inventory_Number/:Year", function (req, res) {
     const Inventory_Number = req.params.Inventory_Number;
     con.query(sql, [Inventory_Number, Year], function (err, result, fields) {
         if (err) {
+            console.log(err);
             res.status(503).send("เซิร์ฟเวอร์ไม่ตอบสนอง");
         } else {
             res.json(result)
@@ -1291,10 +1329,10 @@ router.get("/numberitem", function (req, res) {
     const sql = "SELECT count(Inventory_Number) AS numofitem FROM item WHERE Year = ?"
     con.query(sql, [d], function (err, result, fields) {
         if (err) {
+            console.log(err);
             res.status(503).send("เซิร์ฟเวอร์ไม่ตอบสนอง");
         } else {
             res.send(result)
-
         }
     })
 });
@@ -1321,9 +1359,7 @@ router.post("/dateTime/insertTime/:Date_start/:Date_end", function (req, res) {
         else {
             res.send("เพิ่มข้อมูลเรียบร้อย");
         }
-
     });
-
 });
 
 // Update date
@@ -1334,6 +1370,7 @@ router.put("/dateTime/updateTime/:Date_start/:Date_end", function (req, res) {
     const sql = "UPDATE date_check SET Date_start=?, Date_end=? where Years=?;"
     con.query(sql, [Date_start, Date_end, d], function (err, result, fields) {
         if (err) {
+            console.log(err);
             res.status(503).send("เซิร์ฟเวอร์ไม่ตอบสนอง");
         }
         else {
@@ -1348,20 +1385,20 @@ router.get("/Loadannounce", function (req, res) {
     const sql = "SELECT * FROM `announcement` ORDER BY `Number`  DESC"
     con.query(sql, function (err, result, fields) {
         if (err) {
+            console.log(err);
             res.status(503).send("เซิร์ฟเวอร์ไม่ตอบสนอง");
         } else {
             res.send(result)
-
         }
     })
 });
 
 // upload photo announce
 router.post("/UploadingPhoto", function (req, res) {
-
     upload(req, res, function (err) {
         if (err) {
             // An unknown error occurred when uploading.
+            console.log(err);
             res.status(500).send("ไม่สามารถอัพโหลดไฟล์นี้ได้");
             return;
         }
@@ -1370,7 +1407,6 @@ router.post("/UploadingPhoto", function (req, res) {
             // console.log(file_name)
             res.json(file_name)
         }
-
     })
 });
 
@@ -1403,7 +1439,6 @@ router.put("/EditAnnounce/:EmailOwner/:Number1", function (req, res) {
         }
         else {
             res.send("/announce");
-
         }
     })
 });
@@ -1417,17 +1452,16 @@ router.delete("/DeleteAnnounce/:Number1", function (req, res) {
     con.query(sql, [Number1], function (err, result, fields) {
         if (err) {
             res.status(503).send("เซิร์ฟเวอร์ไม่ตอบสนอง")
-            console.log(err)
+            console.log(err);
         }
         else {
             if (result.affectedRows != 1) {
-                res.status(503).send("Delete Failed")
+                res.status(503).send("Delete Failed");
             }
             else {
                 res.send("/announce");
                 // console.log("Delete Successed")
             }
-
         }
     })
 });
