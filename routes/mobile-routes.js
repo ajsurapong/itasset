@@ -2,8 +2,7 @@ const router = require("express").Router();
 const moment = require('moment');
 const multer = require("multer");
 const mysql = require("mysql");
-const config = require("../config/dbConfig.js");
-const con = mysql.createConnection(config);
+const con = require("../config/dbConfig");
 
 // Upload image
 const storageOptionpic = multer.diskStorage({
@@ -85,7 +84,6 @@ router.get('/check_date/:code', function (req, res) {
             }
 
             if (result.length > 0) {
-
                 if (currectDate >= result[0].start_date && currectDate <= result[0].stop_date && result[0].Status == 0) {
                     res.send('1').end(); // 1 is can edit  
                     // console.log("Can Edit")                  

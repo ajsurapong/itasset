@@ -69,115 +69,7 @@
             height: 5px;
             background-color: #ff0000;
         }
-    </style>
-    <script>
-        $(document).ready(function () {
-            $(".atyear1").html(new Date().getFullYear()+543)
-            $("#all").click(function () {
-                window.location.replace("/api/dashboard");
-            });
-            getItem();
-            Loadannounce();
-        });
-
-        function Loadannounce() {
-            $.ajax({
-                method: "GET",
-                url: "/api/Loadannounce"
-            }).done(function (dataSet, state, xhr) {
-                let count = dataSet.length
-                if (dataSet.length > 5) {
-                    count = 5
-                }
-                for (var i = 0; i < count; i++) {
-                    $("#numberofcar").append('<li data-target="#carouselExampleIndicators" data-slide-to="' + i + '" id="car' + i + '"></li>')
-
-                    $("#carphoto").append('<div class="carousel-item slide" id="carphoto' + i + '"><div class="card shadow p-3 mb-1 bg-white rounded" style="color: black;"><div class="row mb-3"><div class="col-sm-7"><div class="card-body"> <div><span>' +
-                        '<div> <h3 id="title' + i + '"> </h3> </div>' + dataSet[i].Head + '</span></div> <br><p>' + dataSet[i].Detail +
-                        '</p> ประกาศเมื่อ ' + dataSet[i].DateEndCreate + ' <br> <br> <br></div> </div><div class="col-sm-5 mt-5"> <img class="card-img-top mx-auto" id="Announcephoto' + i +
-                        '" src="" alt="Card image" style="width:80%" height="90%"> </div>   </div> </div></div>')
-                    if (dataSet[i].Status == 1) {
-
-                        $('#Announcephoto' + i + '').prop("src", "/img/meeting.jpg");
-                        document.getElementById("title" + i + "").innerHTML = "ประชุม";
-
-                    } else if (dataSet[i].Status == 2) {
-                        document.getElementById("title" + i + "").innerHTML = "ประชาสัมพันธ์";
-                        $('#Announcephoto' + i + '').prop("src", "/img/normal.jpg");
-                    }
-                }
-                $("#car0").addClass("active");
-                $("#carphoto0").addClass("active");
-            }).fail(function (xhr, state, error) {
-
-            })
-        }
-
-        function getItem() {
-            //get users from DB
-            $.ajax({
-                method: "GET",
-                url: "/api/profile/infouser"
-            }).done(function (data, state, xhr) {
-                $(".user").html(data.name);
-                document.getElementById('pic').src = data.photo;
-                if (data.email === undefined) {
-                    window.location.replace("/api/checkpage")
-                } else {
-                    $.ajax({
-                        method: "GET",
-                        url: "/api/manageUser/showAllUsers/" + data.email
-                    }).done(function (dataSet, state, xhr) {
-                        if (dataSet[0] === undefined||dataSet[0].data === 0) {
-                            
-                            window.location.replace("/api/checkpage")
-                        }
-                        if (dataSet[0].Role == 2) {
-                            $("#DateManage").hide();
-                            $("#manageu").hide();
-                            $("#admin_history").hide();
-                            $("#News_announce").hide();
-                        }
-                        if (dataSet[0].Role == 1 || dataSet[0].Role == 3) {
-                            $("#userhistory").hide();
-
-                        }
-                        for (let i = 0; i < dataSet.length; i++) {
-                            if (dataSet[i].Role == 2) {
-                                dataSet[i].Role = "กรรมการ"
-                            } else if (dataSet[i].Role == 1) {
-                                dataSet[i].Role = "ผู้ดูแลระบบ"
-                            } else {
-                                dataSet[i].Role = "ผู้ดูแลถาวร"
-                            }
-                        }
-                        $("#rol2").html(dataSet[0].Role)
-
-                    }).fail(function (xhr, state, error) {
-                        //get data failed
-                        $(".alertText").html(xhr.responseText)
-                        $("#alertmodal").modal();
-                    });
-                }
-
-                ///////////////////////////เพิ่มชื่อ ในดาต้าเบส ////////////////////////////
-                $.ajax({
-                    method: "PUT",
-                    url: "/api/manageUser/updatename/" + data.name + "/" + data.email
-                }).done(function (data, state, xhr) {
-
-
-                }).fail(function (xhr, state, error) {
-                    //get data failed
-
-                });
-            }).fail(function (xhr, state, error) {
-                //get data failed
-                $(".alertText").html(xhr.responseText)
-                $("#alertmodal").modal();
-            });
-        }
-    </script>
+    </style>    
 </head>
 
 <body>
@@ -218,8 +110,8 @@
 
                     <li class="nav-item dropdown nav-user">
                         <a class="nav-link nav-user-img" href="#" id="navbarDropdownMenuLink2" data-toggle="dropdown"
-                            aria-haspopup="true" aria-expanded="false"><img id="pic" src="/img/avatar-1.jpg"
-                                alt="" class="user-avatar-md rounded-circle"></a>
+                            aria-haspopup="true" aria-expanded="false"><img id="pic" src="/img/avatar-1.jpg" alt=""
+                                class="user-avatar-md rounded-circle"></a>
                         <div class="dropdown-menu dropdown-menu-right nav-user-dropdown"
                             aria-labelledby="navbarDropdownMenuLink2">
                             <div class="nav-user-info">
@@ -390,96 +282,15 @@
                                     <div class="but"></div>
                                     <input class="btn btn-sm" type="button" value="ตกลง" data-dismiss="modal"
                                         style="float: right; background-color: #0a72c1; color:white">
-
                                 </div>
-
-
                             </div>
                         </div>
                     </div>
-                    <!-- ============================================================== -->
-                    <!-- เสร็จ modal  -->
-                    <!-- ============================================================== -->
-                    <!-- </div> -->
                 </div>
-                <!-- footer  -->
-                <!-- ============================================================== -->
-
-                <!-- <div class="" style="background-color:  rgb(50, 50, 51);  ">
-                    <div class="row ml-5 mr-5" style="background-color: rgb(50, 50, 51);">
-                        <div class="col-xs-12 col-sm-12 col-md-4 mt-5">
-                            <h3>
-                                <blockquote>
-                                    <img src="/img/itlogo.png">
-                                    <h4 style="color:azure;font-size:30px;">สำนักวิชาเทคโนโลยีสารสนเทศ</h4>
-                                    <div style="border: 0.5px solid red; width: 7cm;"></div>
-                                    <code style="color: azure;font-size: 20px;">มหาวิทยาลัยแม่ฟ้าหลวง</code>
-                                </blockquote>
-                            </h3>
-                        </div>
-                        <div class="col-xs-12 col-sm-6 col-md-4 mt-5">
-                            <div class="copyright">
-                                <h4 class="header-footer" style="color: azure;">ติดต่อ <br>
-                                    <div style="border: 1px solid red; width: 7cm;"></div>
-                                </h4>
-                                <p style="color: azure; font-size: 14px; font-weight: 200;">
-                                    สำนักวิชาเทคโนโลยีสารสนเทศ
-                                    <br>
-                                    มหาวิทยาลัยแม่ฟ้าหลวง
-                                    <br>
-                                    333 หมู่ 1 ตำบลท่าสุด อำเภอเมือง จังหวัดเชียงราย 57100
-                                    <br>
-                                    โทรศัพท์ 0 5391 6741-2
-                                    <br>
-                                    โทรสาร 0 5391 6743
-                                    <br>
-                                    อีเมล: itschool@mfu.ac.th
-                                </p>
-                                <p></p>
-                                <ul class="mfu-social">
-
-                                    <a href="https://www.facebook.com/itschool.mfu.page/" target="_blank"
-                                        class="facebook-icon mr-3">
-                                        <i class="fab fa-facebook">
-
-                                        </i>
-                                    </a>
-
-                                    <a href="https://www.youtube.com/channel/UCbvvlT0UyZHCYdPTXL7vHXQ/featured"
-                                        target="_blank" class="youtube-icon">
-                                        <i class="fab fa-youtube">
-
-                                        </i>
-                                    </a>
-                                </ul>
-                                <p></p>
-                            </div>
-                        </div>
-                        <div class="col-xs-12 col-sm-6 col-md-4 mt-5"><iframe
-                                src="https://www.facebook.com/plugins/page.php?href=https%3A%2F%2Fwww.facebook.com%2Fitschool.mfu.page%2F&amp;tabs=timeline&amp;width=340&amp;height=250&amp;small_header=true&amp;adapt_container_width=true&amp;hide_cover=false&amp;show_facepile=true&amp;appId"
-                                width="100%" height="300" style="border:none;overflow:hidden" scrolling="no"
-                                frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>
-
-
-                        </div>
-
-                    </div>
-                    <a class="scroll-to-top" style="display: none;">
-                        <i class="fa fa-long-arrow-up" aria-hidden="true"></i>
-                    </a>
-                    <script>
-                        window.dataLayer = window.dataLayer || [];
-                        function gtag() { dataLayer.push(arguments); }
-                        gtag('js', new Date());
-
-                        gtag('config', 'UA-148131712-1');
-                    </script>
-                </div> -->
-                <!-- ============================================================== -->
-                <!-- ======================== เสร็จ footer ========================= -->
-                <!-- ============================================================== -->
             </div>
         </div>
     </div>
+    <script src="/views/mainpage.js"></script>
 </body>
+
 </html>

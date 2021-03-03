@@ -11,4 +11,4 @@ content-type: application/json
 }
 
 ###
-GET http://asset.itschool.mfu.ac.th/api/mobile/home_chart
+GET http://localhost/api/mainpage

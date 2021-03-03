@@ -33,6 +33,9 @@
 -dropdown filter shows 'null' or repeated values when there is only one status
 
 *** Performance and Security ***
+-Secure all api using JWT
+-use signed + http-only cookie for web connection
+-Cross-site scripting: try to remove it before using 'helmet'
 -Remove all console.log for non-error ex: testing
 -Separate scripts to external JS
 [DONE] -Set virtual host (reverse proxy) using Apache or Nginx
@@ -40,7 +43,6 @@
     ex: use "/img/" instead of "img/"
     "/img/" -> localhost/img
     "img/" -> localhost/server_name/img
--Cross-site scripting: try to remove it before using 'helmet'
 [DONE] -change all secrete keys to node_env
 [DONE] -set node to auto start using pm2
 -http://expressjs.com/en/advanced/best-practice-performance.html
