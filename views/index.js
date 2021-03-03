@@ -55,7 +55,7 @@ $(document).ready(function () {
             { data: "Room", title: "ห้อง" },
             { data: "Department", title: "แผนกที่ดูแล" },
             { data: "Date_scan", title: "วันที่ตรวจสอบ" },
-            { data: "Email_Committee", title: "ผู้ตรวจสอบ" },
+            // { data: "Email_Committee", title: "ผู้ตรวจสอบ" },
             { data: "Status", title: "สถานะ" },
         ],
     });
@@ -76,11 +76,12 @@ function getItem() {
         // if there is no asset in current year
         if (dataSet.length == 0) {
             // find previous year's assets
-            $(".headyear").html("ข้อมูลครุภัณฑ์ประจำปี " + (currentYear-1));
+            currentYear--;
+            $(".headyear").html("ข้อมูลครุภัณฑ์ประจำปี " + currentYear);
             $(".atyear").html(currentYear-1);
             $.ajax({
                 method: "GET",
-                url: "/api/maindataTable/info/1/" + (currentYear-1),
+                url: "/api/maindataTable/info/1/" + currentYear,
                 success: function (dataSet) {
                     drawTable(dataSet);
                 }
@@ -113,7 +114,7 @@ function getItem() {
                 $("#des").html("<strong>คำอธิบาย : </strong>" + dataSet[0].Asset_Description)
                 $("#mod").html("<strong>โมเดล : </strong>" + dataSet[0].Model + '<br>' + "<strong>  ซีเรียล : </strong>" + dataSet[0].Serial + '<br>' + "<strong>  สถานที่ : </strong>" + dataSet[0].Location + "-" + dataSet[0].Room)
                 $("#cos").html("<strong>รหัสแผนก : </strong>" + dataSet[0].Cost_center + '<br>' + "<strong>   แผนกที่จัดเก็บ : </strong>" + dataSet[0].Department)
-                $("#value").html("<strong>มูลค่า : </strong>" + dataSet[0].Original_value + " บาท" + '<br>' + "<strong>   แหล่งที่มา : </strong>" + dataSet[0].Vendor_name)
+                $("#value").html("<strong>   แหล่งที่มา : </strong>" + dataSet[0].Vendor_name)
                 $(".bd-example-modal-lg").modal();
 
             }).fail(function (xhr, state, error) {

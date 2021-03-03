@@ -29,42 +29,7 @@
     <link rel="stylesheet" type="text/css" href="assets/vendor/daterangepicker/daterangepicker.css" /> -->
     <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    <title>Document</title>
-
-    <script>
-        $(document).ready(function () {
-
-            $.ajax({
-                method: "GET",
-                url: "/api/profile/infouser"
-            }).done(function (data, state, xhr) {
-                if (data.email === undefined) {
-
-                    $(".alertText").html("กรุณาเข้าสู่ระบบ")
-                    $("#alertmodal").modal();
-                } else {
-                    $.ajax({
-                        method: "GET",
-                        url: "/api/manageUser/showAllUsers/" + data.email
-                    }).done(function (dataSet, state, xhr) {
-                        if (dataSet[0] === undefined) {
-                            $("#alertmodal").modal();
-                        } else {
-
-                            window.location.replace("/api/mainpage")
-                        }
-
-                    }).fail(function (xhr, state, error) {
-                        //get data failed
-                        alert(xhr.responseText);
-                    });
-                }
-            }).fail(function (xhr, state, error) {
-                //get data failed
-                alert(xhr.responseText);
-            });
-        })
-    </script>
+    <title>Document</title>    
 </head>
 
 <body>
@@ -84,6 +49,7 @@
             </div>
         </div>
     </div>
+    <script src="/views/checkpage.js"></script>
 </body>
 
 </html>
