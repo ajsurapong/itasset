@@ -5,7 +5,7 @@ const compression = require("compression");
 const express = require("express");
 const path = require("path");
 const body_parser = require("body-parser");
-const helmet = require("helmet");    
+// const helmet = require("helmet");    
 
 const pageRoutes = require("./routes/page-routes");
 const otherRoutes = require("./routes/other-routes");
@@ -25,7 +25,7 @@ app.use('/Image', express.static('./upload/Image'));
 
 //<=========== Middleware ==========>
 app.use(compression());
-app.use(helmet({contentSecurityPolicy: false}));    // FIXME: better to config allow sites
+// app.use(helmet({contentSecurityPolicy: false}));    // FIXME: better to config allow sites
 app.use(body_parser.urlencoded({ extended: true })); //when you post service
 app.use(body_parser.json());
 //cookie

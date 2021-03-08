@@ -2,13 +2,12 @@
 GET http://localhost:3000/mobile/home_chart
 
 ###
-POST https://example.com/comments HTTP/1.1
+POST http://localhost:3000/mobile/login
 content-type: application/json
 
 {
-    "name": "sample",
-    "time": "Wed, 21 Oct 2015 18:27:50 GMT"
+    "email": "surapong@mfu.ac.th"
 }
 
 ###
-GET http://localhost/api/mainpage
+GET http://localhost:3000/mobile/get_product/744000200452001
