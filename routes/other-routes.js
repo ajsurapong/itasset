@@ -268,16 +268,17 @@ function importfromexel(res, filePath, email) {
     });
 }
 
-// บังคับถ่ายรูป
+// Force to take/don't take photo for selected assets
 router.put("/item/take/:year", authCheck, function (req, res) {
     const year = req.params.year;
-    const Status = req.body.Status;
+    const status = req.body.status;
     const records = req.body.records;
     // console.log(Status)
 
-    if (Status == 1) {
-        const sql = "UPDATE item SET Takepicture = 1 where Year = ? AND Inventory_Number IN(?);"
-        con.query(sql, [year, records], function (err, result, fields) {
+    // status 1 = force taking photo, 0 = not taking photo
+    if (status == 0 || status == 1) {
+        const sql = "UPDATE item SET Takepicture = ? where Year = ? AND Inventory_Number IN(?);"
+        con.query(sql, [status, year, records], function (err, result, fields) {
             if (err) {
                 res.status(503).send("เซิร์ฟเวอร์ไม่ตอบสนอง");
                 console.log(err)
@@ -286,21 +287,38 @@ router.put("/item/take/:year", authCheck, function (req, res) {
                 res.send("แก้ไขข้อมูลเรียบร้อย");
                 // console.log("successtake")
             }
-        })
+        });
     }
-    else {
-        const sql = "UPDATE item SET Takepicture = 0 where Year = ? AND Inventory_Number IN(?) ;"
-        con.query(sql, [year, records], function (err, result, fields) {
-            if (err) {
-                res.status(503).send("เซิร์ฟเวอร์ไม่ตอบสนอง");
-                console.log(err)
-            }
-            else {
-                res.send("แก้ไขข้อมูลเรียบร้อย");
-                // console.log("successtake")
-            }
-        })
-    }
+    // else {
+    //     const sql = "UPDATE item SET Takepicture = 0 where Year = ? AND Inventory_Number IN(?) ;"
+    //     con.query(sql, [year, records], function (err, result, fields) {
+    //         if (err) {
+    //             res.status(503).send("เซิร์ฟเวอร์ไม่ตอบสนอง");
+    //             console.log(err)
+    //         }
+    //         else {
+    //             res.send("แก้ไขข้อมูลเรียบร้อย");
+    //             // console.log("successtake")
+    //         }
+    //     })
+    // }
+});
+
+// Force to take/don't take photo for all assets
+router.put("/item/takeAll/:year/:status", authCheck, function (req, res) {
+    const year = req.params.year;
+    const status = req.params.status;
+    // status 1 (take) 0 (don't take)
+    const sql = "UPDATE item SET Takepicture = ? where Year = ?";
+    con.query(sql, [status, year], function (err, result, fields) {
+        if (err) {
+            res.status(503).send("เซิร์ฟเวอร์ไม่ตอบสนอง");
+            console.log(err);
+        }
+        else {
+            res.send("แก้ไขข้อมูลเรียบร้อย");
+        }
+    });
 });
 
 // Add image to an item

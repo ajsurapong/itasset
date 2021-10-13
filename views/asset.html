@@ -4,7 +4,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/1.10.20/css/dataTables.bootstrap4.min.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.2.3/css/responsive.bootstrap4.min.css">
@@ -65,13 +64,11 @@
         #Location {
             width: 73px;
             height: 20px;
-
         }
 
         #Status {
             width: 70px;
             height: 20px;
-
         }
     </style>
 </head>
@@ -100,11 +97,8 @@
                 <h6 class="font-weight-bold atyear1 ml-2" style="color: rgb(2, 121, 251);">ปี</h6>
 
                 <ul class="navbar-nav ml-auto navbar-right-top">
-
                     <li class="nav-item dropdown notification">
-
                         <ul class="dropdown-menu dropdown-menu-right notification-dropdown">
-
                             <li>
                                 <div class="list-footer"> <a href="#">การแจ้งเตือนทั้งหมด</a></div>
                             </li>
@@ -113,8 +107,8 @@
 
                     <li class="nav-item dropdown nav-user">
                         <a class="nav-link nav-user-img" href="#" id="navbarDropdownMenuLink2" data-toggle="dropdown"
-                            aria-haspopup="true" aria-expanded="false"><img id="pic" src="/img/avatar-1.jpg"
-                                alt="" class="user-avatar-md rounded-circle"></a>
+                            aria-haspopup="true" aria-expanded="false"><img id="pic" src="/img/avatar-1.jpg" alt=""
+                                class="user-avatar-md rounded-circle"></a>
                         <div class="dropdown-menu dropdown-menu-right nav-user-dropdown"
                             aria-labelledby="navbarDropdownMenuLink2">
                             <div class="nav-user-info">
@@ -296,12 +290,10 @@
                     </div>
                 </div>
 
-
                 <div class="container " style="background-color: white;">
                     <br>
                     <div class="row border border-light">
                         <div class="col-md-1">
-
                             <div class="btn-group mt-2" role="group">
                                 <select id="Location" style="border: white;">
                                     <option id="hidelocation" value="สถานที่" selected>สถานที่</option>
@@ -310,7 +302,6 @@
                         </div>
 
                         <div class="col-md-1">
-
                             <div class="btn-group mt-2" role="group">
                                 <select id="Room" style="border: white;">
                                     <option id="hideroom" value="ห้อง" selected>ห้อง</option>
@@ -328,7 +319,6 @@
                         </div>
 
                         <div class="col-md-2">
-
                             <div class="btn-group mt-2" role="group">
                                 <select id="Email_Committee" style="border: white;width: 180px;height: 20px;">
                                     <option id="hidecommittee" value="คณะกรรมการผู้ตรวจสอบ" selected>
@@ -339,7 +329,6 @@
 
 
                         <div class="col-md-2">
-
                             <div class="btn-group " role="group">
                                 <a href="/api/asset">
                                     <button type="button" href="#" class="btn"
@@ -372,8 +361,12 @@
                                     ตั้งค่าการถ่ายรูป
                                 </button>
                                 <div class="dropdown-menu" aria-labelledby="dropdownTackPic">
-                                    <button class="dropdown-item" id="TakePhoto" value="1">ถ่ายรูป</button>
-                                    <button class="dropdown-item" id="NoTakePhoto" value="0">ไม่ถ่ายรูป</button>
+                                    <button class="dropdown-item" id="TakePhoto" value="1">ถ่ายรูปเฉพาะที่เลือก</button>
+                                    <button class="dropdown-item" id="NoTakePhoto"
+                                        value="0">ไม่ถ่ายรูปเฉพาะที่เลือก</button>
+                                    <button class="dropdown-item" id="TakePhotoAll" value="2">ถ่ายรูปทั้งหมด</button>
+                                    <button class="dropdown-item" id="NoTakePhotoAll"
+                                        value="3">ไม่ถ่ายรูปทั้งหมด</button>
                                 </div>
                             </span>
                         </div>
@@ -584,4 +577,5 @@
     </div>
     <script src="/views/asset.js"></script>
 </body>
+
 </html>

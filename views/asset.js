@@ -12,7 +12,6 @@ $(document).ready(function () {
 
         if (document.getElementById("fileUpload").files.length == 0) {
             //or use jQuery
-
             swal({
                 title: "กรุณาเลือกไฟล์",
                 type: "info",
@@ -25,7 +24,6 @@ $(document).ready(function () {
         }
         else if (fileExtension != "xlsx") {
             // alert("please select only excel file");
-
             swal({
                 title: "กรุณาเลือกเฉพาะไฟล์ Excel",
                 type: "info",
@@ -192,33 +190,22 @@ $(document).ready(function () {
                                                 $(".but").append('<input class="btn btn-sm" type="button" value = "ตกลง" onclick = "location.reload()" style="float: right; background-color: #0a72c1; color:white">')
                                                 $(".alertText").html(xhr.responseText)
                                                 $("#alertmodal").modal();
-
                                             }
                                         });
-
-
                                     }
                                 }, 2000);
-
-
-
                             });
-
                         }
                     })
                 }
             }).fail(function (xhr, state, error) {
                 $(".alertText").html(xhr.responseText)
                 $("#alertmodal").modal();
-
             });
         }
-
-
     });
 
-
-    // //====================================== drop down year ======================================
+    // //==================== drop down year ===================
     $.ajax({
         method: "GET",
         url: "/api/item/Year"
@@ -237,7 +224,6 @@ $(document).ready(function () {
             // $('.fixyear').toggleClass("fixyear input-group mt-1");
             $('.fixyear').addClass("fixyear input-group ml-3 mt-3");
             $('.year').append($(document.createElement('select')).prop({
-
                 class: 'year',
                 name: 'year',
                 style: 'border-color: white',
@@ -246,7 +232,6 @@ $(document).ready(function () {
                 name: 'Year'
             })
             )
-
 
             //drop down status year
             for (let i = 0; i <= values.length - 1; i++) {
@@ -274,15 +259,11 @@ $(document).ready(function () {
                     url: "/api/item/dashboard/showAllInfo4/" + selected
                 }).done(function (dataSet, state, xhr) {
                     getItem()
-
                 }).fail(function (xhr, state, error) {
                 })
-
             })
         }
-
     })
-
 
     $("#all").click(function () {
         window.location.replace("/api/information");
@@ -300,9 +281,7 @@ $(document).ready(function () {
     //======================= เปลี่ยน font PDF จบ ========================
 
     //=======================สร้างโครง DataTable =========================
-
     table = $('#myTable').DataTable({
-
         'columnDefs': [
             {
                 'targets': 0,
@@ -343,20 +322,17 @@ $(document).ready(function () {
             { data: "Date_scan", title: "วันที่ตรวจสอบ", className: "classimg" },//15
             { data: "Email_Committee", title: "ผู้ตรวจสอบ", className: "classimg" },//16
             { data: "Status", title: "สถานะ", className: "classimg" },//17
+            { data: "Received_date", title: "วันที่รับสินทรัพย์", className: "classimg" },//17
         ],
-
     });
 
-
     var aa = new $.fn.dataTable.Buttons(table, {
-
         "buttons": [
             {
                 "extend": 'excel',
                 "exportOptions": {
                     "columns": [1, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 17]
                 },
-
             },
             { // กำหนดพิเศษเฉพาะปุ่ม pdf
                 "extend": 'pdf', // ปุ่มสร้าง pdf ไฟล์
@@ -390,22 +366,23 @@ $(document).ready(function () {
     //======================= สร้างโครง DataTable จบ =========================
 
 
-    //============================ Take photot ===========================
+    //============================ Take photo ===========================
     $("#TakePhoto").click(function () {
-
         var rows_selected = table.column(0).checkboxes.selected();
         let rowdata = rows_selected.join(",")
         const arr = rowdata.split(",");
         SelectedYear = $("#Year").val();
         var takephoto = $("#TakePhoto").val();
 
-        if (rows_selected.length != 0) {
+        // if user chooses 0-20 products
+        // we prevent select too many products which will crash data submission
+        if (rows_selected.length != 0 && rows_selected.length <= 20) {
+            // console.log(arr);
             $.ajax({
                 method: "put",
                 url: "/api/item/take/" + SelectedYear,
-                data: { records: arr, Status: takephoto },
+                data: { records: arr, status: takephoto },
                 success: function (response) {
-
                     swal({
                         title: "<small>บันทึกสำเร็จ</small>",
                         type: "success",
@@ -423,11 +400,10 @@ $(document).ready(function () {
                         });
                 }
             });
-
         }
         else {
             swal({
-                title: "กรุณาเลือกข้อมูล",
+                title: "กรุณาเลือกข้อมูลตั้งแต่ 1-20 รายการ",
                 type: "info",
                 showCancelButton: false,
                 confirmButtonClass: "btn-primary rounded",
@@ -436,10 +412,35 @@ $(document).ready(function () {
             })
         }
     });
+
+    // Take photo all
+    $("#TakePhotoAll").click(function () {
+        $.ajax({
+            method: "put",
+            url: "/api/item/takeAll/" + SelectedYear + "/1",
+            // data: { records: arr, status: takephoto },
+            success: function (response) {
+                swal({
+                    title: "<small>บันทึกสำเร็จ</small>",
+                    type: "success",
+                    showCancelButton: false,
+                    confirmButtonClass: "btn-success rounded",
+                    confirmButtonText: "ยืนยัน",
+                    closeOnConfirm: true,
+                    html: true,
+                    closeOnCancel: true
+                },
+                    function (isConfirm) {
+                        if (isConfirm) {
+                            window.location.reload()
+                        }
+                    });
+            }
+        });
+    });
     //============================ Take photot จบ ===========================
 
-    //============================ No Take photot ===========================
-
+    //============================ No Take photo ===========================
     $("#NoTakePhoto").click(function (e) {
         var rows_selected = table.column(0).checkboxes.selected();
         let rowdata = rows_selected.join(",")
@@ -447,11 +448,13 @@ $(document).ready(function () {
         SelectedYear = $("#Year").val();
         var NoTakePhoto = $("#NoTakePhoto").val();
 
-        if (rows_selected.length != 0) {
+        // if user chooses 0-20 products
+        // we prevent select too many products which will crash data submission
+        if (rows_selected.length != 0 && rows_selected.length <= 20) {
             $.ajax({
                 method: "put",
                 url: "/api/item/take/" + SelectedYear,
-                data: { records: arr, Status: NoTakePhoto },
+                data: { records: arr, status: NoTakePhoto },
                 success: function (response) {
                     swal({
                         title: "<small>บันทึกสำเร็จ</small>",
@@ -474,7 +477,7 @@ $(document).ready(function () {
         }
         else {
             swal({
-                title: "กรุณาเลือกข้อมูล",
+                title: "กรุณาเลือกข้อมูลตั้งแต่ 1-20 รายการ",
                 type: "info",
                 showCancelButton: false,
                 confirmButtonClass: "btn-primary rounded",
@@ -485,11 +488,34 @@ $(document).ready(function () {
                 // closeOnCancel: true
             })
         }
-
-
     });
-    //============================ No Take photot จบ ===========================
 
+    // Don't take any photo
+    $("#NoTakePhotoAll").click(function () {
+        $.ajax({
+            method: "put",
+            url: "/api/item/takeAll/" + SelectedYear + "/0",
+            // data: { records: arr, status: takephoto },
+            success: function (response) {
+                swal({
+                    title: "<small>บันทึกสำเร็จ</small>",
+                    type: "success",
+                    showCancelButton: false,
+                    confirmButtonClass: "btn-success rounded",
+                    confirmButtonText: "ยืนยัน",
+                    closeOnConfirm: true,
+                    html: true,
+                    closeOnCancel: true
+                },
+                    function (isConfirm) {
+                        if (isConfirm) {
+                            window.location.reload()
+                        }
+                    });
+            }
+        });
+    });
+    //============================ No Take photo จบ ===========================
 
     $.ajax({
         method: "GET",
@@ -518,7 +544,6 @@ $(document).ready(function () {
                 }
                 if (dataSet[0].Role == 1 || dataSet[0].Role == 3) {
                     $("#userhistory").hide();
-
                 }
                 for (let i = 0; i < dataSet.length; i++) {
                     if (dataSet[i].Role == 2) {
@@ -530,7 +555,6 @@ $(document).ready(function () {
                     }
                 }
                 $("#rol2").html(dataSet[0].Role)
-
             }).fail(function (xhr, state, error) {
                 $(".alertText").html(xhr.responseText)
                 $("#alertmodal").modal();
@@ -547,6 +571,7 @@ function getItem() {
     //get users from DB
     SelectedYear = $("#Year").val();
 
+    // click to show each item details
     $('#myTable tbody').on('click', 'td.classimg', function () {
         var data = table.row(this).data();
         var inven = data.Inventory_Number
@@ -583,12 +608,12 @@ function getItem() {
         });
     });
 
+    // --- getting asset data from server ---
     $.ajax({
         method: "GET",
         url: "/api/item/dashboard/showAllInfo4/" + SelectedYear
     }).done(function (dataSet, state, xhr) {
         // console.log(dataSet.length)
-
         if (dataSet.length == 0) {
             swal({
                 title: "ไม่พบข้อมูลครุภัณฑ์",
@@ -651,7 +676,6 @@ function getItem() {
 
         // ========== Print Qrcode ================
         $("#qrcode").click(function () {
-
             var rows_selected1 = table.column(0).checkboxes.selected();
             var selectedItemQR = [];
 
@@ -674,24 +698,19 @@ function getItem() {
                 })
             }
         });
-
         // ========== Print Qrcode End ================
 
         // ========== Print Barcode ================
-
         $("#barcode").click(function () {
-
             var rows_selected1 = table.column(0).checkboxes.selected();
             var selectedItemBR = [];
 
             if (rows_selected1.length != 0) {
-
                 $.each(rows_selected1, function (index, value) {
                     selectedItemBR.push(value);
                 });
                 let jsobject = JSON.stringify(selectedItemBR)
                 sessionStorage.selectedItemBR = jsobject
-
                 window.open('/api/printbarcode', '_blank');
             } else {
                 swal({
@@ -704,9 +723,7 @@ function getItem() {
                 })
             }
         });
-
         // ========== Print Barcode End ================
-
 
         // ========== Drop Down Location ===============
         $.ajax({
@@ -732,12 +749,9 @@ function getItem() {
                     selected = ' '
                 }
                 // console.log(selected)
-
                 $("#Status").val('สถานะ')
                 $("#Email_Committee").val('คณะกรรมการผู้ตรวจสอบ')
                 $("#Room").val('ห้อง')
-
-
 
                 $.ajax({
                     method: "GET",
@@ -790,13 +804,10 @@ function getItem() {
             for (let i = data.length - 1; i >= 0; i--) {
                 if (data[i].Room === "") {
                     var id = 'ไม่ปรากฏ';
-
                 }
                 else {
                     id = data[i].Room;
                 }
-
-
                 $("#Room").append("<option value='" + id + "'>" + id + "</option>");
             }
             $('#hideroom').hide()
@@ -811,7 +822,6 @@ function getItem() {
                 $("#Status").val('สถานะ')
                 $("#Email_Committee").val('คณะกรรมการผู้ตรวจสอบ')
                 $("#Location").val('สถานที่')
-
 
                 $.ajax({
                     method: "GET",
@@ -930,10 +940,7 @@ function getItem() {
         })
         // ========== Drop Down Status End ==================
 
-
-
         // ========== Drop Down Committee ======================
-
         $.ajax({
             method: "GET",
             url: "/api/item/Email_Committee/" + SelectedYear
@@ -994,6 +1001,6 @@ function getItem() {
         })
         // ========== Drop Down Committee End ==================
 
-    })
-
-}
+    });
+    // --- getting server data ends ---
+}   // end function getItem()

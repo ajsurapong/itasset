@@ -1,7 +1,7 @@
-*** Bug ***
-*** Force taking photos update all years, wrong API
+*** === Bug === ***
 *** DB fields/ some fields must set to nullable coz real data columns are missing
 *** DB fields are too small for imported data ex: date in excel contains also time
+** DB Received_date is VARCHAR? should be DATE?
 *** Cannot upload same xlsx file if older file exists, even it is not during checking period
 [DONE] *** sql table name and field must be exactly matched (case-sensitive)
 *** Date should be server's date
@@ -12,7 +12,10 @@
 [DONE] *** all file extensions must be small characters ex: images
 * Sometimes 'User_history' has no select dropdown for 'year'
 
-*** Minor fixes ***
+*** === Minor fixes === ***
+[Done] Remove body-parser
+[Done] Force taking / not taking photos for all are separated to new menus to prevent too many data communication, also limit selected assets to 20 for taking/not taking photo at a time
+[Done] Add data table column Received_date to allow filter new item gained this year, user must also filter in Search box e.g. '2021-'.
 -Year should be either BE or CE
 -Left menubar, instead of hide, should set display:none and show if necessary
 [DONE] -First file should be 'index.html'
