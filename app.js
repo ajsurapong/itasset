@@ -4,7 +4,8 @@ require('dotenv').config();
 const compression = require("compression");
 const express = require("express");
 const path = require("path");
-// const helmet = require("helmet");    
+// const helmet = require("helmet"); 
+const cookieParser = require('cookie-parser');   
 
 const pageRoutes = require("./routes/page-routes");
 const otherRoutes = require("./routes/other-routes");
@@ -12,9 +13,9 @@ const authRoutes = require("./routes/auth-routes");
 const profileRoutes = require("./routes/profile-routes");
 const mobileRoutes = require("./routes/mobile-routes");
 
-require("./config/passport-setup");
-const passport = require("passport");
-const cookieSession = require("cookie-session");
+// require("./config/passport-setup");
+// const passport = require("passport");
+// const cookieSession = require("cookie-session");
 const key = require("./config/key");
 // const xlsx = require("xlsx");
 
@@ -29,14 +30,15 @@ app.use(compression());
 app.use(express.urlencoded({ extended: true })); //when you post service
 app.use(express.json());
 //cookie
-app.use(cookieSession({
-  maxAge: 24 * 60 * 60 * 1000,   //in ms, 1 day 
-  keys: [key.cookie.secret]
-}));
+app.use(cookieParser(process.env.COOKIE_SECRET));
+// app.use(cookieSession({
+//   maxAge: 24 * 60 * 60 * 1000,   //in ms, 1 day 
+//   keys: [key.cookie.secret]
+// }));
 // init passport for se/derialization
-app.use(passport.initialize());
+// app.use(passport.initialize());
 // session
-app.use(passport.session());
+// app.use(passport.session());
 
 // app.use("/img", express.static(path.join(__dirname, 'img')));
 // app.use("/img1", express.static(path.join(__dirname, '../mobile/assets/img')));

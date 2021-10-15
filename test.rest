@@ -10,4 +10,4 @@ content-type: application/json
 }
 
 ###
-GET http://localhost:3000/mobile/get_product/744000200452001
+GET http://localhost:3000/auth/password/42213017

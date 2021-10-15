@@ -65,12 +65,6 @@
             <div class="container my-2 mt-2 " style="background-color: white;">
                 <br>
                 <div class="ml-3">
-                    <!-- <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
-                        <div class="mb-3">
-                            สถานที่ <select id="Location" class="ml-2"></select>
-                        </div>
-                        <br> <br>
-                    </div> -->
                     <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
                         <div class="mb-3">
                             สถานที่ 
@@ -107,7 +101,6 @@
                                         <div>
                                             <h3>
                                                 <strong id="Inventory_Number">711000100142033</strong>
-
                                             </h3>
                                         </div>
 
@@ -116,7 +109,7 @@
                                             โต๊ะยาวมากๆๆๆๆๆๆๆๆๆๆๆๆๆๆๆๆๆๆๆๆๆๆๆๆๆๆๆๆๆๆๆๆๆๆๆๆๆๆๆๆๆๆๆๆๆๆๆๆ</p>
                                         <p id="mod">โมเดล : Gundum Expo ซีเรียล **** สถานที่ :E3</p>
                                         <p id="cos">รหัสแผนก : 1234 แผนกที่จัดเก็บ : สำนักเทคโนโลยีสารสนเทศ </p>
-                                        <p id="value">ราคา : 500000 แหล่งที่มา : ร้านรับจ้างสารพัด ของคุณกิน</p> <br>
+                                        <p id="value">ราคา : 500000 แหล่งที่มา : ร้านรับจ้าง</p> <br>
                                         <br> <br>
                                         <br>
                                     </div>
@@ -138,10 +131,30 @@
                 <!-- ============================================================== -->
                 <!-- เสร็จตาราง  -->
                 <!-- ============================================================== -->
-                <br><br>
+                              
+                <!-- Login Modal -->
+                <div class="modal fade" id="modalLogin" tabindex="-1" role="dialog" aria-labelledby="modelTitleId" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Please sign in</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                            </div>
+                            <div class="modal-body">
+                                <input type="text" class="form-control mb-2" id="txtUsername" placeholder="Email" autofocus>
+                                <input type="password" class="form-control" id="txtPassword" placeholder="Password">
+                            </div>
+                            <div class="modal-footer">
+                                <!-- <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button> -->
+                                <button type="button" id="btnLogin" class="btn btn-primary">Login</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- end login modal -->
             </div>
-            <br> <br>
-
         </div>
     </div>
 
