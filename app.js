@@ -19,7 +19,8 @@ const key = require("./config/key");
 // const xlsx = require("xlsx");
 
 const app = express();
-
+// choose 'ejs' as template engine
+app.set('view engine', 'ejs');
 app.use('/Image', express.static('./upload/Image'));
 
 //<=========== Middleware ==========>

@@ -2,29 +2,7 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.22/css/dataTables.bootstrap4.min.css">
-    <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.2.6/css/responsive.bootstrap4.min.css">
-    <link rel="stylesheet" href="https://cdn.datatables.net/fixedheader/3.1.7/css/fixedHeader.bootstrap4.min.css">
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min.js"></script>
-
-    <script src="https://cdn.datatables.net/1.10.22/js/jquery.dataTables.min.js"></script>
-    <script src="https://cdn.datatables.net/responsive/2.2.6/js/dataTables.responsive.min.js"></script>
-    <script src="https://cdn.datatables.net/1.10.22/js/dataTables.bootstrap4.min.js"></script>
-    <script src="https://cdn.datatables.net/fixedheader/3.1.7/js/dataTables.fixedHeader.min.js"></script>
-
-    <link href="/assets/vendor/fonts/circular-std/style.css" rel="stylesheet">
-    <link rel="stylesheet" href="/assets/libs/css/style.css">
-    <link rel="stylesheet" href="/assets/vendor/fonts/fontawesome/css/fontawesome-all.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-
+    <%- include('./partials/header.ejs') %>
     <title>Asset Checking System @ ITschool</title>
     <style>
         .card-body span {
@@ -46,7 +24,6 @@
 </head>
 
 <body>
-
     <!-- ============================================================== -->
     <!-- main wrapper -->
     <!-- ============================================================== -->
@@ -68,8 +45,6 @@
         </div>
         <!-- ============================================================== -->
         <!-- end navbar -->
-        <!-- ============================================================== -->
-        <!-- ============================================================== -->
 
         <!-- ============================================================== -->
         <!-- wrapper  -->
@@ -78,13 +53,11 @@
         <div class="container-fluid dashboard-content">
             <div class="row ">
                 <div class="col-xl-1 col-lg-1 col-md-1 col-sm-1 col-1">
-
                 </div>
                 <div class="col-xl-11 col-lg-11 col-md-11 col-sm-11 col-11 ">
-
                     <div class="page-header ">
                         <h1 class="ml-5 " style="color: black;">ระบบตรวจสอบและนับครุภัณฑ์</h1>
-                        <h3 class="ml-5 headyear mt-4">ข้อมูลครุภัณฑ์ประจำปี </h3>
+                        <h3 class="ml-5 headyear mt-4">ข้อมูลครุภัณฑ์ประจำปี <span id='assetYear'><%= year %></span></h3>
                     </div>
                 </div>
             </div>
@@ -92,15 +65,24 @@
             <div class="container my-2 mt-2 " style="background-color: white;">
                 <br>
                 <div class="ml-3">
-                    <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
-
+                    <!-- <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
                         <div class="mb-3">
                             สถานที่ <select id="Location" class="ml-2"></select>
                         </div>
-
+                        <br> <br>
+                    </div> -->
+                    <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+                        <div class="mb-3">
+                            สถานที่ 
+                            <select id="Location" class="ml-2">
+                                <option value='all'>ทั้งหมด</option>
+                                <% location.forEach(place => { %>
+                                    <option value="<%= place.Location %>"><%= place.Location %></option>
+                                <% }) %>
+                            </select>
+                        </div>
                         <br> <br>
                     </div>
-
                 </div>
                 <!-- ============================================================== -->
                 <!-- modal  -->

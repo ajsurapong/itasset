@@ -1,4 +1,5 @@
 *** === Bug === ***
+*** Google doesn't allow redirect to non https website like 'http://asset.itschool.mfu.ac.th/api/auth/google/redirect'. We may need to use 'https' later. But the faster way is to create our own login?
 *** DB fields/ some fields must set to nullable coz real data columns are missing
 *** DB fields are too small for imported data ex: date in excel contains also time
 ** DB Received_date is VARCHAR? should be DATE?

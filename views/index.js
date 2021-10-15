@@ -1,52 +1,34 @@
-var table;
-var today = new Date();
-var currentYear = today.getFullYear() + 543;
+var table;  //for DataTables
+var currentYear = new Date().getFullYear() + 543;
 
 $(document).ready(function () {
-    // Create drop-down for year
-    $.ajax({
-        method: "GET",
-        url: "/api/item/Locationnormal"
-    }).done(function (data, state, xhr) {
-        let dropdown = "<option value='all'>ทั้งหมด</option>";
-        data.forEach(value => {
-            dropdown += `<option value='${value.Location}'>${value.Location}</option>`;
-        });
-        $('#Location').html(dropdown);
+    // check whether the current year = latest asset info year        
+    // convert year text to number
+    const assetYear = parseInt($('#assetYear').text());
+    if(currentYear > assetYear) {
+        currentYear = currentYear - 1;
+        // no current year assets, use the previous year instead
+    }
+    const url_assets = "/api/maindataTable/info/1/" + currentYear;
 
-        //whenever drop-down changes
-        $('#Location').change(function () {
-            let url = '';
-            let selected = $(this).val();
-            if (selected == 'all') {
-                url = "/api/maindataTable/info/1/" + currentYear;
-            }
-            else {
-                url = "/api/item/dashboard/showAllInfonormal/" + selected + "/" + currentYear;
-            }
-
-            $.ajax({
-                method: "GET",
-                url: url
-            }).done(function (dataSet, state, xhr) {
-                drawTable(dataSet);
-            });
-        });
-    });
-
-    // $("#more").click(function () {
-    //     window.location.replace("/landing2")
-    // });
-
+    // render DataTables of asset items
     table = $('#myTable').DataTable({
         responsive: true,       //for responsive column display
         deferRender: true,      //if large data, use this option
         fixedHeader: true,      //for fixed header
+        ajax: {
+            url: url_assets,
+            dataSrc: '',
+        },
         columns: [
             {
                 "mData": "Image", title: "รูปภาพ",
                 "render": function (data) {
-                    return '<img class="pic" src="' + data + '"style="width: 100px;margin: 25px;-webkit-transition: all .4s ease-in-out;-moz-transition: all .4s ease-in-out;-o-transition: all .4s ease-in-out; -ms-transition: all .4s ease-in-out; "  />';
+                    let img = '/img/noimg.png';
+                    if(data != null) {
+                        img = 'upload/Image/' + data;
+                    }                    
+                    return '<img class="pic" src="' + img + '"style="width: 100px;margin: 25px;-webkit-transition: all .4s ease-in-out;-moz-transition: all .4s ease-in-out;-o-transition: all .4s ease-in-out; -ms-transition: all .4s ease-in-out; "  />';
                 }
             },
             { data: "Inventory_Number", title: "รหัสครุภัณฑ์" },
@@ -56,10 +38,62 @@ $(document).ready(function () {
             { data: "Department", title: "แผนกที่ดูแล" },
             { data: "Date_scan", title: "วันที่ตรวจสอบ" },
             // { data: "Email_Committee", title: "ผู้ตรวจสอบ" },
-            { data: "Status", title: "สถานะ" },
+            // { data: "Status", title: "สถานะ" },
+            { 
+                "mData": "Status", 
+                title: "สถานะ",
+                "render": function (data) {
+                    const status = ['สูญหาย', 'ปกติ', 'เสื่อมสภาพ'];
+                    return status[data];
+                }
+            }
         ],
     });
-    getItem();
+    // getItem();
+
+    //whenever location drop-down changes
+    $('#Location').change(function () {
+        const loc = $(this).val();
+        // console.log(loc);
+        if(loc == 'all') {
+            table.columns().search('').draw();
+        }
+        else {
+            // filter the column 3 (starts with 0) by the location
+            table.columns(3).search(loc).draw();  
+        }
+    });
+
+    // when clicking the item to see detail
+    // when clicking each asset, show more details
+    $('#myTable tbody').on('click', 'tr', function () {
+        var data = table.row(this).data();
+        var inven = data.Inventory_Number;
+
+        $.ajax({
+            method: "GET",
+            url: "/api/item5/" + inven + "/" + currentYear
+        }).done(function (dataSet, state, xhr) {
+            // console.log(dataSet)
+            if (dataSet[0].Image === null) {
+                var PopImage = "/img/noimg.png"
+            }
+            else {
+                PopImage = "upload/Image/" + dataSet[0].Image
+            }
+            document.getElementById('pic').src = PopImage;
+            $(".date").html("<strong>วันที่ได้รับ : </strong>" + dataSet[0].Received_date + '<br>' + "<strong> วันที่นำเข้า : </strong>" + dataSet[0].Date_Upload)
+            $("#Inventory_Number").html(dataSet[0].Inventory_Number)
+            $("#des").html("<strong>คำอธิบาย : </strong>" + dataSet[0].Asset_Description)
+            $("#mod").html("<strong>โมเดล : </strong>" + dataSet[0].Model + '<br>' + "<strong>  ซีเรียล : </strong>" + dataSet[0].Serial + '<br>' + "<strong>  สถานที่ : </strong>" + dataSet[0].Location + "-" + dataSet[0].Room)
+            $("#cos").html("<strong>รหัสแผนก : </strong>" + dataSet[0].Cost_center + '<br>' + "<strong>   แผนกที่จัดเก็บ : </strong>" + dataSet[0].Department)
+            $("#value").html("<strong>   แหล่งที่มา : </strong>" + dataSet[0].Vendor_name)
+            $(".bd-example-modal-lg").modal();
+        }).fail(function (xhr, state, error) {
+            //get data failed
+            alert(xhr.responseText);
+        });
+    });
 
     // ====== Login =====
     $("#login").click(function () {
