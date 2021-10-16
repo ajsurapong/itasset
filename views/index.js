@@ -102,8 +102,20 @@ $(document).ready(function () {
     });
 
     $("#btnLogin").click(function() {
-        const username = $("#txtUsername").val();
-        const password = $("#txtPassword").val();
+        const username = $("#txtUsername").val().trim();
+        const password = $("#txtPassword").val().trim();
+        if(username.length == 0 || password.length == 0) {
+            swal({
+                title: "กรุณาป้อนข้อมูลให้ครบถ้วน",
+                type: "warning",
+                showCancelButton: false,
+                confirmButtonClass: "btn-primary rounded",
+                confirmButtonText: "ตกลง",
+                closeOnConfirm: true,
+            });
+            return;
+        }
+        
         $.ajax({
             type: "POST",
             url: "/api/auth/signin",
@@ -114,7 +126,15 @@ $(document).ready(function () {
                 window.location.replace(response);
             },
             error: function(xhr) {
-                alert(xhr.responseText);
+                console.error(xhr.responseText);
+                swal({
+                    title: "ไม่สามารถเข้าสู่ระบบได้ \n โปรดตรวจสอบข้อมูล",
+                    type: "error",
+                    showCancelButton: false,
+                    confirmButtonClass: "btn-primary rounded",
+                    confirmButtonText: "ตกลง",
+                    closeOnConfirm: true,
+                });
             }
         });
     })

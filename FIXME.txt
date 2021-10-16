@@ -31,6 +31,7 @@
 -service API name is too long
 
 -QR code must include asset's name
+-Barcode has not yet implemented
 [DONE] -bypass login to a page, fix at profile-routes.js
 [TEMP] -404 and 500 pages
 -wrong login code is not well managed

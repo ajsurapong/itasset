@@ -1003,16 +1003,15 @@ router.get("/item/dashboard/showAllInfo4/:Year", authCheck, function (req, res) 
     const Year = req.params.Year;
     const sql = "select * from item WHERE Year = ?"
 
-    con.query(sql, [Year], function (err, result, fields) {
+    con.query(sql, [Year], function (err, result) {
         if (err) {
             console.log(err);
             res.status(503).send("เซิร์ฟเวอร์ไม่ตอบสนอง");
         } else {
-            res.json(result)
+            res.json(result);
         }
     })
 });
-
 
 // Load all item info with Year email
 router.get("/item/showAllInfoall/:Year/:email", authCheck, function (req, res) {

@@ -28,45 +28,15 @@
 <body style="background-color:rgba(255, 255, 255, 0.768)">
     <div class="dashboard-main-wrapper">
         <!-- navbar -->
-        <!-- ============================================================== -->
         <%- include('./partials/topbar.ejs') %>
-        <!-- ============================================================== -->
-        <!-- จบ navbar -->
-        <!-- ============================================================== -->
-        <!-- ============================================================== -->
-        <!-- navbar ด้านข้าง -->
-        <!-- ============================================================== -->
+        <!-- sidebar -->
         <%- include('./partials/sidebar.ejs') %>
-        <!-- ============================================================== -->
-        <!-- เสร็จ navbar -->
-        <!-- ============================================================== -->
 
+        <!-- main content -->
         <div class="dashboard-wrapper" style="background-color:rgba(255, 255, 255, 0.768)">
             <div class="dashboard-finance">
                 <div class="container-fluid dashboard-content">
-                    <!-- ============================================================== -->
-                    <!-- หัวกระดาษ  -->
-                    <!-- ============================================================== -->
                     <div class="row mb-4">
-                        <!-- <div class="nav">
-                            <div class="col-xl-8 col-lg-8 col-md-8 col-sm-8 col-8">
-                                <div class="page-header ml-5 ">
-                                    <h2 class=" ">แดชบอร์ด </h2>
-                                </div>
-                            </div>
-
-                            <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-4">
-                                <div class="input-group mb-3">
-                                    <div class="input-group-append be-addon mt-3"><span
-                                            style="font-size: 18px;color: black;">ปี</span>
-                                        <div class="btn-group " role="group">
-                                            <div class="year mb-4">
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>                                                          
-                        </div> -->
                         กรุณาเลือกปี 
                         <select id="selectYear" class="ml-2">
                             <% years.forEach(year => { %>

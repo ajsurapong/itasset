@@ -69,9 +69,10 @@ router.get("/User_history", authCheck, function (req, res) {
     res.sendFile(path.join(__dirname, "../views/User_history.html"))
 });
 
-//Return Aseet page
+//Return Asset page
 router.get("/asset", authCheck, function (req, res) {
-    res.sendFile(path.join(__dirname, "../views/asset.html"))
+    // res.sendFile(path.join(__dirname, "../views/asset.html"))
+    res.render("asset", {user: req.decoded, activeURL: 'asset'});
 });
 
 //Return Aseet page
