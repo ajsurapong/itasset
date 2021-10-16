@@ -1,9 +1,9 @@
 $(document).ready(function () {
-    $(".atyear1").html(new Date().getFullYear() + 543)
-    $("#all").click(function () {
-        window.location.replace("/api/dashboard");
-    });
-    getItem();
+    // $("#atYear").text("ประจำปี " + (new Date().getFullYear() + 543));
+    // $("#all").click(function () {
+    //     window.location.replace("/api/dashboard");
+    // });
+    // getItem();
     Loadannounce();
 });
 
@@ -36,7 +36,7 @@ function Loadannounce() {
         $("#car0").addClass("active");
         $("#carphoto0").addClass("active");
     }).fail(function (xhr, state, error) {
-
+        alert(xhr.responseText);
     })
 }
 

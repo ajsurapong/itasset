@@ -42,7 +42,7 @@ router.post('/signin', (req, res) => {
             }
             if (same) {
                 //create JWT
-                const payload = { name: result[0].Name, email: username};
+                const payload = { name: result[0].Name, email: username, year: year};
                 const token = jwt.sign(payload, process.env.JWT_KEY, { expiresIn: '7d' });
 
                 // save token to client's cookie

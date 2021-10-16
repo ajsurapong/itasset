@@ -1376,13 +1376,13 @@ router.put("/dateTime/updateTime/:Date_start/:Date_end", authCheck, function (re
 // Load announement
 router.get("/Loadannounce", authCheck, function (req, res) {
     // const Year = new Date().getFullYear();
-    const sql = "SELECT * FROM `announcement` ORDER BY `Number`  DESC"
+    const sql = "SELECT * FROM announcement ORDER BY Number DESC LIMIT 5";
     con.query(sql, function (err, result, fields) {
         if (err) {
             console.log(err);
             res.status(503).send("เซิร์ฟเวอร์ไม่ตอบสนอง");
         } else {
-            res.send(result)
+            res.send(result);
         }
     })
 });

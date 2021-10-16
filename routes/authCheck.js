@@ -12,7 +12,7 @@ require('dotenv').config();
 const jwt = require('jsonwebtoken');
 
 const authCheck = (req, res, next) => {
-    const token = req.signedCookies['mytoken'];
+    const token = req.signedCookies['assettoken'];
     if (token) {
         jwt.verify(token, process.env.JWT_KEY, (err, decoded) => {
             if (err) {

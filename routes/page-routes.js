@@ -59,7 +59,9 @@ router.get("/printbarcode", authCheck, function (req, res) {
 
 //Return home page
 router.get("/mainpage", authCheck, function (req, res) {
-    res.sendFile(path.join(__dirname, "../views/mainpage.html"))
+    // console.log(req.decoded);
+    // res.sendFile(path.join(__dirname, "../views/mainpage.html"))
+    res.render('mainpage', {user: req.decoded, activeURL: 'mainpage'});
 });
 
 //Return User_history page
@@ -79,7 +81,34 @@ router.get("/announce", authCheck, function (req, res) {
 
 //Return dashboard page
 router.get("/dashboard", authCheck, function (req, res) {
-    res.sendFile(path.join(__dirname, "../views/dashboard.html"))
+    // res.sendFile(path.join(__dirname, "../views/dashboard.html"))
+    // get all distinct years for drop down year selection
+    let sql = "SELECT DISTINCT Year FROM item ORDER BY Year DESC";
+    con.query(sql, function (err, resultYear) {
+        if (err) {
+            console.log(err);
+            res.status(503).send("เซิร์ฟเวอร์ไม่ตอบสนอง");
+        } else {
+            // get dashboard info: total items, normal items, lost items, degraded items of current year
+            // sql = "SELECT COUNT(Year) FROM item WHERE Year = year(CURDATE())+543";
+            // sql = "SELECT COUNT(Year) FROM `item` WHERE Year = year(CURDATE())+543 AND Status = 1";
+            // sql = "SELECT COUNT(Year) FROM `item` WHERE Year = year(CURDATE())+543 AND Status = 0";
+            // sql = "SELECT COUNT(Year) FROM `item` WHERE Year = year(CURDATE())+543 AND Status = 2";
+            sql = "SELECT * FROM (SELECT COUNT(Year) AS normal FROM `item` WHERE Year = year(CURDATE())+543 AND Status = 1) AS rNormal, (SELECT COUNT(Year) AS lost FROM `item` WHERE Year = year(CURDATE())+543 AND Status = 0) AS rLost, (SELECT COUNT(Year) AS degraded FROM `item` WHERE Year = year(CURDATE())+543 AND Status = 2) AS rDegraded";
+
+            con.query(sql, function (err, resultDashboard) {
+                if(err) {
+                    console.log(err);
+                    res.status(503).send("เซิร์ฟเวอร์ไม่ตอบสนอง");
+                }
+                else {     
+                    // console.log(resultDashboard);               
+                    res.render("dashboard", {user: req.decoded, years: resultYear, dashboard: resultDashboard, activeURL: 'dashboard'});
+                }
+            });
+            // res.json(result)            
+        }
+    });    
 });
 
 //Return change_disapear page

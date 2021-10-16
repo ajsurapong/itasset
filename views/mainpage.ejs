@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <%- include('./partials/header.ejs') %>
+
+    <title>Asset Checking System @ ITschool</title>
+    <style>
+        .card-body span {
+            font-size: 45px;
+            font-weight: 200;
+            color: black;
+        }
+
+        .card-body span1 {
+            font-size: 20px;
+            font-weight: 200;
+            color: black;
+        }
+
+        .photo {
+            height: 450px;
+            width: 1080px;
+        }
+
+        .trickcenter {
+            position: fixed;
+            top: 50%;
+            /* 50% for perfect centering */
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .carousel-indicators li {
+            display: inline-block;
+            height: 5px;
+            background-color: #0000ff;
+        }
+
+        .carousel-indicators .active {
+            height: 5px;
+            background-color: #ff0000;
+        }
+    </style>    
+</head>
+
+<body>
+    <div class="dashboard-main-wrapper">
+        <!-- navbar -->
+        <!-- ============================================================== -->
+        <%- include('./partials/topbar.ejs') %>
+        <!-- ============================================================== -->
+        <!-- จบ navbar -->
+        <!-- ============================================================== -->
+
+        <!-- ============================================================== -->
+        <!-- navbar ด้านข้าง -->
+        <!-- ============================================================== -->
+        <%- include('./partials/sidebar.ejs') %>
+        <!-- ============================================================== -->
+        <!-- เสร็จ navbar -->
+        <!-- ============================================================== -->
+        <div class="dashboard-wrapper">
+            <div class="dashboard-finance">
+                <div class="container-fluid dashboard-content">
+                    <!-- ============================================================== -->
+                    <!-- หัวกระดาษ  -->
+                    <!-- ============================================================== -->
+                    <div class="row">
+                        <div class="col-xl-11 col-lg-11 col-md-11 col-sm-11 col-11">
+                            <div class="page-header">
+                                <h2 class="">สวัสดี <%= user.name %> </h2>
+                                </h2>
+                                <h6> แผนกรับผิดชอบ : สำนักเทคโนโลยีสารสนเทศ</h6>
+
+                            </div>
+                        </div>
+
+                        <!-- ============================================================== -->
+                        <!-- เสร็จทางลัด  -->
+                        <!-- ============================================================== -->
+                        <!-- ============================================================== -->
+                        <!-- ประกาศ  -->
+                        <!-- ============================================================== -->
+
+                        <div class="container-fluid text-center photo">
+                            <div id="carouselExampleIndicators" class="carousel slide container" data-ride="carousel">
+                                <ol class="carousel-indicators" id="numberofcar">
+                                </ol>
+                                <div class="carousel-inner " id="carphoto">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- ============================================================== -->
+                    <!-- เสร็จประกาศ  -->
+                    <!-- ============================================================== -->
+                    <!-- เสร็จ modal2  -->
+                    <!-- ============================================================== -->
+                    <!-- ============================================================== -->
+                    <div class="modal bd-example-modal-sm fade" id="alertmodal" tabindex="-1" role="dialog"
+                        aria-labelledby="mySmallModalLabel" data-backdrop="static" data-keyboard="false"
+                        aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content" style="background-color : #3f3f3f">
+                                <div class="modal-body">
+                                    <h5 style="color: #ffffff; font-weight:bold;">ประกาศ</h5>
+                                    <p class="alertText" style="color: white">กรุณาติดต่อเพื่อขอใช้บริการ</p>
+                                    <div class="but"></div>
+                                    <input class="btn btn-sm" type="button" value="ตกลง" data-dismiss="modal"
+                                        style="float: right; background-color: #0a72c1; color:white">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="/views/mainpage.js"></script>
+</body>
+
+</html>
