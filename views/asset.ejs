@@ -130,9 +130,10 @@
                     </table>
                 </div>
             </div>
-
             <!-- ============================================================== -->
             <!-- จบตาราง -->
+
+            <!-- Modal: Export to excel -->
             <div class="modal fade" id="modalPushExcel" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
                 aria-hidden="true">
                 <div class="modal-dialog modal-notify modal-info" role="document" style="width: 400px;">
@@ -148,17 +149,13 @@
 
                         <!--Body-->
                         <div class="modal-body">
-
                             <i class="fas fa-bell fa-4x animated rotateIn mb-4"></i>
-
                             <p>กรุณาเลือกชนิดไฟล์ที่จะนำออก</p>
-
                         </div>
 
                         <!--Footer-->
                         <div class="modal-footer">
                             <div class="container mx-auto">
-
                                 <div class="" id="ExportFile"></div>
                             </div>
                         </div>
@@ -166,10 +163,7 @@
                 </div>
             </div>
 
-            <!-- ============================================================== -->
-            <!-- modal  -->
-            <!-- ============================================================== -->
-
+            <!-- Modal: Import Excel file -->
             <div class="modal fade bd-example-modal-md" id="upload" tabindex="-1" role="dialog"
                 aria-labelledby="mySmallModalLabel" aria-hidden="true">
                 <div class="modal-dialog" role="document">
@@ -181,7 +175,7 @@
                             </button>
                         </div>
                         <div class="modal-body">
-                            <form method="post" enctype="multipart/form-data">
+                            <form id="formImport" method="post" enctype="multipart/form-data">
                                 <input type="file" name="filetoupload" id="fileUpload" accept=".xlsx, .xls"><br>
                                 <input type="submit" class="btn btn-primary rounded mt-3" value="นำเข้าไฟล์">
                             </form>
