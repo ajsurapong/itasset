@@ -1,43 +1,69 @@
+require('dotenv').config();
 const router = require("express").Router();
 const path = require("path");
 const authCheck = require("./authCheck");
 const con = require("../config/dbConfig");
+const jwt = require('jsonwebtoken');
 
 //Root Page
 router.get("/", (req, res) => {
     // res.sendFile(path.join(__dirname, "../views/index.html"));
-    // get all asset locations of this year
-    const year = new Date().getFullYear() + 543;
-    const sql = "SELECT DISTINCT Location FROM item WHERE Status = 1 AND Year = ?"
-    con.query(sql, [year], function (err, result) {
-        if (err) {
-            console.log(err);
-            res.status(503).send("เซิร์ฟเวอร์ฐานข้อมูลไม่ตอบสนอง");
-        } else {
-            // if the current year has no asset info yet
-            if (result.length == 0) {
-                // get last year asset info instead
-                con.query(sql, [year - 1], function (err, result) {
-                    if (err) {
-                        console.log(err);
-                        res.status(503).send("เซิร์ฟเวอร์ฐานข้อมูลไม่ตอบสนอง");
-                    } else {
-                        // previous year
-                        // res.json(result);
-                        // console.log((result));
-                        res.render('index', {location: result, year: year-1});
-                    }
-                })
-            } else {
-                // this year
-                // res.json(result);
-                // console.log((result));
-                res.render('index', {location: result, year: year});
+    // check if user has already logged in and the token has not expired
+    let bypass = false;
+    let userData;
+    const token = req.signedCookies['assettoken'];
+    // token found?
+    if (token) {
+        // token correct?
+        jwt.verify(token, process.env.JWT_KEY, (err, decoded) => {
+            if (!err) {
+                bypass = true;
+                userData = decoded;
             }
-        }
-    });
+            else {
+               console.log(err); 
+            }            
+        });
+    }
 
-    // res.render("index");
+    // token is found and correct?
+    if (bypass) {
+        // jump to main page
+        res.render('mainpage', { user: userData, activeURL: 'mainpage' });
+    }
+    else {
+        // no token or token is wrong, show normal assets of this year or last year
+        // get all asset locations of this year
+        const year = new Date().getFullYear() + 543;
+        const sql = "SELECT DISTINCT Location FROM item WHERE Status = 1 AND Year = ?"
+        con.query(sql, [year], function (err, result) {
+            if (err) {
+                console.log(err);
+                res.status(503).send("เซิร์ฟเวอร์ฐานข้อมูลไม่ตอบสนอง");
+            } else {
+                // if the current year has no asset info yet
+                if (result.length == 0) {
+                    // get last year asset info instead
+                    con.query(sql, [year - 1], function (err, result) {
+                        if (err) {
+                            console.log(err);
+                            res.status(503).send("เซิร์ฟเวอร์ฐานข้อมูลไม่ตอบสนอง");
+                        } else {
+                            // previous year
+                            // res.json(result);
+                            // console.log((result));
+                            res.render('index', { location: result, year: year - 1 });
+                        }
+                    })
+                } else {
+                    // this year
+                    // res.json(result);
+                    // console.log((result));
+                    res.render('index', { location: result, year: year });
+                }
+            }
+        });
+    }
 });
 
 //Return manageUser page
@@ -61,7 +87,7 @@ router.get("/printbarcode", authCheck, function (req, res) {
 router.get("/mainpage", authCheck, function (req, res) {
     // console.log(req.decoded);
     // res.sendFile(path.join(__dirname, "../views/mainpage.html"))
-    res.render('mainpage', {user: req.decoded, activeURL: 'mainpage'});
+    res.render('mainpage', { user: req.decoded, activeURL: 'mainpage' });
 });
 
 //Return User_history page
@@ -72,7 +98,7 @@ router.get("/User_history", authCheck, function (req, res) {
 //Return Asset page
 router.get("/asset", authCheck, function (req, res) {
     // res.sendFile(path.join(__dirname, "../views/asset.html"))
-    res.render("asset", {user: req.decoded, activeURL: 'asset'});
+    res.render("asset", { user: req.decoded, activeURL: 'asset' });
 });
 
 //Return Aseet page
@@ -98,18 +124,18 @@ router.get("/dashboard", authCheck, function (req, res) {
             sql = "SELECT * FROM (SELECT COUNT(Year) AS normal FROM `item` WHERE Year = year(CURDATE())+543 AND Status = 1) AS rNormal, (SELECT COUNT(Year) AS lost FROM `item` WHERE Year = year(CURDATE())+543 AND Status = 0) AS rLost, (SELECT COUNT(Year) AS degraded FROM `item` WHERE Year = year(CURDATE())+543 AND Status = 2) AS rDegraded";
 
             con.query(sql, function (err, resultDashboard) {
-                if(err) {
+                if (err) {
                     console.log(err);
                     res.status(503).send("เซิร์ฟเวอร์ไม่ตอบสนอง");
                 }
-                else {     
+                else {
                     // console.log(resultDashboard);               
-                    res.render("dashboard", {user: req.decoded, years: resultYear, dashboard: resultDashboard, activeURL: 'dashboard'});
+                    res.render("dashboard", { user: req.decoded, years: resultYear, dashboard: resultDashboard, activeURL: 'dashboard' });
                 }
             });
             // res.json(result)            
         }
-    });    
+    });
 });
 
 //Return change_disapear page

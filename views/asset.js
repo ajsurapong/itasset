@@ -7,7 +7,7 @@ $(document).ready(function () {
         initComplete: function () {
             let findex = 0;
             // select only columns with the specified index
-            this.api().columns([7,8,17,16]).every( function () {
+            this.api().columns([7,8,18,16]).every( function () {
                 var column = this;
                 let filterName = ['สถานที่','ห้อง','สถานะ','ผู้ตรวจสอบ'];
                 $('<span class="ml-4 mr-2">'+filterName[findex]+'</span>').appendTo("#customFilter");
@@ -26,7 +26,7 @@ $(document).ready(function () {
  
                 column.data().unique().sort().each( function ( value, index ) {
                     let txt = 'ไม่ระบุ';
-                    if(column.index() == 17) {
+                    if(column.index() == 18) {
                         if(value == 0) {
                             txt = 'สูญหาย';
                         }
@@ -89,6 +89,7 @@ $(document).ready(function () {
             { data: "Takepicture", title: "ถ่ายรูป", className: "classimg" },//14
             { data: "Date_scan", title: "วันที่ตรวจสอบ", className: "classimg" },//15
             { data: "Email_Committee", title: "ผู้ตรวจสอบ", className: "classimg" },//16
+            { data: "Received_date", title: "วันที่รับสินทรัพย์", className: "classimg" },//17
             {
                 "mData": "Status",
                 title: "สถานะ",
@@ -97,8 +98,7 @@ $(document).ready(function () {
                     const txtColor = ['text-danger', 'text-success', 'text-warning'];
                     return '<span class='+txtColor[data]+'>' + status[data] + '</span>';
                 }
-            }, //17
-            { data: "Received_date", title: "วันที่รับสินทรัพย์", className: "classimg" },//18            
+            }, //18                        
         ],
     });
 
