@@ -88,18 +88,19 @@ router.get("/printbarcode", authCheck, function (req, res) {
 router.get("/mainpage", authCheck, function (req, res) {
     // console.log(req.decoded);
     // res.sendFile(path.join(__dirname, "../views/mainpage.html"))
-    res.render('mainpage', { user: req.decoded, activeURL: 'mainpage' });
+    res.render('mainpage', { user: req.decoded, activeURL: '/api/mainpage' });
 });
 
 //Return User_history page
 router.get("/User_history", authCheck, function (req, res) {
-    res.sendFile(path.join(__dirname, "../views/User_history.html"))
+    // res.sendFile(path.join(__dirname, "../views/User_history.html"))
+    res.render("User_history", { user: req.decoded, activeURL: '/api/User_history' });
 });
 
 //Return Asset page
 router.get("/asset", authCheck, function (req, res) {
     // res.sendFile(path.join(__dirname, "../views/asset.html"))
-    res.render("asset", { user: req.decoded, activeURL: 'asset' });
+    res.render("asset", { user: req.decoded, activeURL: '/api/asset' });
 });
 
 //Return Announce management page
@@ -131,7 +132,7 @@ router.get("/dashboard", authCheck, function (req, res) {
                 }
                 else {
                     // console.log(resultDashboard);               
-                    res.render("dashboard", { user: req.decoded, years: resultYear, dashboard: resultDashboard, activeURL: 'dashboard' });
+                    res.render("dashboard", { user: req.decoded, years: resultYear, dashboard: resultDashboard, activeURL: '/api/dashboard' });
                 }
             });
             // res.json(result)            

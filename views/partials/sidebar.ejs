@@ -1,6 +1,6 @@
-<% const menuAdmin = [{name:'หน้าหลัก', url:'/api/mainpage'}, {name:'ประวัติผู้ใช้งาน', url:'/api/adminhistory'}, {name:'โปรไฟล์', url:'/api/User_history'}, {name:'แดชบอร์ด', url:'/api/dashboard'}, {name:'ครุภัณฑ์', url:'/api/asset'}, {name:'ข่าวประชาสัมพันธ์', url:'/api/announce'}, {name:'จัดการผู้ใช้', url:'/api/manageUser'}, {name:'จัดการเวลา', url:'/api/Date_manage'} ] %>
+<% const menuAdmin = [{name:'หน้าหลัก', url:'/api/mainpage', icon:'fa-home'}, {name:'ประวัติผู้ใช้งาน', url:'/api/adminhistory', icon:'fa-user'}, {name:'โปรไฟล์', url:'/api/User_history', icon:'fa-user'}, {name:'แดชบอร์ด', url:'/api/dashboard',icon:'fa-dashboard'}, {name:'ครุภัณฑ์', url:'/api/asset', icon:'fa-archive'}, {name:'ข่าวประชาสัมพันธ์', url:'/api/announce', icon:'fa-bullhorn'}, {name:'จัดการผู้ใช้', url:'/api/manageUser', icon:'fa-edit'}, {name:'จัดการเวลา', url:'/api/Date_manage', icon:'fa-clock'} ] %>
 
-<% const menu = [{name:'หน้าหลัก', url:'/api/mainpage'}, {name:'โปรไฟล์', url:'/api/User_history'}, {name:'แดชบอร์ด', url:'/api/dashboard'}, {name:'ครุภัณฑ์', url:'/api/asset'}] %>
+<% const menu = [{name:'หน้าหลัก', url:'/api/mainpage', icon:'fa-home'}, {name:'โปรไฟล์', url:'/api/User_history', icon:'fa-user'}, {name:'แดชบอร์ด', url:'/api/dashboard', icon:'fa-dashboard'}, {name:'ครุภัณฑ์', url:'/api/asset', icon:'fa-archive'}] %>
 
 <div class="nav-left-sidebar sidebar-light">
     <div class="menu-list">
@@ -17,7 +17,7 @@
                         <!-- superadmin or admin -->
                         <% menuAdmin.forEach(item => { %>
                             <li class="nav-item">
-                                <a <%- activeURL==item.url ? 'class="nav-link active"' : 'class="nav-link"' %>  href="<%= item.url %>" aria-expanded="false"><i class="fa fa-home"></i><%= item.name %>
+                                <a <%- activeURL==item.url ? 'class="nav-link active"' : 'class="nav-link"' %>  href="<%= item.url %>" aria-expanded="false"><i class="fa <%= item.icon %> "></i><%= item.name %>
                                 </a>
                             </li>
                         <% }) %>
@@ -25,7 +25,7 @@
                         <!-- user -->
                         <% menu.forEach(item => { %>
                             <li class="nav-item">
-                                <a <%- activeURL==item.url ? 'class="nav-link active"' : 'class="nav-link"' %>  href="<%= item.url %>" aria-expanded="false"><i class="fa fa-home"></i><%= item.name %>
+                                <a <%- activeURL==item.url ? 'class="nav-link active"' : 'class="nav-link"' %>  href="<%= item.url %>" aria-expanded="false"><i class="fa <%= item.icon %>"></i><%= item.name %>
                                 </a>
                             </li>
                         <% }) %>
