@@ -4,6 +4,7 @@ const path = require("path");
 const authCheck = require("./authCheck");
 const con = require("../config/dbConfig");
 const jwt = require('jsonwebtoken');
+const authCheckAdmin = require('./authCheck-admin');
 
 //Root Page
 router.get("/", (req, res) => {
@@ -71,7 +72,7 @@ router.get("/checkpage", function (req, res) {
     res.sendFile(path.join(__dirname, "../views/checkpage.html"))
 });
 
-router.get("/manageUser", function (req, res) {
+router.get("/manageUser", authCheck, authCheckAdmin, function (req, res) {
     res.sendFile(path.join(__dirname, "../views/manageuser.html"))
 });
 
@@ -101,8 +102,8 @@ router.get("/asset", authCheck, function (req, res) {
     res.render("asset", { user: req.decoded, activeURL: 'asset' });
 });
 
-//Return Aseet page
-router.get("/announce", authCheck, function (req, res) {
+//Return Announce management page
+router.get("/announce", authCheck, authCheckAdmin, function (req, res) {
     res.sendFile(path.join(__dirname, "../views/newspage.html"))
 });
 
@@ -144,7 +145,7 @@ router.get("/change_disapear", authCheck, function (req, res) {
 });
 
 //Return Date_manage time page
-router.get("/Date_manage", authCheck, function (req, res) {
+router.get("/Date_manage", authCheck, authCheckAdmin, function (req, res) {
     res.sendFile(path.join(__dirname, "../views/Date_manage.html"))
 });
 
@@ -170,7 +171,7 @@ router.get("/takepicture", authCheck, function (req, res) {
 });
 
 //Return adminhistory page
-router.get("/adminhistory", authCheck, function (req, res) {
+router.get("/adminhistory", authCheck, authCheckAdmin, function (req, res) {
     res.sendFile(path.join(__dirname, "../views/Admin_history.html"))
 });
 

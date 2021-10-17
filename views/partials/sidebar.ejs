@@ -1,4 +1,6 @@
-<% const menu = [{name:'หน้าหลัก', url:'/api/mainpage'}, {name:'ประวัติผู้ใช้งาน', url:'/api/adminhistory'}, {name:'โปรไฟล์', url:'/api/User_history'}, {name:'แดชบอร์ด', url:'/api/dashboard'}, {name:'ครุภัณฑ์', url:'/api/asset'}, {name:'ข่าวประชาสัมพันธ์', url:'/api/announce'}, {name:'จัดการผู้ใช้', url:'/api/manageUser'}, {name:'จัดการเวลา', url:'/api/Date_manage'} ] %>
+<% const menuAdmin = [{name:'หน้าหลัก', url:'/api/mainpage'}, {name:'ประวัติผู้ใช้งาน', url:'/api/adminhistory'}, {name:'โปรไฟล์', url:'/api/User_history'}, {name:'แดชบอร์ด', url:'/api/dashboard'}, {name:'ครุภัณฑ์', url:'/api/asset'}, {name:'ข่าวประชาสัมพันธ์', url:'/api/announce'}, {name:'จัดการผู้ใช้', url:'/api/manageUser'}, {name:'จัดการเวลา', url:'/api/Date_manage'} ] %>
+
+<% const menu = [{name:'หน้าหลัก', url:'/api/mainpage'}, {name:'โปรไฟล์', url:'/api/User_history'}, {name:'แดชบอร์ด', url:'/api/dashboard'}, {name:'ครุภัณฑ์', url:'/api/asset'}] %>
 
 <div class="nav-left-sidebar sidebar-light">
     <div class="menu-list">
@@ -10,12 +12,24 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav flex-column">
-                    <% menu.forEach(item => { %>
-                        <li class="nav-item">
-                            <a <%- activeURL==item.url ? 'class="nav-link active"' : 'class="nav-link"' %>  href="<%= item.url %>" aria-expanded="false"><i class="fa fa-home"></i><%= item.name %>
-                            </a>
-                        </li>
-                    <% }) %>
+                    <!-- admin or user -->
+                    <% if (user.role == 1 || user.role == 3) { %>
+                        <!-- superadmin or admin -->
+                        <% menuAdmin.forEach(item => { %>
+                            <li class="nav-item">
+                                <a <%- activeURL==item.url ? 'class="nav-link active"' : 'class="nav-link"' %>  href="<%= item.url %>" aria-expanded="false"><i class="fa fa-home"></i><%= item.name %>
+                                </a>
+                            </li>
+                        <% }) %>
+                    <% } else if (user.role == 2) { %>
+                        <!-- user -->
+                        <% menu.forEach(item => { %>
+                            <li class="nav-item">
+                                <a <%- activeURL==item.url ? 'class="nav-link active"' : 'class="nav-link"' %>  href="<%= item.url %>" aria-expanded="false"><i class="fa fa-home"></i><%= item.name %>
+                                </a>
+                            </li>
+                        <% }) %>
+                    <% } %>                                        
                 </ul>
             </div>
         </nav>

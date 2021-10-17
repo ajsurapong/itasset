@@ -25,8 +25,12 @@ router.post('/signin', (req, res) => {
     const { username, password } = req.body;
     const year = new Date().getFullYear() + 543;
 
-    const sql = 'SELECT Name, Password FROM year_user WHERE Email_user = ? AND Year = ?';
-    con.query(sql, [username, year], (err, result) => {
+    let sql = 'SELECT Name, Password, Role FROM year_user WHERE Email_user = ? AND Year = (year(CURDATE())+543)';
+    // if admin, neglect year
+    if(username == 'itschool@mfu.ac.th') {
+        sql = 'SELECT Name, Password, Role FROM year_user WHERE Email_user = ?';
+    }
+    con.query(sql, [username], (err, result) => {
         if (err) {
             console.log(err);
             return res.status(500).send('Database server error');
@@ -42,7 +46,7 @@ router.post('/signin', (req, res) => {
             }
             if (same) {
                 //create JWT
-                const payload = { name: result[0].Name, email: username, year: year};
+                const payload = { name: result[0].Name, role: result[0].Role, email: username, year: year};
                 const token = jwt.sign(payload, process.env.JWT_KEY, { expiresIn: '7d' });
 
                 // save token to client's cookie
