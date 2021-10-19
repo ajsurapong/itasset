@@ -33,37 +33,48 @@ router.get("/", (req, res) => {
         res.render('mainpage', { user: userData, activeURL: 'mainpage' });
     }
     else {
-        // no token or token is wrong, show normal assets of this year or last year
-        // get all asset locations of this year
-        const year = new Date().getFullYear() + 543;
-        const sql = "SELECT DISTINCT Location FROM item WHERE Status = 1 AND Year = ?"
-        con.query(sql, [year], function (err, result) {
+        // no token or token is wrong, show normal assets of the latest year in DB
+        const sql = "SELECT MAX(Year) AS year FROM item";
+        con.query(sql, function (err, resultYear) {
             if (err) {
                 console.log(err);
                 res.status(503).send("เซิร์ฟเวอร์ฐานข้อมูลไม่ตอบสนอง");
             } else {
-                // if the current year has no asset info yet
-                if (result.length == 0) {
-                    // get last year asset info instead
-                    con.query(sql, [year - 1], function (err, result) {
-                        if (err) {
-                            console.log(err);
-                            res.status(503).send("เซิร์ฟเวอร์ฐานข้อมูลไม่ตอบสนอง");
-                        } else {
-                            // previous year
-                            // res.json(result);
-                            // console.log((result));
-                            res.render('index', { location: result, year: year - 1 });
-                        }
-                    })
-                } else {
-                    // this year
-                    // res.json(result);
-                    // console.log((result));
-                    res.render('index', { location: result, year: year });
-                }
+                // return the latest year
+                res.render('index', { year: resultYear[0].year });
             }
         });
+
+        // get all asset locations of this year
+        // const year = new Date().getFullYear() + 543;
+        // const sql = "SELECT DISTINCT Location FROM item WHERE Status = 1 AND Year = ?"
+        // con.query(sql, [year], function (err, result) {
+        //     if (err) {
+        //         console.log(err);
+        //         res.status(503).send("เซิร์ฟเวอร์ฐานข้อมูลไม่ตอบสนอง");
+        //     } else {
+        //         // if the current year has no asset info yet
+        //         if (result.length == 0) {
+        //             // get last year asset info instead
+        //             con.query(sql, [year - 1], function (err, result) {
+        //                 if (err) {
+        //                     console.log(err);
+        //                     res.status(503).send("เซิร์ฟเวอร์ฐานข้อมูลไม่ตอบสนอง");
+        //                 } else {
+        //                     // previous year
+        //                     // res.json(result);
+        //                     // console.log((result));
+        //                     res.render('index', { location: result, year: year - 1 });
+        //                 }
+        //             })
+        //         } else {
+        //             // this year
+        //             // res.json(result);
+        //             // console.log((result));
+        //             res.render('index', { location: result, year: year });
+        //         }
+        //     }
+        // });
     }
 });
 

@@ -62,22 +62,8 @@
                 </div>
             </div>
 
-            <div class="container my-2 mt-2 " style="background-color: white;">
-                <br>
-                <div class="ml-3">
-                    <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
-                        <div class="mb-3">
-                            สถานที่ 
-                            <select id="Location" class="ml-2">
-                                <option value='all'>ทั้งหมด</option>
-                                <% location.forEach(place => { %>
-                                    <option value="<%= place.Location %>"><%= place.Location %></option>
-                                <% }) %>
-                            </select>
-                        </div>
-                        <br> <br>
-                    </div>
-                </div>
+            <div class="container my-2 mt-2 py-2" style="background-color: white;">
+                <div id="customFilter" class="mb-4"></div>               
                 <!-- ============================================================== -->
                 <!-- modal  -->
                 <!-- ============================================================== -->
