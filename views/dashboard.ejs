@@ -52,7 +52,7 @@
                                     <div class="row no-gutters align-items-center">
                                         <div class="col mr-2">
                                             <b style="color: #000000;" class="h5 font-weight-bold">ครุภัณฑ์ทั้งหมด</b>
-                                            <h1 id="all" class="" style="color: #000000;"> <%= (dashboard[0].normal + dashboard[0].lost + dashboard[0].degraded) %> </h1>
+                                            <h1 id="all" class="" style="color: #000000;"> 0 </h1>
                                         </div>
                                         <div class="col-auto">
                                             <img class="fas fa-calendar fa-2x text-gray-300" src="/img/all.png " alt=""
@@ -68,7 +68,7 @@
                                     <div class="row no-gutters align-items-center">
                                         <div class="col mr-2">
                                             <b style="color: #000000;" class="">ครุภัณฑ์ปกติ</b>
-                                            <h1 id="normal"> <%= dashboard[0].normal %> </h1>
+                                            <h1 id="normal"> 0 </h1>
                                         </div>
                                         <div class="col-auto">
                                             <img class="fas fa-calendar fa-2x text-gray-300" src="/img/normal.png" alt=""
@@ -84,7 +84,7 @@
                                     <div class="row no-gutters align-items-center">
                                         <div class="col mr-2">
                                             <b style="color: #000000;" class="">ครุภัณฑ์เสื่อมสภาพ</b>
-                                            <h1 id="fix"> <%= dashboard[0].degraded %> </h1>
+                                            <h1 id="degraded"> 0 </h1>
                                         </div>
                                         <div class="col-auto">
                                             <img class="fas fa-calendar fa-2x text-gray-300" src="/img/fix.png " alt=""
@@ -103,7 +103,7 @@
                                     </div>
                                     <div class="row no-gutters align-items-center">
                                         <div class="col mr-2">
-                                            <h1 id="dis"><%= dashboard[0].lost %></h1>
+                                            <h1 id="lost"> 0 </h1>
                                         </div>
 
                                         <div class="col-auto">
@@ -151,10 +151,9 @@
                         <!-- เสร็จ modal  -->
                         <!-- ============================================================== -->
                     </div>
-                    <br><br><br>
                 </div>
             </div>
         </div>
-        <!-- <script src="/views/dashboard.js"></script> -->
+        <script src="/views/dashboard.js"></script>
 </body>
 </html>

@@ -10,4 +10,7 @@ content-type: application/json
 }
 
 ###
-GET http://localhost:3000/auth/password/42213017
+GET http://localhost:3000/auth/password/51360043
+
+###
+GET http://localhost:3000/stat/2563

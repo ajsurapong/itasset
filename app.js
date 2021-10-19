@@ -12,6 +12,7 @@ const otherRoutes = require("./routes/other-routes");
 const authRoutes = require("./routes/auth-routes");
 const profileRoutes = require("./routes/profile-routes");
 const mobileRoutes = require("./routes/mobile-routes");
+const dashboardRoutes = require("./routes/dashboard-route");
 
 // require("./config/passport-setup");
 // const passport = require("passport");
@@ -56,6 +57,7 @@ app.use("/profile", profileRoutes);
 app.use(pageRoutes);
 // =========== Services (Others) ===========
 app.use(otherRoutes);
+app.use(dashboardRoutes);
 // =========== Services (Mobile) ===========
 app.use("/mobile", mobileRoutes);
 
