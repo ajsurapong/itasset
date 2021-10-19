@@ -100,7 +100,16 @@ router.get("/User_history", authCheck, function (req, res) {
 //Return Asset page
 router.get("/asset", authCheck, function (req, res) {
     // res.sendFile(path.join(__dirname, "../views/asset.html"))
-    res.render("asset", { user: req.decoded, activeURL: '/api/asset' });
+    // get unique years
+    const sql = "SELECT DISTINCT Year FROM item"
+    con.query(sql, function (err, result) {
+        if (err) {
+            console.log(err);
+            res.status(503).send("เซิร์ฟเวอร์ฐานข้อมูลไม่ตอบสนอง");
+        } else {
+            res.render("asset", { user: req.decoded, years: result, activeURL: '/api/asset' });
+        }
+    });    
 });
 
 //Return Announce management page

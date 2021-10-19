@@ -1,8 +1,12 @@
-const currentYear = new Date().getFullYear() + 543;
+// let currentYear = new Date().getFullYear() + 543;
+var currentYear;
+var assetURL = '/api/item/dashboard/showAllInfo4/';
 
 $(document).ready(function () {
+    // get current year from year dropdown which will be the latest year in DB
+    currentYear = $("#selectYear").val();
     // render DataTables of asset items
-    table = $('#myTable').DataTable({
+    var table = $('#myTable').DataTable({
         // this is for custom filters
         initComplete: function () {
             let findex = 0;
@@ -58,7 +62,7 @@ $(document).ready(function () {
         deferRender: true,      //if large data, use this option
         fixedHeader: true,      //for fixed header
         ajax: {
-            url: '/api/item/dashboard/showAllInfo4/' + currentYear,
+            url: assetURL + currentYear,
             dataSrc: '',
         },
         columns: [
@@ -416,5 +420,13 @@ $(document).ready(function () {
                 $("#alertmodal").modal();
             });
         }
+    });
+
+    // ========== Change year to get new asset data ================
+    $("#selectYear").change(function () { 
+        currentYear = $(this).val();
+        // alert(currentYear);
+        // reload data of the selected year
+        table.ajax.url(assetURL + currentYear).load();
     });
 });

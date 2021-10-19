@@ -2,7 +2,7 @@
     <nav class="navbar navbar-expand-lg bg-white fixed-top">               
         <img src="/img/logoit.JPG" style="height: 50px;">
         <!-- <h4 class="font-weight-bold ml-5" style="color: rgb(2, 121, 251);">ประจำปี</h4> -->
-        <h4 id="atYear" class="ml-4 mt-3" style="color: rgb(2, 121, 251);">ประจำปี <%= user.year %> </h4>
+        <h4 id="atYear" class="mx-4 mt-3" style="color: rgb(2, 121, 251);">ประจำปี <%= user.year %> <kbd>เวอร์ชันทดสอบ</kbd></h4>
 
         <ul class="navbar-nav ml-auto navbar-right-top bg-success">
             <li class="nav-item dropdown notification">
@@ -23,7 +23,7 @@
                         <h5 class="mb-0 text-white nav-user-name user" id="user"><%= user.name %></h5>
                         <span class="status"></span><span class="ml-2" id="rol2"></span>
                     </div>
-                    <a class="dropdown-item" href="/api/auth/signout"><i
+                    <a class="dropdown-item bg-dark text-white" href="/api/auth/signout"><i
                             class="fas fa-power-off mr-2"></i>ออกจากระบบ</a>
                 </div>
             </li>
