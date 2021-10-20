@@ -162,8 +162,9 @@ $(document).ready(function () {
         ],
     }).container().appendTo($('#ExportFile'));
 
-    // ========== Print Qrcode ================
-    $("#selectQR").click(function () {
+    // ========== Print Qrcode ================    
+    $("#btnQR").click(function () {
+        console.log('test');
         let rows_selected = table.column(0).checkboxes.selected();
         // the result is an Object that we need to loop to get its values
         let selectedItemQR = [];
