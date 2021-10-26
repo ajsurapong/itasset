@@ -11,39 +11,49 @@ $(document).ready(function () {
         initComplete: function () {
             let findex = 0;
             // select only columns with the specified index
-            this.api().columns([7,8,17,16]).every( function () {
+            this.api().columns([7, 8, 17, 16]).every(function () {
                 var column = this;
-                let filterName = ['สถานที่','ห้อง','สถานะ','ผู้ตรวจสอบ'];
-                $('<span class="ml-4 mr-2">'+filterName[findex]+'</span>').appendTo("#customFilter");
-                findex++;           
+                let filterName = ['สถานที่', 'ห้อง', 'สถานะ', 'ผู้ตรวจสอบ'];
+                $('<span class="ml-4 mr-2">' + filterName[findex] + '</span>').appendTo("#customFilter");
+                findex++;
                 var select = $('<select><option value="">ทั้งหมด</option></select>')
                     .appendTo('#customFilter')
                     .on('change', function () {
                         var val = $.fn.dataTable.util.escapeRegex(
                             $(this).val()
                         );
- 
+
                         column
-                            .search( val ? '^'+val+'$' : '', true, false )
+                            .search(val ? '^' + val + '$' : '', true, false)
                             .draw();
-                    } );
- 
-                column.data().unique().sort().each( function ( value, index ) {
+                    });
+
+                column.data().unique().sort().each(function (value, index) {
                     let txt = 'ไม่ระบุ';
-                    if(column.index() == 17) {
-                        if(value == 0) {
+                    if (column.index() == 17) {
+                        if (value == 0) {
                             txt = 'สูญหาย';
                         }
-                        else if(value == 1) {
+                        else if (value == 1) {
                             txt = 'ปกติ';
                         }
-                        select.append( '<option value="'+txt+'">'+txt+'</option>' );
+                        else if (value == 2) {
+                            txt = 'เสื่อมสภาพ';
+                        }
+                        select.append('<option value="' + txt + '">' + txt + '</option>');
                     }
                     else {
-                        select.append( '<option value="'+value+'">'+value+'</option>' );
-                    }                    
-                } );
-            } );
+                        // if (value == null) {
+                        //     value = '';
+                        //     select.append('<option value="' + value + '">' + 'ไม่ระบุ' + '</option>');
+                        // }
+                        // exclude null value, in some DB field its value is allowd to be null
+                        if (value != null) {
+                            select.append('<option value="' + value + '">' + value + '</option>');
+                        }
+                    }
+                });
+            });
         },
         'columnDefs': [
             {
@@ -72,7 +82,7 @@ $(document).ready(function () {
                 "mData": "Image", title: "รูปภาพ",
                 "render": function (data) {
                     let img = '/img/noimg.png';
-                    if(data != null) {
+                    if (data != null) {
                         img = 'upload/Image/' + data;
                     }
                     return '<img class="pic" src="' + img + '" style="width: 100px;margin: 25px;-webkit-transition: all .4s ease-in-out;-moz-transition: all .4s ease-in-out;-o-transition: all .4s ease-in-out; -ms-transition: all .4s ease-in-out; "  />';
@@ -85,7 +95,7 @@ $(document).ready(function () {
             { data: "Serial", title: "Serial number", "visible": false },//6
             { data: "Location", title: "สถานที่", className: "classimg" },//7
             { data: "Room", title: "ห้อง", className: "classimg" },//8
-            { data: "Received_date", title: "วันที่รับทรัพย์สิน", className: "classimg"},//9
+            { data: "Received_date", title: "วันที่รับทรัพย์สิน", className: "classimg" },//9
             { data: "Original_value", title: "Original value", "visible": false },//10
             { data: "Cost_center", title: "Cost Center", "visible": false },//11
             { data: "Department", title: "หน่วยงาน", "visible": false },//12
@@ -107,7 +117,7 @@ $(document).ready(function () {
                 "render": function (data) {
                     const status = ['สูญหาย', 'ปกติ', 'เสื่อมสภาพ'];
                     const txtColor = ['text-danger', 'text-success', 'text-warning'];
-                    return '<span class='+txtColor[data]+'>' + status[data] + '</span>';
+                    return '<span class=' + txtColor[data] + '>' + status[data] + '</span>';
                 }
             }, //17                        
         ],
@@ -424,10 +434,73 @@ $(document).ready(function () {
     });
 
     // ========== Change year to get new asset data ================
-    $("#selectYear").change(function () { 
+    $("#selectYear").change(function () {
         currentYear = $(this).val();
         // alert(currentYear);
         // reload data of the selected year
         table.ajax.url(assetURL + currentYear).load();
     });
+
+    // ========== Photo setting ================
+    $("#selectPhoto").change(function () {
+        let photoOption = $(this).val();
+        let selectedYear = $("#selectYear").val();
+        let photoURL = "";
+        let photoData = "";
+        if (photoOption != -1) {
+            if (photoOption == 0 || photoOption == 1) {
+                //must take all photos or no photo
+                photoURL = "/api/item/takeAll/" + selectedYear + "/" + photoOption;
+            }
+            else if (photoOption == 2 || photoOption == 3) {
+                var rows_selected = table.column(0).checkboxes.selected();
+                let rowdata = rows_selected.join(",")
+                const arr = rowdata.split(",");
+                // if user chooses 0-20 products
+                // we prevent select too many products which will crash data submission
+                if (rows_selected.length != 0 && rows_selected.length <= 20) {
+                    photoURL = "/api/item/take/" + selectedYear;
+                    // status is 0 or 1
+                    photoData = { records: arr, status: 3-photoOption };                    
+                } else {
+                    swal({
+                        title: "กรุณาเลือกข้อมูลตั้งแต่ 1-20 รายการ",
+                        type: "info",
+                        showCancelButton: false,
+                        confirmButtonClass: "btn-primary rounded",
+                        confirmButtonText: "ตกลง",
+                        closeOnConfirm: true,
+                    });
+                    return;
+                }               
+            }
+
+            $.ajax({
+                method: "put",
+                url: photoURL,
+                data: photoData,
+                success: function (response) {
+                    swal({
+                        title: "<small>บันทึกสำเร็จ</small>",
+                        type: "success",
+                        showCancelButton: false,
+                        confirmButtonClass: "btn-success rounded",
+                        confirmButtonText: "ยืนยัน",
+                        closeOnConfirm: true,
+                        html: true,
+                        closeOnCancel: true
+                    },
+                        function (isConfirm) {
+                            if (isConfirm) {
+                                window.location.reload()
+                            }
+                        }
+                    );
+                },
+                error: function(xhr) {
+                    alert(xhr.responseText);
+                }
+            });   // end ajax // end if
+        } // end if
+    });//end select change event
 });

@@ -42,7 +42,7 @@
 
         <!-- main content -->
         <div class="dashboard-wrapper">
-            <div class="dashboard-finance">  
+            <div class="dashboard-finance">
                 <div class="container mt-4" style="background-color: white;">
                     <div class="row">
                         <div class="col-md-6">
@@ -56,8 +56,10 @@
                         <div class="col-md-6">
                             <button class="btn btn-primary rounded float-right" data-toggle="modal"
                                 data-target="#modalPushExcel" id="#" style="width: 20%;">นำออกไฟล์</button>
-                            <button disabled class="btn btn-warning rounded float-right mr-2" data-toggle="modal"
-                                data-target="#upload" id="import" style="width: 20%;">นำเข้าไฟล์</button>
+                            <% if (user.role == 1 || user.role == 3) { %>
+                                <button class="btn btn-warning rounded float-right mr-2" data-toggle="modal"
+                                    data-target="#upload" id="import" style="width: 20%;">นำเข้าไฟล์</button>
+                            <% } %>
                         </div>
                     </div>
                 </div>
@@ -73,13 +75,16 @@
                                 <option id="Barcode" value="2">สร้าง Barcode</option>
                             </select> -->
                             <button id="btnQR" class="button btn-secondary float-right">สร้าง QRcode</button>
-                            <select id="selectPhoto" class="float-right mx-2" disabled>
-                                <option value="0">ตั้งค่าการถ่ายรูป</option>
-                                <option value="1">ถ่ายรูปเฉพาะที่เลือก</option>
-                                <option value="2">ไม่ถ่ายรูปเฉพาะที่เลือก</option>
-                                <option value="1">ถ่ายรูปทั้งหมด</option>
-                                <option value="2">ไม่ถ่ายรูปทั้งหมด</option>
-                            </select>                            
+                            <!-- photo setting, for only admin -->
+                            <% if (user.role == 1 || user.role == 3) { %>
+                                <select id="selectPhoto" class="float-right mx-2">
+                                    <option value="-1">ตั้งค่าการถ่ายรูป</option>
+                                    <option value="1">ถ่ายรูปทั้งหมด</option>
+                                    <option value="0">ไม่ถ่ายรูปทั้งหมด</option>
+                                    <option value="2">ถ่ายรูปเฉพาะที่เลือก</option>
+                                    <option value="3">ไม่ถ่ายรูปเฉพาะที่เลือก</option>
+                                </select>
+                            <% } %>                            
                         </div>
                     </div>
 
