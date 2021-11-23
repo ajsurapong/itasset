@@ -3,157 +3,53 @@
 
 <head>
     <%- include('./partials/header.ejs') %>
-    <!-- Hight Chart -->
-    <script src="https://code.highcharts.com/highcharts.js"></script>
-    <script src="https://code.highcharts.com/modules/exporting.js"></script>
-    <script src="https://code.highcharts.com/modules/export-data.js"></script>
-    <script src="https://code.highcharts.com/modules/accessibility.js"></script>
-    
-    <title>Dashboard</title>
-
     <style>
-        .morris-hover.morris-default-style {
-            border-radius: 10px;
-            padding: 6px;
-            color: #000000;
-            background: rgb(255, 255, 255);
-            border: solid 2px rgb(230, 230, 230);
-            font-family: sans-serif;
-            font-size: 12px;
-            text-align: center;
+        #selectYear {
+            width: 100px;
         }
-    </style>
+    </style>   
 </head>
 
-<body style="background-color:rgba(255, 255, 255, 0.768)">
-    <div class="dashboard-main-wrapper">
-        <!-- navbar -->
-        <%- include('./partials/topbar.ejs') %>
-        <!-- sidebar -->
-        <%- include('./partials/sidebar.ejs') %>
-
-        <!-- main content -->
-        <div class="dashboard-wrapper" style="background-color:rgba(255, 255, 255, 0.768)">
-            <div class="dashboard-finance">
-                <div class="container-fluid dashboard-content">
-                    <div class="row mb-4">
-                        กรุณาเลือกปี 
-                        <select id="selectYear" class="ml-2">
-                            <% years.forEach(year => { %>
-                                <option value="<%= year.Year %>"> <%= year.Year %> </option>
-                            <% }) %>
-                        </select>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-xl-3 col-md-6 mb-4">
-                            <div class="card border-left-success  py-2" style="background-color:#eeefff">
-                                <div class="card-body">
-                                    <div class="row no-gutters align-items-center">
-                                        <div class="col mr-2">
-                                            <b style="color: #000000;" class="h5 font-weight-bold">ครุภัณฑ์ทั้งหมด</b>
-                                            <h1 id="all" class="" style="color: #000000;"> 0 </h1>
-                                        </div>
-                                        <div class="col-auto">
-                                            <img class="fas fa-calendar fa-2x text-gray-300" src="/img/all.png " alt=""
-                                                style="width:70%;">
-                                        </div>
-                                    </div>
-                                </div>
+<body>
+    <!-- navbar -->
+    <%- include('./partials/topbar.ejs') %>
+    
+    <!-- main content -->
+    <div class="container">                
+        <div class="row mb-4">
+            กรุณาเลือกปี
+            <select id="selectYear" class="mx-2">
+                <% years.forEach(year => { %>
+                    <option value="<%= year.Year %>"> <%= year.Year %> </option>
+                <% }) %>
+            </select>
+        </div>
+        
+        <!-- array to define dashboard properties -->
+        <% const title = [{title: 'ครุภัณฑ์ทั้งหมด', bgcolor: 'style=background-color:#eeefff', img: '/img/all.png', id: "all"}, {title: 'ครุภัณฑ์ปกติ', bgcolor: 'style=background-color:#e7f5ee', img: '/img/normal.png', id: "normal"}, {title: 'ครุภัณฑ์เสื่อมสภาพ', bgcolor: 'style=background-color:#f9f2d5', img: '/img/fix.png', id: "degraded"}, {title: 'ครุภัณฑ์สูญหาย', bgcolor: 'style=background-color:#fbe1d3', img: '/img/dis.png', id: "lost"}] %> 
+        
+        <!-- Dashboard -->
+        <div class="row">
+            <!-- Loop to display each dashboard item -->
+            <% for( let index = 0; index < title.length; index++ ) { %> 
+            <div class="col-md-3">
+                <div class="card border-left-success py-2" <%= title[index].bgcolor %>>
+                    <div class="card-body">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col mr-2">
+                                <h5><%= title[index].title %> </h5>
+                                <h1 id=<%= title[index].id %>> 0 </h1>
+                            </div>
+                            <div class="col-auto">
+                                <img src=<%= title[index].img %> style="width:70%;">
                             </div>
                         </div>
-                        <div class="col-xl-3 col-md-6 mb-4">
-                            <div class="card border-left-primary  py-2" style="background-color:#e7f5ee">
-                                <div class="card-body">
-                                    <div class="row no-gutters align-items-center">
-                                        <div class="col mr-2">
-                                            <b style="color: #000000;" class="">ครุภัณฑ์ปกติ</b>
-                                            <h1 id="normal"> 0 </h1>
-                                        </div>
-                                        <div class="col-auto">
-                                            <img class="fas fa-calendar fa-2x text-gray-300" src="/img/normal.png" alt=""
-                                                style="width:70%;">
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-xl-3 col-md-6 mb-4">
-                            <div class="card border-left-primary py-2" style="background-color:#f9f2d5">
-                                <div class="card-body">
-                                    <div class="row no-gutters align-items-center">
-                                        <div class="col mr-2">
-                                            <b style="color: #000000;" class="">ครุภัณฑ์เสื่อมสภาพ</b>
-                                            <h1 id="degraded"> 0 </h1>
-                                        </div>
-                                        <div class="col-auto">
-                                            <img class="fas fa-calendar fa-2x text-gray-300" src="/img/fix.png " alt=""
-                                                style="width:70%;">
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-xl-3 col-md-6 mb-4">
-                            <div class="card border-left-primary py-2" style="background-color:#fbe1d3">
-                                <div class="card-body">
-                                    <div class="row no-gutters align-items-center">
-                                        <b style="color: #000000;" class="">ครุภัณฑ์สูญหาย/ยังไม่ได้ตรวจ</b>
-                                        <!-- <p style="color: #000000;" class=""><strong>/ยังไม่ได้ตรวจ</strong></p> -->
-                                    </div>
-                                    <div class="row no-gutters align-items-center">
-                                        <div class="col mr-2">
-                                            <h1 id="lost"> 0 </h1>
-                                        </div>
-
-                                        <div class="col-auto">
-                                            <img class="fas fa-calendar fa-2x text-gray-300" src="/img/dis.png" alt=""
-                                                style="width:70%;">
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- ============================================================== -->
-                    <!-- เสร็จหัวกระดาษ  -->
-                    <!-- ============================================================== -->
-                    <!-- แถบ -->
-                    <!-- ============================================================== -->
-                    <!--กราฟ-->
-                    <!-- ============================================================== -->
-                    <div class="col">
-                        <div class="row ">
-                            <div class=" col-xl-11 col-lg-11 col-md-11 col-sm-11 col-11 ml-5 border "
-                                style="background-color: white;border: 5px solid red;">
-                                <div id="bar-chart" class="my-3"></div>
-                            </div>
-                        </div>
-                        <!-- ============================================================== -->
-                        <!-- ============================================================== -->
-
-                        <div class="modal bd-example-modal-sm fade" id="alertmodal" tabindex="-1" role="dialog"
-                            aria-labelledby="mySmallModalLabel" data-backdrop="static" data-keyboard="false"
-                            aria-hidden="true">
-                            <div class="modal-dialog" role="document">
-                                <div class="modal-content" style="background-color : #3f3f3f">
-                                    <div class="modal-body">
-                                        <h5 style="color: #ffffff; font-weight:bold;">ประกาศ</h5>
-                                        <p class="alertText" style="color: white">กรุณาติดต่อเพื่อขอใช้บริการ</p>
-                                        <input class="btn btn-sm" type="button" value="ตกลง" data-dismiss="modal"
-                                            style="float: right; background-color: #0a72c1; color:white">
-                                        <div class="but"></div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- ============================================================== -->
-                        <!-- เสร็จ modal  -->
-                        <!-- ============================================================== -->
                     </div>
                 </div>
             </div>
-        </div>
+            <% } %>
+        </div> 
+
         <script src="/views/dashboard.js"></script>
 </body>
 </html>

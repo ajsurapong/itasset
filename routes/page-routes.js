@@ -8,7 +8,6 @@ const authCheckAdmin = require('./authCheck-admin');
 
 //Root Page
 router.get("/", (req, res) => {
-    // res.sendFile(path.join(__dirname, "../views/index.html"));
     // check if user has already logged in and the token has not expired
     let bypass = false;
     let userData;
@@ -30,7 +29,8 @@ router.get("/", (req, res) => {
     // token is found and correct?
     if (bypass) {
         // jump to main page
-        res.render('mainpage', { user: userData, activeURL: 'mainpage' });
+        // res.render('mainpage', { user: userData, activeURL: 'mainpage' });
+        res.redirect('/api/dashboard');
     }
     else {
         // no token or token is wrong, show normal assets of the latest year in DB
@@ -44,37 +44,6 @@ router.get("/", (req, res) => {
                 res.render('index', { year: resultYear[0].year });
             }
         });
-
-        // get all asset locations of this year
-        // const year = new Date().getFullYear() + 543;
-        // const sql = "SELECT DISTINCT Location FROM item WHERE Status = 1 AND Year = ?"
-        // con.query(sql, [year], function (err, result) {
-        //     if (err) {
-        //         console.log(err);
-        //         res.status(503).send("เซิร์ฟเวอร์ฐานข้อมูลไม่ตอบสนอง");
-        //     } else {
-        //         // if the current year has no asset info yet
-        //         if (result.length == 0) {
-        //             // get last year asset info instead
-        //             con.query(sql, [year - 1], function (err, result) {
-        //                 if (err) {
-        //                     console.log(err);
-        //                     res.status(503).send("เซิร์ฟเวอร์ฐานข้อมูลไม่ตอบสนอง");
-        //                 } else {
-        //                     // previous year
-        //                     // res.json(result);
-        //                     // console.log((result));
-        //                     res.render('index', { location: result, year: year - 1 });
-        //                 }
-        //             })
-        //         } else {
-        //             // this year
-        //             // res.json(result);
-        //             // console.log((result));
-        //             res.render('index', { location: result, year: year });
-        //         }
-        //     }
-        // });
     }
 });
 
@@ -97,22 +66,18 @@ router.get("/printbarcode", authCheck, function (req, res) {
 
 //Return home page
 router.get("/mainpage", authCheck, function (req, res) {
-    // console.log(req.decoded);
-    // res.sendFile(path.join(__dirname, "../views/mainpage.html"))
     res.render('mainpage', { user: req.decoded, activeURL: '/api/mainpage' });
 });
 
 //Return User_history page
 router.get("/User_history", authCheck, function (req, res) {
-    // res.sendFile(path.join(__dirname, "../views/User_history.html"))
     res.render("User_history", { user: req.decoded, activeURL: '/api/User_history' });
 });
 
 //Return Asset page
 router.get("/asset", authCheck, function (req, res) {
-    // res.sendFile(path.join(__dirname, "../views/asset.html"))
     // get unique years
-    const sql = "SELECT DISTINCT Year FROM item"
+    const sql = "SELECT DISTINCT Year FROM item ORDER BY Year DESC"
     con.query(sql, function (err, result) {
         if (err) {
             console.log(err);
@@ -130,9 +95,8 @@ router.get("/announce", authCheck, authCheckAdmin, function (req, res) {
 
 //Return dashboard page
 router.get("/dashboard", authCheck, function (req, res) {
-    // res.sendFile(path.join(__dirname, "../views/dashboard.html"))
     // get all distinct years for drop down year selection
-    let sql = "SELECT DISTINCT Year FROM item ORDER BY Year DESC";
+    const sql = "SELECT DISTINCT Year FROM item ORDER BY Year DESC";
     con.query(sql, function (err, result) {
         if (err) {
             console.log(err);

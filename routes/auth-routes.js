@@ -56,7 +56,8 @@ router.post('/signin', (req, res) => {
                     signed: true
                 };
                 res.cookie('assettoken', token, cookieOption);
-                res.send('/api/mainpage');
+                // res.send('/api/mainpage');
+                res.send('/api/dashboard');
             }
             else {
                 res.status(400).send("Wrong password");
