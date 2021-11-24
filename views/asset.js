@@ -124,53 +124,53 @@ $(document).ready(function () {
     });
 
     // ========== Export to Excel and PDF ================
-    //===== เปลี่ยน font PDF ====
-    // pdfMake.fonts = {
-    //     THSarabun: {
-    //         normal: 'THSarabun.ttf',
-    //         bold: 'THSarabun-Bold.ttf',
-    //         italics: 'THSarabun-Italic.ttf',
-    //         bolditalics: 'THSarabun-BoldItalic.ttf'
-    //     }
-    // }
+    //===== change PDF export font ====
+    pdfMake.fonts = {
+        THSarabun: {
+            normal: 'THSarabun.ttf',
+            bold: 'THSarabun-Bold.ttf',
+            italics: 'THSarabun-Italic.ttf',
+            bolditalics: 'THSarabun-BoldItalic.ttf'
+        }
+    }
 
     // create export buttons and append to export modal
-    // new $.fn.dataTable.Buttons(table, {
-    //     "buttons": [
-    //         {
-    //             "extend": 'excel',
-    //             "exportOptions": {
-    //                 "columns": [1, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 17]
-    //             },
-    //         },
-    //         { // กำหนดพิเศษเฉพาะปุ่ม pdf
-    //             "extend": 'pdf', // ปุ่มสร้าง pdf ไฟล์
-    //             "text": 'PDF', // ข้อความที่แสดง
-    //             "pageSize": 'A4',   // ขนาดหน้ากระดาษเป็น A4 
-    //             "exportOptions": {
-    //                 "columns": [3, 4, 7, 8, 10, 15, 16, 17]
-    //             },
-    //             "customize": function (doc) { // ส่วนกำหนดเพิ่มเติม ส่วนนี้จะใช้จัดการกับ pdfmake
-    //                 // กำหนด style หลัก
-    //                 doc.defaultStyle = {
-    //                     font: 'THSarabun',
-    //                     fontSize: 16
-    //                 };
-    //                 doc.styles.tableHeader.fontSize = 16
-    //                 // กำหนดความกว้างของ header แต่ละคอลัมน์หัวข้อ
-    //                 doc.content[1].table.widths = ['auto', 'auto', 'auto', 'auto', 'auto', 'auto', 'auto', 'auto'];
-    //             }
-    //         }, // สิ้นสุดกำหนดพิเศษปุ่ม pdf
-    //         {
-    //             "extend": 'print',
-    //             "exportOptions": {
-    //                 "columns": [1, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 16, 17]
-    //             },
+    new $.fn.dataTable.Buttons(table, {
+        "buttons": [
+            {
+                "extend": 'excel',
+                "exportOptions": {
+                    "columns": [1, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 17]
+                },
+            },
+            { // กำหนดพิเศษเฉพาะปุ่ม pdf
+                "extend": 'pdf', // ปุ่มสร้าง pdf ไฟล์
+                "text": 'PDF', // ข้อความที่แสดง
+                "pageSize": 'A4',   // ขนาดหน้ากระดาษเป็น A4 
+                "exportOptions": {
+                    "columns": [3, 4, 7, 8, 10, 15, 16, 17]
+                },
+                "customize": function (doc) { // ส่วนกำหนดเพิ่มเติม ส่วนนี้จะใช้จัดการกับ pdfmake
+                    // กำหนด style หลัก
+                    doc.defaultStyle = {
+                        font: 'THSarabun',
+                        fontSize: 16
+                    };
+                    doc.styles.tableHeader.fontSize = 16
+                    // กำหนดความกว้างของ header แต่ละคอลัมน์หัวข้อ
+                    doc.content[1].table.widths = ['auto', 'auto', 'auto', 'auto', 'auto', 'auto', 'auto', 'auto'];
+                }
+            }, // สิ้นสุดกำหนดพิเศษปุ่ม pdf
+            {
+                "extend": 'print',
+                "exportOptions": {
+                    "columns": [1, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 16, 17]
+                },
 
-    //         },
-    //         // 'print'
-    //     ],
-    // }).container().appendTo($('#ExportFile'));
+            },
+            // 'print'
+        ],
+    }).container().appendTo($('#ExportFile'));
 
     // ========== Print Qrcode ================    
     $("#btnQR").click(function () {

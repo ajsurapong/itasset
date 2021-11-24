@@ -5,11 +5,8 @@
     <%- include('./partials/header.ejs') %>
     <!-- DataTables -->
     <%- include('./partials/datatables.ejs') %>
-    <!-- DataTables checkbox -->
-    <link type="text/css" href="//gyrocode.github.io/jquery-datatables-checkboxes/1.2.12/css/dataTables.checkboxes.css"
-        rel="stylesheet" />
-    <script type="text/javascript"
-        src="//gyrocode.github.io/jquery-datatables-checkboxes/1.2.12/js/dataTables.checkboxes.min.js"></script>
+    <!-- DataTables checkbox and button extension -->
+    <%- include('./partials/datatables-extra.ejs') %>
 </head>
 
 <body>
@@ -30,11 +27,11 @@
                 </select>
             </div>
             <div class="col-md-10">
-                <button class="btn btn-primary rounded float-end" data-toggle="modal"
-                    data-target="#modalPushExcel" id="#" style="width: 120px;">นำออกไฟล์</button>
+                <button class="btn btn-primary rounded float-end" data-bs-toggle="modal"
+                    data-bs-target="#modalPushExcel" style="width: 120px;">นำออกไฟล์</button>
                 <% if (user.role == 1 || user.role == 3) { %>
-                    <button class="btn btn-warning rounded float-end mr-2" data-toggle="modal"
-                        data-target="#upload" id="import" style="width: 120px;">นำเข้าไฟล์</button>
+                    <button class="btn btn-warning rounded float-end mr-2" data-bs-toggle="modal"
+                        data-bs-target="#upload" id="import" style="width: 120px;">นำเข้าไฟล์</button>
                 <% } %>
             </div>
         </div>
@@ -63,10 +60,27 @@
             <div id="customFilter"></div>
         </div>
 
+        <!-- DataTables -->
         <table id="myTable" class="table table-striped table-bordered mt-4" style="width:100%">
-        </table>
+        </table>        
     </div>
 
+    <!-- Modal: Export to excel -->
+    <div class="modal fade" id="modalPushExcel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">นำออกไฟล์</h4>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <h5>กรุณาเลือกชนิดไฟล์ที่จะนำออก</h5>
+                    <div id="ExportFile"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
     <script src="/views/asset.js"></script>
 </body>
 
