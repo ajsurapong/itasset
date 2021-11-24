@@ -14,7 +14,7 @@ $(document).ready(function () {
             this.api().columns([7, 8, 17, 16]).every(function () {
                 var column = this;
                 let filterName = ['สถานที่', 'ห้อง', 'สถานะ', 'ผู้ตรวจสอบ'];
-                $('<span class="ml-4 mr-2">' + filterName[findex] + '</span>').appendTo("#customFilter");
+                $('<span class="ms-4 me-2">' + filterName[findex] + '</span>').appendTo("#customFilter");
                 findex++;
                 var select = $('<select><option value="">ทั้งหมด</option></select>')
                     .appendTo('#customFilter')
