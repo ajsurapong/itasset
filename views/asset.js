@@ -125,56 +125,55 @@ $(document).ready(function () {
 
     // ========== Export to Excel and PDF ================
     //===== เปลี่ยน font PDF ====
-    pdfMake.fonts = {
-        THSarabun: {
-            normal: 'THSarabun.ttf',
-            bold: 'THSarabun-Bold.ttf',
-            italics: 'THSarabun-Italic.ttf',
-            bolditalics: 'THSarabun-BoldItalic.ttf'
-        }
-    }
+    // pdfMake.fonts = {
+    //     THSarabun: {
+    //         normal: 'THSarabun.ttf',
+    //         bold: 'THSarabun-Bold.ttf',
+    //         italics: 'THSarabun-Italic.ttf',
+    //         bolditalics: 'THSarabun-BoldItalic.ttf'
+    //     }
+    // }
 
     // create export buttons and append to export modal
-    new $.fn.dataTable.Buttons(table, {
-        "buttons": [
-            {
-                "extend": 'excel',
-                "exportOptions": {
-                    "columns": [1, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 17]
-                },
-            },
-            { // กำหนดพิเศษเฉพาะปุ่ม pdf
-                "extend": 'pdf', // ปุ่มสร้าง pdf ไฟล์
-                "text": 'PDF', // ข้อความที่แสดง
-                "pageSize": 'A4',   // ขนาดหน้ากระดาษเป็น A4 
-                "exportOptions": {
-                    "columns": [3, 4, 7, 8, 10, 15, 16, 17]
-                },
-                "customize": function (doc) { // ส่วนกำหนดเพิ่มเติม ส่วนนี้จะใช้จัดการกับ pdfmake
-                    // กำหนด style หลัก
-                    doc.defaultStyle = {
-                        font: 'THSarabun',
-                        fontSize: 16
-                    };
-                    doc.styles.tableHeader.fontSize = 16
-                    // กำหนดความกว้างของ header แต่ละคอลัมน์หัวข้อ
-                    doc.content[1].table.widths = ['auto', 'auto', 'auto', 'auto', 'auto', 'auto', 'auto', 'auto'];
-                }
-            }, // สิ้นสุดกำหนดพิเศษปุ่ม pdf
-            {
-                "extend": 'print',
-                "exportOptions": {
-                    "columns": [1, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 16, 17]
-                },
+    // new $.fn.dataTable.Buttons(table, {
+    //     "buttons": [
+    //         {
+    //             "extend": 'excel',
+    //             "exportOptions": {
+    //                 "columns": [1, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 17]
+    //             },
+    //         },
+    //         { // กำหนดพิเศษเฉพาะปุ่ม pdf
+    //             "extend": 'pdf', // ปุ่มสร้าง pdf ไฟล์
+    //             "text": 'PDF', // ข้อความที่แสดง
+    //             "pageSize": 'A4',   // ขนาดหน้ากระดาษเป็น A4 
+    //             "exportOptions": {
+    //                 "columns": [3, 4, 7, 8, 10, 15, 16, 17]
+    //             },
+    //             "customize": function (doc) { // ส่วนกำหนดเพิ่มเติม ส่วนนี้จะใช้จัดการกับ pdfmake
+    //                 // กำหนด style หลัก
+    //                 doc.defaultStyle = {
+    //                     font: 'THSarabun',
+    //                     fontSize: 16
+    //                 };
+    //                 doc.styles.tableHeader.fontSize = 16
+    //                 // กำหนดความกว้างของ header แต่ละคอลัมน์หัวข้อ
+    //                 doc.content[1].table.widths = ['auto', 'auto', 'auto', 'auto', 'auto', 'auto', 'auto', 'auto'];
+    //             }
+    //         }, // สิ้นสุดกำหนดพิเศษปุ่ม pdf
+    //         {
+    //             "extend": 'print',
+    //             "exportOptions": {
+    //                 "columns": [1, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 16, 17]
+    //             },
 
-            },
-            // 'print'
-        ],
-    }).container().appendTo($('#ExportFile'));
+    //         },
+    //         // 'print'
+    //     ],
+    // }).container().appendTo($('#ExportFile'));
 
     // ========== Print Qrcode ================    
     $("#btnQR").click(function () {
-        console.log('test');
         let rows_selected = table.column(0).checkboxes.selected();
         // the result is an Object that we need to loop to get its values
         let selectedItemQR = [];
@@ -191,48 +190,44 @@ $(document).ready(function () {
             window.open('/api/printqrcode', '_blank');
         } else {
             // no item selected
-            swal({
-                title: "กรุณาเลือกข้อมูล",
-                type: "info",
-                showCancelButton: false,
-                confirmButtonClass: "btn-primary rounded",
-                confirmButtonText: "ตกลง",
-                closeOnConfirm: true,
+            Swal.fire({
+                icon: 'error',
+                title: 'กรุณาเลือกรายการครุภัณฑ์อย่างน้อยหนึ่งรายการ',
             });
         }
     });
 
     // ========== Print Barcode ================
-    $("#selectBar").click(function () {
-        swal({
-            title: "รายการนี้อยู่ระหว่างการพัฒนา",
-            type: "error",
-            showCancelButton: false,
-            confirmButtonClass: "btn-primary rounded",
-            confirmButtonText: "ตกลง",
-            closeOnConfirm: true,
-        });
-        // var rows_selected = table.column(0).checkboxes.selected();
-        // var selectedItemBR = [];
+    // $("#selectBar").click(function () {
+    //     swal({
+    //         title: "รายการนี้อยู่ระหว่างการพัฒนา",
+    //         type: "error",
+    //         showCancelButton: false,
+    //         confirmButtonClass: "btn-primary rounded",
+    //         confirmButtonText: "ตกลง",
+    //         closeOnConfirm: true,
+    //     });
+    //     // var rows_selected = table.column(0).checkboxes.selected();
+    //     // var selectedItemBR = [];
 
-        // if (rows_selected.slength != 0) {
-        //     $.each(rows_selected, function (index, value) {
-        //         selectedItemBR.push(value);
-        //     });
-        //     let jsobject = JSON.stringify(selectedItemBR);
-        //     sessionStorage.selectedItemBR = jsobject;
-        //     window.open('/api/printbarcode', '_blank');
-        // } else {
-        //     swal({
-        //         title: "กรุณาเลือกข้อมูล",
-        //         type: "info",
-        //         showCancelButton: false,
-        //         confirmButtonClass: "btn-primary rounded",
-        //         confirmButtonText: "ตกลง",
-        //         closeOnConfirm: true,
-        //     });
-        // }
-    });
+    //     // if (rows_selected.slength != 0) {
+    //     //     $.each(rows_selected, function (index, value) {
+    //     //         selectedItemBR.push(value);
+    //     //     });
+    //     //     let jsobject = JSON.stringify(selectedItemBR);
+    //     //     sessionStorage.selectedItemBR = jsobject;
+    //     //     window.open('/api/printbarcode', '_blank');
+    //     // } else {
+    //     //     swal({
+    //     //         title: "กรุณาเลือกข้อมูล",
+    //     //         type: "info",
+    //     //         showCancelButton: false,
+    //     //         confirmButtonClass: "btn-primary rounded",
+    //     //         confirmButtonText: "ตกลง",
+    //     //         closeOnConfirm: true,
+    //     //     });
+    //     // }
+    // });
 
     // ========== Import Excel file ================
     $("#formImport").submit(function (e) {
