@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <%- include('./partials/header.ejs') %>
+    <!-- DataTables -->
+    <%- include('./partials/datatables.ejs') %>
+</head>
+
+<body>
+    <%- include('./partials/topbar.ejs') %>
+    <div class="container-fluid px-5">
+        <!-- top menu -->
+        <div class="row ps-3 mb-4">
+            <div class="col-md-2 border rounded-lg py-2">
+                ผู้ใช้ระบบในปี
+                <select id="selectYear" style="width: 80px; margin-left: 10px;">
+                    <% years.forEach(year=> { %>
+                        <option value="<%= year.Year %>">
+                            <%= year.Year %>
+                        </option>
+                        <% }) %>
+                </select>
+            </div>
+            <div class="col-md-10">
+                <button id="btnAdd" class="button btn-success float-end">เพิ่มผู้ใช้</button>
+                <button id="btnDuplicate" class="button btn-warning float-end me-2">สำเนาผู้ใช้จากปีล่าสุด</button>
+            </div>
+        </div>
+        
+        <table id="userTable" class="table table-striped table-bordered mt-4" style="width:100%">
+        </table>
+    </div>    
+
+    <script src="/views/manageuser.js"></script>
+</body>
+
+</html>

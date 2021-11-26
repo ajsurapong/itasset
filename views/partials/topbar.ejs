@@ -1,4 +1,4 @@
-<% const menu = [{name:'แดชบอร์ด', url:'/api/dashboard'}, {name:'ครุภัณฑ์', url:'/api/asset'}] %> 
+<% const menu = [{name:'แดชบอร์ด', url:'/api/dashboard'}, {name:'ครุภัณฑ์', url:'/api/asset'}, {name:'จัดการผู้ใช้', url:'/api/manageUser'}, {name:'กำหนดเวลาตรวจนับ', url:'/api/Date_manage'}] %>
 
 <nav class="navbar navbar-expand-md bg-dark navbar-dark fixed-top">
     <div class="container-fluid">
@@ -14,11 +14,18 @@
         </button>
         <div class="collapse navbar-collapse" id="collapsibleNavbar">
             <ul class="nav nav-pills">
-                <% menu.forEach(item => { %>
-                    <li class="nav-item">
-                        <a <%- activeURL==item.url ? 'class="nav-link active"' : 'class="nav-link"' %> href="<%= item.url %>"><%= item.name %> </a>
-                    </li>
-                <% }) %>
+                <% for( let index = 0; index < menu.length; index++ ) { %>
+                    <% if (index < menu.length - 1) { %>
+                        <li class="nav-item">
+                            <a <%- activeURL==menu[index].url ? 'class="nav-link active"' : 'class="nav-link"' %> href="<%= menu[index].url %>"><%= menu[index].name %> </a>
+                        </li>                    
+                    <% } else if(user.role != 2) { %>
+                        <!-- only for admin -->
+                        <li class="nav-item">
+                            <a <%- activeURL==menu[index].url ? 'class="nav-link active"' : 'class="nav-link"' %> href="<%= menu[index].url %>"><%= menu[index].name %> </a>
+                        </li>
+                    <% } %> 
+                <% } %>
                 <!-- <li class="nav-item">
                     <a class="nav-link active" href="#">แดชบอร์ด</a>
                 </li>
@@ -31,7 +38,14 @@
             <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"><%= user.name %></a>
                 <ul class="dropdown-menu">
-                    <li><a class="dropdown-item" href="/api/auth/signout">ออกจากระบบ</a></li>
+                    <% if (user.role == 3) { %>
+                        <li class="dropdown-item">ผู้ดูแลระบบถาวร</li>
+                    <% } else if (user.role == 1) { %>
+                        <li class="dropdown-item">ผู้ดูแลระบบ</li>
+                    <% } else { %>
+                        <li class="dropdown-item">กรรมการตรวจนับ</li>
+                    <% } %>
+                    <li class="bg-secondary"><a class="dropdown-item" href="/api/auth/signout"><span class="text-white">ออกจากระบบ</span> </a></li>
                 </ul>
             </li>
         </ul>

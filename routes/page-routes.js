@@ -53,7 +53,17 @@ router.get("/checkpage", function (req, res) {
 });
 
 router.get("/manageUser", authCheck, authCheckAdmin, function (req, res) {
-    res.sendFile(path.join(__dirname, "../views/manageuser.html"))
+    // res.sendFile(path.join(__dirname, "../views/manageuser.html"))
+    // get unique years
+    const sql = "SELECT DISTINCT Year FROM year_user ORDER BY Year DESC"
+    con.query(sql, function (err, result) {
+        if (err) {
+            console.log(err);
+            res.status(503).send("เซิร์ฟเวอร์ฐานข้อมูลไม่ตอบสนอง");
+        } else {
+            res.render("manageuser", { user: req.decoded, years: result, activeURL: '/api/manageUser' });
+        }
+    });
 });
 
 router.get("/printqrcode", authCheck, function (req, res) {
