@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <%- include('./partials/header.ejs') %>   
+</head>
+
+<body>
+    <!-- navbar -->
+    <%- include('./partials/topbar.ejs') %>
+    <div class="container">
+        <div class="row border">
+            <h2 class="mb-2">ระยะเวลาการตรวจสอบ</h2>
+            <div class="col-md-3 pt-2">
+                <h5>วันที่เริ่มต้น <span id="dateStart" class="bg-success text-white px-2"><%= duration[0].Date_start %></span></h5>
+            </div>
+            <div class="col-md-3 pt-2">
+                <h5>วันที่สิ้นสุด <span id="dateEnd" class="bg-danger text-white px-2"><%= duration[0].Date_end %></span></h5>
+            </div>
+            <div class="col-md-2">
+                <button class="btn btn-primary">แก้ไขช่วงเวลา</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- <script src="/views/date_manage.js"></script> -->
+</body>
+
+</html>

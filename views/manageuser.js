@@ -49,7 +49,7 @@ $(document).ready(function () {
         Swal.fire({
             icon: 'warning',
             title: 'คุณแน่ใจว่าจะคัดลอกผู้ใช้เดิม',
-            text: 'ผู้ใช้ในปีปัจจุบันจะถูกลบออกและแทนที่',
+            text: 'ผู้ใช้ในปีปัจจุบันจะถูกลบออกและแทนที่ทั้งหมด',
             showCancelButton: true,
             confirmButtonText: 'ยืนยัน',
             cancelButtonText: 'ยกเลิก',

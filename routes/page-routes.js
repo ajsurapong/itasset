@@ -5,6 +5,7 @@ const authCheck = require("./authCheck");
 const con = require("../config/dbConfig");
 const jwt = require('jsonwebtoken');
 const authCheckAdmin = require('./authCheck-admin');
+const { json } = require('express');
 
 //Root Page
 router.get("/", (req, res) => {
@@ -21,8 +22,8 @@ router.get("/", (req, res) => {
                 userData = decoded;
             }
             else {
-               console.log(err); 
-            }            
+               console.log(err);
+            }
         });
     }
 
@@ -95,7 +96,7 @@ router.get("/asset", authCheck, function (req, res) {
         } else {
             res.render("asset", { user: req.decoded, years: result, activeURL: '/api/asset' });
         }
-    });    
+    });
 });
 
 //Return Announce management page
@@ -112,7 +113,7 @@ router.get("/dashboard", authCheck, function (req, res) {
             console.log(err);
             res.status(503).send("เซิร์ฟเวอร์ไม่ตอบสนอง");
         } else {
-            res.render("dashboard", { user: req.decoded, years: result, activeURL: '/api/dashboard' });           
+            res.render("dashboard", { user: req.decoded, years: result, activeURL: '/api/dashboard' });
         }
     });
 });
@@ -123,8 +124,24 @@ router.get("/change_disapear", authCheck, function (req, res) {
 });
 
 //Return Date_manage time page
-router.get("/Date_manage", authCheck, authCheckAdmin, function (req, res) {
-    res.sendFile(path.join(__dirname, "../views/Date_manage.html"))
+router.get("/date_manage", authCheck, authCheckAdmin, function (req, res) {
+    // res.sendFile(path.join(__dirname, "../views/Date_manage.html"))
+    // console.log(req.decoded.year);
+    const sql = "SELECT Date_start, Date_end FROM date_check WHERE Years = ?";
+    con.query(sql, [req.decoded.year], function (err, result) {
+        if (err) {
+            console.log(err);
+            res.status(503).send("เซิร์ฟเวอร์ไม่ตอบสนอง");
+        } else {
+            // is the check duration of the current year set?
+            // console.log(result);
+            if(result.length == 0) {
+                result = [{ Date_start: 'N/A', Date_end: 'N/A' }];
+            }
+            res.render("date_manage", { user: req.decoded, duration: result, activeURL: '/api/date_manage'});
+        }
+    });
+    // res.render("date_manage", { user: req.decoded, activeURL: '/api/date_manage'});
 });
 
 //Return Date_managerUser page
